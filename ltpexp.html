@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head><script src="/rs-login-gate.js"></script>
+<meta charset="UTF-8">
+<title>Exposure Calculator</title>
+
+<style>
+
+body{
+  font-family:"Segoe UI", Arial, sans-serif;
+  margin:0;
+  background:#eef2f5;
+  display:flex;
+  justify-content:center;
+  padding:50px 10px 40px;
+}
+
+.wrapper{
+  width:100%;
+  max-width:1100px;
+}
+
+.header{
+  background:#2e7d32;
+  color:white;
+  padding:18px 24px;
+  font-size:22px;
+  font-weight:700;
+  border-radius:12px 12px 0 0;
+}
+
+.card{
+  background:white;
+  padding:22px;
+  border-radius:0 0 12px 12px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.12);
+}
+
+/* ENTRY BAR */
+
+.entry{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-bottom:20px;
+}
+
+input, select{
+  padding:11px 12px;
+  font-size:15px;
+  border-radius:8px;
+  border:1px solid #cfd8dc;
+  min-width:120px;
+  flex:1 1 120px;
+}
+
+select{
+  font-weight:700;
+  background:#f1f8e9;
+  border:1px solid #aed581;
+}
+
+button{
+  background:#2e7d32;
+  color:white;
+  font-weight:700;
+  border:none;
+  border-radius:8px;
+  padding:11px 22px;
+  cursor:pointer;
+  flex:0 0 auto;
+}
+
+/* PREVIEW CARD */
+
+.preview-card{
+  border-radius:12px;
+  overflow:hidden;
+  border:1px solid #e0e0e0;
+  box-shadow:0 4px 10px rgba(0,0,0,0.06);
+}
+
+/* ⭐ TRUE INLINE HEADER */
+
+.preview-header{
+  background:#f1f8e9;
+  padding:14px 18px;
+  font-size:18px;
+  font-weight:700;
+  color:#2e7d32;
+}
+
+/* checkbox inline tweak */
+
+.preview-header input{
+  margin-left:8px;
+  transform:scale(1.2);
+  vertical-align:middle;
+  cursor:pointer;
+}
+
+/* TABLE */
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th, td{
+  border:1px solid #e0e0e0;
+  padding:10px;
+  text-align:center;
+  vertical-align:top;
+}
+
+th{
+  background:#2e7d32;
+  color:white;
+}
+
+tfoot td{
+  font-weight:700;
+  background:#f1f8e9;
+}
+
+.remove-btn{
+  background:#e53935;
+  border:none;
+  color:white;
+  padding:6px 12px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.inner-table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+.inner-table td{
+  border:1px solid #ddd;
+  padding:6px;
+  text-align:left;
+}
+
+.inner-table td:first-child{
+  width:35px;
+  font-weight:700;
+  text-align:center;
+  background:#fafafa;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<div class="header">Exposure Calculator</div>
+
+<div class="card">
+
+<div class="entry">
+
+<select id="type" onchange="changeType()">
+  <option value="FutIdx">FUTIDX</option>
+  <option value="FutStk">FUTSTK</option>
+  <option value="Option">OPTION</option>
+</select>
+
+<input id="price1" type="number" placeholder="Price 1">
+<input id="qty1" type="number" placeholder="Qty 1">
+
+<input id="price2" type="number" placeholder="Price 2">
+<input id="qty2" type="number" placeholder="Qty 2">
+
+<input id="exp" type="number" placeholder="Exposure %" style="display:none">
+
+<button onclick="submitData()">Submit</button>
+
+</div>
+
+<div class="preview-card">
+
+<div class="preview-header">
+  Preview <input type="checkbox" id="detailed" onchange="togglePreview()">
+</div>
+
+<table id="calcTable">
+
+<thead>
+<tr>
+<th>Type</th>
+<th>Calculations / Inputs</th>
+<th>Exposure</th>
+<th>Remove</th>
+</tr>
+</thead>
+
+<tbody></tbody>
+
+<tfoot>
+<tr>
+<td colspan="2" style="text-align:right;">Total Exposure</td>
+<td id="total">0</td>
+<td></td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+let total = 0;
+
+function changeType(){
+
+  if(type.value === "Option"){
+    exp.style.display = "";
+    price2.style.display = "none";
+    qty2.style.display = "none";
+  }else{
+    exp.style.display = "none";
+    price2.style.display = "";
+    qty2.style.display = "";
+  }
+}
+
+function submitData(){
+
+  const t = type.value;
+
+  const p1 = +price1.value || 0;
+  const q1 = +qty1.value || 0;
+  const p2 = +price2.value || 0;
+  const q2 = +qty2.value || 0;
+  const expP = +exp.value || 0;
+
+  let exposure = 0;
+  let calcHTML = "";
+  let inputHTML = "";
+
+  if(t === "FutIdx" || t === "FutStk"){
+
+    const percent = (t === "FutStk") ? 0.035 : 0.02;
+    const percentText = (percent*100).toFixed(1);
+
+    const V1 = p1 * q1;
+    const V2 = p2 * q2;
+
+    const gross = V1 + V2;
+    const net = Math.abs(V1 - V2);
+    const spread = (gross - net) / 2;
+
+    const grossExp = spread * percent * 0.34;
+    const netExp = net * percent;
+
+    exposure = grossExp + netExp;
+
+    inputHTML =
+      `Price1=${p1}, Qty1=${q1}<br>Price2=${p2}, Qty2=${q2}`;
+
+    calcHTML = `
+<table class="inner-table">
+<tr><td>1</td><td>1st Contract value = ${p1} × ${q1} = ${V1}</td></tr>
+<tr><td>2</td><td>2nd Contract value = ${p2} × ${q2} = ${V2}</td></tr>
+<tr><td>3</td><td>Gross Spread = ${V1} + ${V2} = ${gross}</td></tr>
+<tr><td>4</td><td>Net Spread = ${V1} − ${V2} = ${net}</td></tr>
+<tr><td>5</td><td>Gross Exp = (${gross} − ${net}) / 2 = ${spread}<br>
+= ${spread} × ${percentText}% × 34% = ${grossExp.toFixed(2)}</td></tr>
+<tr><td>6</td><td>Net Exp = ${net}<br>
+= ${net} × ${percentText}% = ${netExp.toFixed(2)}</td></tr>
+<tr><td></td><td><b>Final Exposure = ${grossExp.toFixed(2)} + ${netExp.toFixed(2)} = ${exposure.toFixed(2)}</b></td></tr>
+</table>`;
+  }
+
+  else{
+
+    const contract = p1 * q1;
+    exposure = contract * expP / 100;
+
+    inputHTML =
+      `Price=${p1}, Qty=${q1}<br>Exp%=${expP}`;
+
+    calcHTML = `
+<table class="inner-table">
+<tr><td>1</td><td>Contract Value = ${p1} × ${q1} = ${contract}</td></tr>
+<tr><td>2</td><td>Exposure % = ${expP}%</td></tr>
+<tr><td></td><td><b>Final Exposure = ${contract} × ${expP} / 100 = ${exposure.toFixed(2)}</b></td></tr>
+</table>`;
+  }
+
+  total += exposure;
+
+  const tbody = document.querySelector("#calcTable tbody");
+  const row = tbody.insertRow();
+
+  row.innerHTML = `
+    <td>${t}</td>
+    <td class="calc-cell"
+        data-detail='${encodeURIComponent(calcHTML)}'
+        data-input='${encodeURIComponent(inputHTML)}'>
+        ${inputHTML}
+    </td>
+    <td>${exposure.toFixed(2)}</td>
+    <td><button class="remove-btn" onclick="removeRow(this, ${exposure})">X</button></td>
+  `;
+
+  togglePreview();
+
+  document.getElementById("total").textContent =
+    total.toFixed(2);
+
+  price1.value = qty1.value = price2.value = qty2.value = exp.value = "";
+}
+
+function togglePreview(){
+
+  const show = document.getElementById("detailed").checked;
+
+  document.querySelectorAll(".calc-cell").forEach(cell => {
+
+    cell.innerHTML = show
+      ? decodeURIComponent(cell.dataset.detail)
+      : decodeURIComponent(cell.dataset.input);
+
+  });
+}
+
+function removeRow(btn, exposure){
+
+  btn.parentElement.parentElement.remove();
+
+  total -= exposure;
+
+  document.getElementById("total").textContent =
+    total.toFixed(2);
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/rs-login-gate.js"></script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BO FILE GENERATOR</title>
+
+<link rel="stylesheet" href="STYLE.css">
+
+</head>
+
+<body>
+
+ <div class="card"><div class="window"><div class="title-bar">
+    Client Creation
+</div></div>
+
+    <label>
+        Enter Client Codes (One Per Line)
+    </label>
+
+   <textarea
+    id="clientCodes"
+    rows="12"
+    style="width:100%; height:150px; resize:vertical;"
+    placeholder="AB1001&#10;AB1002&#10;AB1003">
+</textarea>
+
+    <div class="button-group">
+        <button onclick="previewFiles()">Preview</button>
+        <button onclick="generateAllFiles()">Download</button>
+        <button onclick="clearAll()">Clear</button>
+    </div>
+
+    <div class="preview-box">
+        <pre id="preview"></pre>
+    </div>
+
+</div>
+
+<div class="footer">
+    © Khaled
+</div>
+
+<script src="client.js"></script>
+
+</body>
+</html>

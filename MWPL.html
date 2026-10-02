@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/rs-login-gate.js"></script>
+<meta charset="UTF-8">
+
+<title>MWPL Base Position</title>
+
+<style>
+
+:root {
+    --primary: #1976d2;
+    --primary-soft: #e3f2fd;
+    --border: #dde3ea;
+    --text-main: #263238;
+    --text-muted: #607d8b;
+    --danger: #e53935;
+    --accent: #43a047;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f3f4f7;
+    color: green;
+}
+
+.footer {
+    color: #66BB6A;
+}
+.page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    /* MOVED UP */
+    padding: 45px 15px 30px;
+}
+
+.card {
+    width: 100%;
+    max-width: 1000px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 18px rgba(15,23,42,0.06);
+    padding: 20px 22px 24px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+
+/* =========================================
+   FORM - 5 COLUMNS = EXACTLY 2 LINES
+   ========================================= */
+
+.form-grid {
+    display: grid;
+
+    /* 5 fields per line */
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+
+    gap: 12px 20px;
+    margin-bottom: 12px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+}
+
+.field label {
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.field input,
+.field select {
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    outline: none;
+    background: #fafbfc;
+    transition:
+        border 0.15s,
+        box-shadow 0.15s,
+        background 0.15s;
+}
+
+.field input:focus,
+.field select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(25,118,210,0.15);
+    background: #fff;
+}
+
+
+/* =========================================
+   BUTTONS
+   ========================================= */
+
+.btn-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0 4px;
+}
+
+.spacer {
+    flex: 1;
+}
+
+button {
+    border: none;
+    border-radius: 6px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    transition:
+        background 0.15s,
+        transform 0.08s,
+        box-shadow 0.15s;
+}
+
+button:active {
+    transform: translateY(1px);
+    box-shadow: none;
+}
+
+.btn-add {
+    background: var(--primary);
+    color: #fff;
+    border: 1px solid #b71c1c;
+}
+
+.btn-add:hover {
+    background: #115293;
+}
+
+.btn-clear {
+    background: #e53935;
+    color: #ffffff;
+    border: 1px solid #b71c1c;
+}
+
+.btn-clear:hover {
+    background: #c62828;
+}
+
+.btn-download {
+    background: #2e7d32;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(67,160,71,0.35);
+}
+
+.btn-download:hover {
+    background: var(--accent);
+}
+
+
+/* =========================================
+   TABLE
+   ========================================= */
+
+.table-wrapper {
+    margin-top: 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+
+    /* Allow horizontal scroll */
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 1400px;
+    border-collapse: collapse;
+    font-size: 16px;
+}
+
+thead {
+    background: white;
+}
+
+th,
+td {
+    padding: 6px 8px;
+    text-align: left;
+    border-bottom: 1px solid #edf0f4;
+    white-space: nowrap;
+}
+
+th {
+    font-weight: 700;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+tbody tr:nth-child(even) {
+    background: #fafbfc;
+}
+
+tbody tr:hover {
+    background: #e8f0fe;
+}
+
+table,
+th,
+td {
+    border: 1px solid #cfd8dc;
+}
+
+.no-rows {
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+
+/* =========================================
+   REMOVE BUTTON
+   ========================================= */
+
+.btn-remove {
+    padding: 4px 10px;
+    font-size: 14px;
+    border-radius: 4px;
+    background: #ffebee;
+    color: var(--danger);
+    border: 1px solid #ffcdd2;
+    cursor: pointer;
+}
+
+.btn-remove:hover {
+    background: #ffcdd2;
+}
+
+
+/* =========================================
+   TITLE BAR
+   ========================================= */
+
+.title-bar {
+    background-color: green;
+    color: white;
+
+    width: calc(100% + 44px);
+
+    padding: 13px 20px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-weight: bold;
+    font-size: 15px;
+
+    border: 3px solid grey;
+
+    margin: -20px -22px 15px -22px;
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 1100px) {
+
+    .form-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .card {
+        padding: 16px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-row {
+        flex-wrap: wrap;
+    }
+
+}
+
+
+
+
+
+body {
+    color: green;
+}
+
+.field label {
+    color: green;
+}
+
+table {
+    color: green;
+}
+
+th,
+td {
+    color: green;
+}
+
+
+
+
+
+
+
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="page">
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <div class="title-bar">
+                MWPL BAN Position
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             MAIN FORM
+             ===================================== -->
+
+        <div class="form-grid">
+
+
+            <div class="field">
+
+                <label>CLIENT_CODE</label>
+
+                <input
+                    type="text"
+                    id="clientCode"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>SYMBOL</label>
+
+                <input
+                    type="text"
+                    id="symbol"
+                >
+
+            </div>
+
+<div class="field">
+
+                <label>EXPIRY_DATE</label>
+
+                <input
+                    type="date"
+                    id="expiry"
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label>NET_POSITION</label>
+
+                <input
+                    type="number"
+                    id="netPos"
+                >
+
+            </div>
+
+
+            
+			
+			 <div class="field">
+
+                <label>Future Price</label>
+
+                <input
+                    type="number"
+                    id="sttlmPric"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>STRIKE_PRICE</label>
+
+                <input
+                    type="number"
+                    id="strike"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>OPTION_TYPE</label>
+
+                <select id="optionType">
+
+                    <option value="CE">
+                        CE
+                    </option>
+
+                    <option value="PE">
+                        PE
+                    </option>
+
+                </select>
+
+            </div>
+
+
+           
+
+
+            <div class="field">
+
+                <label>Option buy value</label>
+
+                <input
+                    type="number"
+                    id="opnBuyTradgVal"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Option Sell Value</label>
+
+                <input
+                    type="number"
+                    id="opnSellTradgVal"
+                >
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =====================================
+             BUTTONS
+             ===================================== -->
+
+        <div class="btn-row">
+
+            <button
+                class="btn-add"
+                onclick="addLine()"
+            >
+                Add
+            </button>
+
+
+            <button
+                class="btn-clear"
+                onclick="clearLines()"
+            >
+                Clear
+            </button>
+
+
+            <div class="spacer"></div>
+
+
+            <button
+                class="btn-download"
+                onclick="downloadCSV()"
+            >
+                Download MWPL CSV
+            </button>
+
+
+            <button
+                class="btn-download"
+                onclick="downloadPositionCSV()"
+            >
+                Download Position CSV
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================
+         TABLE
+         ===================================== -->
+
+    <div class="table-wrapper">
+
+        <table id="dataTable">
+
+            <thead>
+
+                <tr>
+
+                    <th>DATE</th>
+                    <th>CLEARING_MBR_CODE</th>
+                    <th>TRADING_MBR_CODE</th>
+                    <th>CLIENT_CODE</th>
+                    <th>INSTRUMENT_TYPE</th>
+                    <th>SYMBOL</th>
+                    <th>EXPIRY_DATE</th>
+                    <th>STRIKE_PRICE</th>
+                    <th>OPTION_TYPE</th>
+                    <th>NET_POSITION</th>
+                    <th>ACTION</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="tableBody">
+
+                <tr>
+
+                    <td
+                        class="no-rows"
+                        colspan="11"
+                    >
+                        No rows added yet.
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+/* =========================================
+   DATE FUNCTIONS
+   ========================================= */
+
+function getTodayFormatted() {
+
+    const today = new Date();
+
+    const dd =
+        String(today.getDate())
+        .padStart(2, "0");
+
+    const months = [
+        "Jan","Feb","Mar","Apr","May","Jun",
+        "Jul","Aug","Sep","Oct","Nov","Dec"
+    ];
+
+    const mon =
+        months[today.getMonth()];
+
+    const yy =
+        String(today.getFullYear())
+        .slice(-2);
+
+    return `${dd}-${mon}-${yy}`;
+
+}
+
+
+function getTodayISO() {
+
+    const today = new Date();
+
+    const yyyy =
+        today.getFullYear();
+
+    const mm =
+        String(today.getMonth() + 1)
+        .padStart(2, "0");
+
+    const dd =
+        String(today.getDate())
+        .padStart(2, "0");
+
+    return `${yyyy}-${mm}-${dd}`;
+
+}
+
+
+/* =========================================
+   NEW:
+   YYYY-MM-DD -> YYYYMMDD
+   ========================================= */
+
+function formatDateYYYYMMDD(dateStr) {
+
+    if (!dateStr) {
+        return "";
+    }
+
+    const p =
+        dateStr.split("-");
+
+    if (p.length !== 3) {
+        return dateStr;
+    }
+
+    return (
+        p[0] +
+        p[1] +
+        p[2]
+    );
+
+}
+
+
+let FIXED_DATE =
+    getTodayFormatted();
+
+
+/* =========================================
+   FIXED VALUES
+   ========================================= */
+
+const CLEARING_MBR_CODE =
+    "M52040";
+
+const TRADING_MBR_CODE =
+    "90144";
+
+const POS_SGMT =
+    "FO";
+
+const POS_SRC =
+    "NCL";
+
+const POS_TRAD_REGN_ORGN =
+    "1";
+
+const POS_CLR_MMB_ID =
+    "6538";
+
+const POS_BRKR_PTPT_ID =
+    "6538";
+
+const POS_CLNT_TP =
+    "C";
+
+
+/* =========================================
+   ROW STORAGE
+   ========================================= */
+
+const rows = [];
+
+
+/* =========================================
+   EXPIRY DISPLAY FORMAT
+   YYYY-MM-DD -> DD-Mon-YY
+   ========================================= */
+
+function formatExpiry(d) {
+
+    const p =
+        d.split("-");
+
+    if (p.length !== 3) {
+        return "";
+    }
+
+    const yyyy =
+        p[0];
+
+    const mm =
+        parseInt(p[1], 10);
+
+    const dd =
+        p[2];
+
+    const mon = [
+        "Jan","Feb","Mar","Apr","May","Jun",
+        "Jul","Aug","Sep","Oct","Nov","Dec"
+    ][mm - 1];
+
+    return (
+        dd +
+        "-" +
+        mon +
+        "-" +
+        yyyy.slice(-2)
+    );
+
+}
+
+
+/* =========================================
+   ADD LINE
+   ========================================= */
+
+function addLine() {
+
+
+    const client =
+        document
+        .getElementById("clientCode")
+        .value
+        .trim();
+
+
+    const symbol =
+        document
+        .getElementById("symbol")
+        .value
+        .trim();
+
+
+    const expiryRaw =
+        document
+        .getElementById("expiry")
+        .value;
+
+
+    const net =
+        document
+        .getElementById("netPos")
+        .value
+        .trim();
+
+
+    const strikeInput =
+        document
+        .getElementById("strike")
+        .value
+        .trim();
+
+
+    const optSelected =
+        document
+        .getElementById("optionType")
+        .value;
+
+
+    const sttlmPric =
+        document
+        .getElementById("sttlmPric")
+        .value
+        .trim();
+
+
+    const opnBuyVal =
+        document
+        .getElementById("opnBuyTradgVal")
+        .value
+        .trim();
+
+
+    const opnSellVal =
+        document
+        .getElementById("opnSellTradgVal")
+        .value
+        .trim();
+
+
+    /* =====================================
+       MANDATORY FIELDS
+       ===================================== */
+
+    if (
+        !client ||
+        !symbol ||
+        !expiryRaw ||
+        !net
+    ) {
+
+        alert(
+            "Please fill all mandatory fields."
+        );
+
+        return;
+
+    }
+
+
+    const expiry =
+        formatExpiry(expiryRaw);
+
+
+    const netNum =
+        parseInt(net, 10) || 0;
+
+
+    /* =====================================
+       FUTURE PRICE COMPULSORY
+       ===================================== */
+
+    if (!sttlmPric) {
+
+        alert(
+            "Please enter Future Price."
+        );
+
+        return;
+
+    }
+
+
+    /* =====================================
+       OPTION VALIDATION
+       ===================================== */
+
+    if (strikeInput) {
+
+
+        /* LONG OPTION */
+
+        if (netNum > 0) {
+
+            if (!opnBuyVal) {
+
+                alert(
+                    "Please enter Option Buy Value."
+                );
+
+                return;
+
+            }
+
+
+            if (opnSellVal) {
+
+                alert(
+                    "Option Sell Value should be blank for Buy Position."
+                );
+
+                return;
+
+            }
+
+        }
+
+
+        /* SHORT OPTION */
+
+        else if (netNum < 0) {
+
+            if (!opnSellVal) {
+
+                alert(
+                    "Please enter Option Sell Value."
+                );
+
+                return;
+
+            }
+
+
+            if (opnBuyVal) {
+
+                alert(
+                    "Option Buy Value should be blank for Sell Position."
+                );
+
+                return;
+
+            }
+
+        }
+
+
+        else {
+
+            alert(
+                "Net Position cannot be zero."
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    /* =====================================
+       INSTRUMENT
+       ===================================== */
+
+    let inst,
+        strikeVal,
+        optVal;
+
+
+    if (strikeInput) {
+
+        inst =
+            "OPTSTK";
+
+        strikeVal =
+            strikeInput;
+
+        optVal =
+            optSelected;
+
+    }
+
+    else {
+
+        inst =
+            "FUTSTK";
+
+        strikeVal =
+            "0";
+
+        optVal =
+            "FF";
+
+    }
+
+
+    /* =====================================
+       STORE ROW
+       ===================================== */
+
+    rows.push({
+
+        date:
+            FIXED_DATE,
+
+        clear:
+            CLEARING_MBR_CODE,
+
+        trade:
+            TRADING_MBR_CODE,
+
+        client,
+
+        inst,
+
+        symbol,
+
+        expiry,
+
+        expiryIso:
+            expiryRaw,
+
+        strike:
+            strikeVal,
+
+        opt:
+            optVal,
+
+        net,
+
+        sttlm:
+            sttlmPric,
+
+        opnBuyVal,
+
+        opnSellVal
+
+    });
+
+
+    refreshTable();
+
+}
+
+
+/* =========================================
+   CLEAR
+   ========================================= */
+
+function clearLines() {
+
+    rows.length = 0;
+
+    refreshTable();
+
+}
+
+
+/* =========================================
+   REMOVE ROW
+   ========================================= */
+
+function removeRow(index) {
+
+    rows.splice(index, 1);
+
+    refreshTable();
+
+}
+
+
+/* =========================================
+   REFRESH TABLE
+   ========================================= */
+
+function refreshTable() {
+
+    const tbody =
+        document.getElementById(
+            "tableBody"
+        );
+
+
+    tbody.innerHTML = "";
+
+
+    if (rows.length === 0) {
+
+        tbody.innerHTML = `
+
+            <tr>
+
+                <td
+                    class="no-rows"
+                    colspan="11"
+                >
+                    No rows added yet.
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    rows.forEach((r, idx) => {
+
+
+        const tr =
+            document.createElement("tr");
+
+
+        tr.innerHTML = `
+
+            <td>${r.date}</td>
+
+            <td>${r.clear}</td>
+
+            <td>${r.trade}</td>
+
+            <td>${r.client}</td>
+
+            <td>${r.inst}</td>
+
+            <td>${r.symbol}</td>
+
+            <td>${r.expiry}</td>
+
+            <td>${r.strike}</td>
+
+            <td>${r.opt}</td>
+
+            <td>${r.net}</td>
+
+            <td>
+
+                <button
+                    class="btn-remove"
+                    onclick="removeRow(${idx})"
+                >
+                    Remove
+                </button>
+
+            </td>
+
+        `;
+
+
+        tbody.appendChild(tr);
+
+    });
+
+}
+
+
+/* =========================================
+   DOWNLOAD MWPL CSV
+   ========================================= */
+
+function downloadCSV() {
+
+
+    if (rows.length === 0) {
+
+        alert(
+            "No rows added."
+        );
+
+        return;
+
+    }
+
+
+    const header = [
+
+        "DATE",
+        "CLEARING_MBR_CODE",
+        "TRADING_MBR_CODE",
+        "CLIENT_CODE",
+        "INSTRUMENT_TYPE",
+        "SYMBOL",
+        "EXPIRY_DATE",
+        "STRIKE_PRICE",
+        "OPTION_TYPE",
+        "NET_POSITION"
+
+    ];
+
+
+    const lines =
+        [header.join(",")];
+
+
+    rows.forEach(r => {
+
+        lines.push([
+
+            r.date,
+            r.clear,
+            r.trade,
+            r.client,
+            r.inst,
+            r.symbol,
+            r.expiry,
+            r.strike,
+            r.opt,
+            r.net
+
+        ].join(","));
+
+    });
+
+
+    const blob =
+        new Blob(
+
+            [lines.join("\n")],
+
+            {
+                type: "text/csv"
+            }
+
+        );
+
+
+    const a =
+        document.createElement("a");
+
+
+    a.href =
+        URL.createObjectURL(blob);
+
+
+    a.download =
+        "F_MWPLBASEPOS01_90144_20251029.csv";
+
+
+    a.click();
+
+}
+
+
+/* =========================================
+   DOWNLOAD POSITION CSV
+   ========================================= */
+
+function downloadPositionCSV() {
+
+
+    if (rows.length === 0) {
+
+        alert(
+            "No rows added."
+        );
+
+        return;
+
+    }
+
+
+    /* =====================================
+       CURRENT DATE
+       FORMAT: YYYYMMDD
+       Example: 20260913
+       ===================================== */
+
+    const today =
+        new Date();
+
+
+    const rptBizDate =
+
+        today
+        .getFullYear()
+        .toString()
+
+        +
+
+        String(
+            today.getMonth() + 1
+        )
+        .padStart(2, "0")
+
+        +
+
+        String(
+            today.getDate()
+        )
+        .padStart(2, "0");
+
+
+    /* =====================================
+       POSITION CSV HEADER
+       ===================================== */
+
+    const header = [
+
+        "Sgmt",
+        "Src",
+        "RptgDt",
+        "BizDt",
+        "TradRegnOrgn",
+        "ClrMmbId",
+        "BrkrOrCtdnPtcptId",
+        "ClntTp",
+        "ClntId",
+        "FinInstrmTp",
+        "ISIN",
+        "TckrSymb",
+        "XpryDt",
+        "FininstrmActlXpryDt",
+        "StrkPric",
+        "OptnTp",
+        "NewBrdLotQty",
+        "OpngLngQty",
+        "OpngLngVal",
+        "OpngShrtQty",
+        "OpngShrtVal",
+        "OpnBuyTradgQty",
+        "OpnBuyTradgVal",
+        "OpnSellTradgQty",
+        "OpnSellTradgVal",
+        "PreExrcAssgndLngQty",
+        "PreExrcAssgndLngVal",
+        "PreExrcAssgndShrtQty",
+        "PreExrcAssgndShrtVal",
+        "ExrcdQty",
+        "AssgndQty",
+        "PstExrcAssgndLngQty",
+        "PstExrcAssgndLngVal",
+        "PstExrcAssgndShrtQty",
+        "PstExrcAssgndShrtVal",
+        "SttlmPric",
+        "RefRate",
+        "PrmAmt",
+        "DalyMrkToMktSettlmVal",
+        "FutrsFnlSttlmVal",
+        "ExrcAssgndVal",
+        "Rmks",
+        "Rsvd1",
+        "Rsvd2",
+        "Rsvd3",
+        "Rsvd4"
+
+    ];
+
+
+    const lines =
+        [header.join(",")];
+
+
+    /* =====================================
+       BUILD EACH POSITION ROW
+       ===================================== */
+
+    rows.forEach(r => {
+
+
+        const netQty =
+            parseInt(r.net, 10) || 0;
+
+
+        /* =================================
+           BUY / SELL QUANTITY
+           ================================= */
+
+        let opnBuyQty = 0;
+
+        let opnSellQty = 0;
+
+
+        if (netQty > 0) {
+
+            opnBuyQty =
+                netQty;
+
+        }
+
+        else if (netQty < 0) {
+
+            opnSellQty =
+                Math.abs(netQty);
+
+        }
+
+
+        /* =================================
+           INSTRUMENT TYPE
+           ================================= */
+
+        const finInstrmTp =
+
+            (r.inst === "OPTSTK")
+                ? "STO"
+                : "STF";
+
+
+        /* =================================
+           STRIKE
+           ================================= */
+
+        const strkPric =
+
+            (r.inst === "OPTSTK")
+                ? r.strike
+                : "";
+
+
+        /* =================================
+           OPTION TYPE
+           ================================= */
+
+        const optnTp =
+
+            (r.inst === "OPTSTK")
+                ? r.opt
+                : "";
+
+
+        /* =================================
+           EXPIRY
+           FORMAT: YYYYMMDD
+           ================================= */
+
+        const expiryDate =
+
+            formatDateYYYYMMDD(
+                r.expiryIso
+            );
+
+
+        /* =================================
+           FINAL POSITION ROW
+           ================================= */
+
+        const rowArr = [
+
+
+            /* 1 */
+            POS_SGMT,
+
+
+            /* 2 */
+            POS_SRC,
+
+
+            /* 3 */
+            rptBizDate,
+
+
+            /* 4 */
+            rptBizDate,
+
+
+            /* 5 */
+            POS_TRAD_REGN_ORGN,
+
+
+            /* 6 */
+            POS_CLR_MMB_ID,
+
+
+            /* 7 */
+            POS_BRKR_PTPT_ID,
+
+
+            /* 8 */
+            POS_CLNT_TP,
+
+
+            /* 9 */
+            r.client,
+
+
+            /* 10 */
+            finInstrmTp,
+
+
+            /* 11 */
+            "",
+
+
+            /* 12 */
+            r.symbol,
+
+
+            /* 13 */
+            XpryDt = expiryDate,
+
+
+            /* 14 */
+            FininstrmActlXpryDt = expiryDate,
+
+
+            /* 15 */
+            strkPric,
+
+
+            /* 16 */
+            optnTp,
+
+
+            /* 17 */
+            "",
+
+
+            /* 18 */
+            "0",
+
+
+            /* 19 */
+            "0",
+
+
+            /* 20 */
+            "0",
+
+
+            /* 21 */
+            "0",
+
+
+            /* 22 */
+            opnBuyQty.toString(),
+
+
+            /* 23 */
+            r.opnBuyVal || "0",
+
+
+            /* 24 */
+            opnSellQty.toString(),
+
+
+            /* 25 */
+            r.opnSellVal || "0",
+
+
+            /* 26 */
+            "0",
+
+
+            /* 27 */
+            "0",
+
+
+            /* 28 */
+            "0",
+
+
+            /* 29 */
+            "0",
+
+
+            /* 30 */
+            "0",
+
+
+            /* 31 */
+            "0",
+
+
+            /* 32 */
+            opnBuyQty.toString(),
+
+
+            /* 33 */
+            r.opnBuyVal || "0",
+
+
+            /* 34 */
+            opnSellQty.toString(),
+
+
+            /* 35 */
+            r.opnSellVal || "0",
+
+
+            /* 36 */
+            r.sttlm || "",
+
+
+            /* 37 */
+            "",
+
+
+            /* 38 */
+            "0",
+
+
+            /* 39 */
+            "0",
+
+
+            /* 40 */
+            "0",
+
+
+            /* 41 */
+            "0",
+
+
+            /* 42 */
+            "",
+
+
+            /* 43 */
+            "",
+
+
+            /* 44 */
+            "",
+
+
+            /* 45 */
+            "",
+
+
+            /* 46 */
+            "",
+
+
+            /* 47 */
+            ""
+
+        ];
+
+
+        lines.push(
+            rowArr.join(",")
+        );
+
+    });
+
+
+    /* =====================================
+       CREATE CSV
+       ===================================== */
+
+    const blob =
+
+        new Blob(
+
+            [lines.join("\n")],
+
+            {
+                type: "text/csv"
+            }
+
+        );
+
+
+    /* =====================================
+       DOWNLOAD FILE
+       ===================================== */
+
+    const a =
+        document.createElement("a");
+
+
+    a.href =
+        URL.createObjectURL(blob);
+
+
+    a.download =
+
+        "Position_NCL_FO_0_TM_6538_" +
+
+        new Date()
+        .getFullYear() +
+
+        ".csv";
+
+
+    a.click();
+
+}
+
+</script>
+<CENTER><SMALL>
+<div class="footer">
+    © Khaled
+  </div>
+</body>
+</html>

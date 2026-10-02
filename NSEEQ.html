@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/rs-login-gate.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NSE EQ Bulk Random Generator</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{
+  font-family:"Segoe UI",Arial,sans-serif;
+  background:#f4f7f5;
+  color:#184d2b;
+  padding:10px;
+}
+.app{width:100%;height:100%;display:flex;flex-direction:column;gap:8px}
+
+.header{
+  height:48px;min-height:48px;
+  background:green;
+  border-radius:10px;
+  color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 20px;
+  box-shadow:0 4px 12px rgba(24,77,43,0.25);
+  margin-top:12px;
+}
+.header h1{margin:0;font-size:16px;font-weight:900;letter-spacing:.4px;color:#ffffff;text-align:center;}
+
+.controls{
+  background:#ffffff;
+  border:1.5px solid #184d2b;
+  border-radius:10px;
+  
+  padding:14px;
+  display:grid;
+  grid-template-columns: 1fr 1.1fr 1.3fr 180px;
+  gap:12px;
+  box-shadow:0 4px 14px rgba(24,77,43,0.08);
+}
+
+.card-section{
+  background:#f5faf6;
+  border:1.5px solid #184d2b;
+  border-radius:8px;
+  padding:12px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  min-width:0;
+}
+.field label{
+  font-size:9.5px;font-weight:900;letter-spacing:.25px;
+  color:#184d2b;white-space:nowrap;
+}
+
+input[type=file]{
+  width:100%;font-size:10px;font-weight:650;color:#184d2b;
+  padding:2px 0;
+}
+input[type=number],input[type=text],select{
+  width:100%;height:32px;min-width:0;
+  border:1.5px solid #184d2b;border-radius:6px;
+  background:#fff;padding:4px 9px;
+  font-size:11px;font-weight:800;color:#184d2b;
+  outline:none;
+  transition:all .2s ease;
+}
+input[type=number]:focus,input[type=text]:focus,select:focus{
+  border-color:#184d2b;box-shadow:0 0 0 3px rgba(24,77,43,0.18);
+}
+
+.checks-wrapper{
+  display:flex;flex-direction:column;gap:6px;
+}
+.checks{
+  height:32px;
+  display:flex;align-items:center;gap:15px;
+  padding:0 8px;
+  border:1.5px solid #184d2b;border-radius:6px;
+  background:#ffffff;
+  white-space:nowrap;
+  overflow-x:auto;
+}
+.checks label{
+  font-size: 9.5px; /* Change this from 9px to 9.5px */
+  font-weight: 850;
+  color: #184d2b;
+  display: flex;
+  align-items: center;
+  gap: 6px; /* Update gap if you want matching spacing here too */
+  cursor: pointer;
+}
+.checks input{width:13px;height:13px;accent-color:#184d2b;margin:0}
+
+.actions-panel{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.btn-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+}
+
+button{
+  height:32px;border:0;border-radius:6px;
+  padding:0 10px;
+  font-size:10px;font-weight:900;
+  white-space:nowrap;cursor:pointer;
+  box-shadow:0 2px 4px rgba(24,77,43,0.15);
+  transition:all .15s ease;
+  width:100%;
+}
+.primary{background:green;color:#fff}
+.primary:hover{background:#12371f}
+.clear-btn{background:#c0392b;color:#fff}
+.clear-btn:hover{background:#962d22}
+
+.status-bar{
+  display:flex;gap:10px;align-items:center;
+}
+.status{
+  flex:1;height:26px;min-height:26px;
+  padding:5px 12px;border-radius:6px;
+  background:#edf5ee;color:#184d2b;
+  font-size:10px;font-weight:850;
+  border:1.5px solid #184d2b;
+}
+.status.ok{background:#edf5ee;color:#184d2b;border-color:#184d2b}
+.status.err{background:#fde8e8;color:#c0392b;border-color:#c0392b}
+
+.info{
+  background:#ffffff;border:1.5px solid #184d2b;
+  padding:0 12px;height:26px;border-radius:6px;
+  display:flex;align-items:center;
+  min-width:0;font-size:10px;font-weight:900;
+  color:#184d2b;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;
+}
+
+.output{
+  flex:1;min-height:0;width:100%;
+  background:#fff;border:1.5px solid #184d2b;
+  border-radius:10px;overflow:auto;
+  box-shadow:0 2px 10px rgba(24,77,43,0.06);
+}
+table{width:100%;border-collapse:collapse;font-size:10px}
+th,td{border:1.5px solid #c5dec9;padding:6px 8px;text-align:left;white-space:nowrap}
+th{
+  position:sticky;top:0;z-index:2;
+  background:#184d2b;color:#fff;font-weight:900;
+}
+tr:nth-child(even){background:#f5faf6}
+.empty{text-align:center;padding:45px;color:#184d2b;font-size:11px;font-weight:650}
+
+@media(max-width:1200px){
+  html,body{overflow:auto}
+  .app{height:auto;min-height:100%}
+  .controls{grid-template-columns:repeat(2,1fr)}
+  .output{height:calc(100vh - 240px);flex:none}
+}
+</style>
+</head>
+<body>
+
+<div class="controls">
+  <!-- Card 1: Data Sources -->
+  <div class="card-section">
+    <div class="field">
+      <label>NSE EQ Bulk order</label>
+      <div id="bhavcopyCacheStatus" style="font-size:9.5px;font-weight:800;color:#184d2b;">
+        Click on GENERATE
+      </div>
+    </div>
+    <div class="field">
+      <label>CLIENT LIST FILE (.CSV / .TXT)</label>
+      <input id="clientFile" type="file" accept=".csv,.txt">
+    </div>
+  </div>
+
+  <!-- Card 2: Configuration -->
+  <div class="card-section">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div class="field">
+        <label>RECORDS</label>
+        <input id="recordCount" type="number" min="1" value="100">
+      </div>
+      <div class="field">
+        <label>ORDER SIDE</label>
+        <select id="side">
+          <option value="RANDOM">BUY / SELL</option>
+          <option value="BUY">BUY ONLY</option>
+          <option value="SELL">SELL ONLY</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div class="field">
+        <label>CLIENT 1</label>
+        <input id="client1" type="text" value="TEST001" placeholder="ID">
+      </div>
+      <div class="field">
+        <label>CLIENT 2</label>
+        <input id="client2" type="text" placeholder="ID">
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 3: Filters -->
+  <div class="card-section">
+    <div class="checks-wrapper">
+      <div class="field"><label>PRODUCTS</label></div>
+      <div class="checks" id="products">
+        <label><input type="checkbox" value="INTRADAY" checked>MARGIN</label>
+        <label><input type="checkbox" value="MARGIN" checked>INTRADAY</label>
+        <label><input type="checkbox" value="CNC" checked> CNC</label>
+        <label><input type="checkbox" value="MTF" checked> MTF</label>
+      </div>
+      <div class="field"><label>ORDER TYPES</label></div>
+      <div class="checks" id="orders">
+        <label><input type="checkbox" value="Limit" checked> LIMIT</label>
+        <label><input type="checkbox" value="Market" checked> MKT</label>
+        <label><input type="checkbox" value="SL" checked> SL</label>
+        <label><input type="checkbox" value="SL-M" checked> SL-M</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 4: Actions -->
+  <div class="card-section actions-panel">
+    <div class="field" style="visibility:hidden"><label>&nbsp;</label></div>
+    <button id="generate" class="primary">GENERATE</button>
+    <div class="btn-grid">
+      <button id="download" class="primary">DOWNLOAD</button>
+      <button id="clear" class="clear-btn">CLEAR</button>
+    </div>
+  </div>
+</div>
+
+<div class="status-bar">
+  <div id="status" class="status">Get NSE EQ Bhavcopy to begin.</div>
+  <div id="summary" class="info">No Bhavcopy loaded.</div>
+</div>
+
+<div id="output" class="output"><div class="empty">Generated output will appear here.</div></div>
+</div>
+
+<script>
+"use strict";
+
+const HEAD=["","Exch","EXCH_SEG","SegmentCode","Symbol","ClientID","Buy/Sell","Token","Product","Qty","Price","OrdType","Trigger Price","DQty","Val","Pro/Cli","Participant ID","LTP"];
+let contracts=[],rowsOut=[],fileClients=[];
+
+const $=id=>document.getElementById(id);
+const status=$("status"),summary=$("summary"),output=$("output");
+
+function clean(v){return String(v??"").replace(/^\uFEFF/,"").trim()}
+function msg(t,c=""){status.textContent=t;status.className="status "+c}
+function num(v){let x=clean(v).replace(/,/g,"");if(!x)return null;let n=Number(x);return Number.isFinite(n)?n:null}
+
+function csvParse(text){
+ text=String(text||"").replace(/^\uFEFF/,"");
+ let out=[],row=[],cell="",q=false;
+ for(let i=0;i<text.length;i++){
+  let ch=text[i];
+  if(q){
+   if(ch==='"'){if(text[i+1]==='"'){cell+='"';i++}else q=false}
+   else cell+=ch;
+  }else if(ch==='"')q=true;
+  else if(ch===','){row.push(cell);cell=""}
+  else if(ch==='\n'){row.push(cell);if(row.some(v=>clean(v)!==""))out.push(row);row=[];cell=""}
+  else if(ch!=='\r')cell+=ch;
+ }
+ if(cell!==""||row.length){row.push(cell);if(row.some(v=>clean(v)!==""))out.push(row)}
+ if(!out.length)return [];
+ const h=out[0].map(clean);
+ return out.slice(1).map(r=>{let o={};h.forEach((k,i)=>o[k]=r[i]??"");return o})
+}
+
+function readContracts(data){
+ const need=["TckrSymb","SctySrs","OpnPric","FinInstrmId"];
+ if(!data.length)throw Error("Bhavcopy is empty.");
+ let miss=need.filter(k=>!(k in data[0]));
+ if(miss.length)throw Error("Invalid Bhavcopy. Missing: "+miss.join(", "));
+ let seen=new Set(),a=[];
+ for(const r of data){
+  if(clean(r.SctySrs).toUpperCase()!=="EQ")continue;
+  let id=clean(r.FinInstrmId),sym=clean(r.TckrSymb);
+  let p=num(r.OpnPric);
+  if(!id||!sym||p===null||p<300||p>4000)continue;
+  let key=id+"|"+sym;if(seen.has(key))continue;seen.add(key);
+  a.push({TckrSymb:sym,FinInstrmId:id,ClsPric:p});
+ }
+ return a;
+}
+
+function clients(){
+ let a=[clean($("client1").value),clean($("client2").value),...fileClients].filter(Boolean);
+ return [...new Set(a)];
+}
+
+$("clientFile").addEventListener("change",async()=>{
+ let f=$("clientFile").files[0];
+ if(!f){fileClients=[];return}
+ try{
+  let text=await f.text();
+  let vals=text.replace(/\r/g,"").split(/[\n,\t;]+/).map(clean).filter(Boolean);
+  fileClients=[...new Set(vals.filter(v=>!["CLIENT","CLIENTID","CLIENT ID","CLIENTCODE","CLIENT CODE"].includes(v.toUpperCase())))];
+  msg("✓ "+fileClients.length+" client IDs loaded from file.","ok");
+ }catch(e){fileClients=[];msg("✗ Could not read client file.","err")}
+});
+
+function products(){return [...document.querySelectorAll("#products input:checked")].map(x=>x.value)}
+function orderTypes(){return [...document.querySelectorAll("#orders input:checked")].map(x=>x.value)}
+
+function order(c,cl,side,prod,type){
+ let p=0,t=0,close=Number(c.ClsPric);
+ if(type==="Limit")p=close.toFixed(2);
+ if(type==="SL"){p=close.toFixed(2);t=(side==="BUY"?close-2:close+2).toFixed(2);}
+ if(type==="SL-M")t=(side==="BUY"?close-2:close+2).toFixed(2);
+ 
+ // Random Quantity between 1 and 20
+ const randomQty = Math.floor(Math.random() * 20) + 1;
+
+ return {"":"","Exch":"NSE","EXCH_SEG":"NSEE","SegmentCode":"E",
+ "Symbol":c.TckrSymb+"-EQ","ClientID":cl,"Buy/Sell":side,"Token":c.FinInstrmId,
+ "Product":prod,"Qty":String(randomQty),"Price":p,"OrdType":type,
+ "Trigger Price":t,"DQty":"0","Val":"DAY","Pro/Cli":"C",
+ "Participant ID":"","LTP":Number(c.ClsPric).toFixed(2)};
+}
+
+function esc(v){return String(v).replace(/[&<>"']/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[x]))}
+function render(){
+ if(!rowsOut.length){output.innerHTML='<div class="empty">Generated output will appear here.</div>';return}
+ let h="<table><thead><tr>"+HEAD.map(x=>"<th>"+esc(x)+"</th>").join("")+"</tr></thead><tbody>";
+ for(const r of rowsOut)h+="<tr>"+HEAD.map(x=>"<td>"+esc(r[x]??"")+"</td>").join("")+"</tr>";
+ output.innerHTML=h+"</tbody></table>";
+}
+
+const BHAVCOPY_API = "http://10.212.134.201:8090/api/bhavcopy/nse";
+
+async function fetchNSEBhavcopy(){
+  msg("Fetching orders...");
+
+  const response = await fetch(BHAVCOPY_API, {
+    method: "GET",
+    cache: "no-store"
+  });
+
+  if(!response.ok){
+    throw Error("Bhavcopy API error: HTTP " + response.status);
+  }
+
+  const csvText = await response.text();
+
+  if(!csvText.trim()){
+    throw Error("Bhavcopy API returned an empty file.");
+  }
+
+  const data = csvParse(csvText);
+  contracts = readContracts(data);
+
+  summary.textContent =
+    data.length.toLocaleString() +
+    " total rows • " +
+    contracts.length.toLocaleString() +
+    " valid EQ stocks (Price 300-4000)";
+
+  $("bhavcopyCacheStatus").textContent =
+    "✓ Latest NSE Bhavcopy fetched";
+}
+
+$("generate").addEventListener("click",async()=>{
+ try{
+  $("generate").disabled=true;
+  $("generate").textContent="LOADING...";
+  contracts=[];
+
+  await fetchNSEBhavcopy();
+
+
+  if(!contracts.length)throw Error("Load Bhavcopy first.");
+  const n=parseInt($("recordCount").value,10);
+  if(!Number.isInteger(n)||n<1)throw Error("Enter a valid record count.");
+
+  const cls=clients();
+  if(!cls.length)throw Error("Enter Client 1 or Client 2, or upload a Client file.");
+
+  const ps=products(),ots=orderTypes(),requestedSide=$("side").value;
+  if(!ps.length)throw Error("Select at least one Product.");
+  if(!ots.length)throw Error("Select at least one Order Type.");
+
+  const sideMap=new Map();
+  rowsOut=[];
+
+  let activeIntradayMargin = ps.filter(p=>p==="INTRADAY"||p==="MARGIN");
+  let activeCncMtf = ps.filter(p=>p==="CNC"||p==="MTF");
+
+  for(let i=0;i<n;i++){
+   const c=contracts[Math.floor(Math.random()*contracts.length)];
+   const cl=cls[Math.floor(Math.random()*cls.length)];
+   const key=cl+"|"+c.TckrSymb;
+
+   let sd;
+   if(requestedSide==="RANDOM"){
+    if(!sideMap.has(key))sideMap.set(key,Math.random()<.5?"BUY":"SELL");
+    sd=sideMap.get(key);
+   }else{
+    sd=requestedSide;
+   }
+
+   // 80% weight for Intraday/Margin, 20% for CNC/MTF (if selected)
+   let chosenProd;
+   let randType = Math.random();
+   if(randType < 0.8 && activeIntradayMargin.length > 0){
+    chosenProd = activeIntradayMargin[Math.floor(Math.random()*activeIntradayMargin.length)];
+   } else if(activeCncMtf.length > 0){
+    chosenProd = activeCncMtf[Math.floor(Math.random()*activeCncMtf.length)];
+   } else {
+    chosenProd = ps[Math.floor(Math.random()*ps.length)];
+   }
+
+   const ot=ots[Math.floor(Math.random()*ots.length)];
+   rowsOut.push(order(c,cl,sd,chosenProd,ot));
+  }
+
+  render();
+  summary.textContent="Generated "+rowsOut.length.toLocaleString()+" total records • "+cls.length+" Client(s)";
+  msg("✓ Generated successfully.","ok");
+ 
+ }catch(e){
+  contracts = [];
+  summary.textContent = "Bhavcopy load/generation failed.";
+  $("bhavcopyCacheStatus").textContent = "✗ " + e.message;
+  msg("✗ " + e.message,"err");
+ }finally{
+  $("generate").disabled=false;
+  $("generate").textContent="GENERATE";
+ }
+});
+
+$("download").addEventListener("click",()=>{
+ if(!rowsOut.length){msg("✗ No generated data to download.","err");return;}
+ function ce(v){let x=String(v??"");return /[",\r\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x}
+ let csv=HEAD.map(ce).join(",")+"\r\n"+rowsOut.map(r=>HEAD.map(h=>ce(r[h])).join(",")).join("\r\n");
+ let a=document.createElement("a"),u=URL.createObjectURL(new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"}));
+ a.href=u;a.download="NSEEQ_BULK_generated.csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);
+ msg("✓ NSEEQ_BULK_generated.csv downloaded.","ok");
+});
+
+$("clear").addEventListener("click",()=>{
+ rowsOut=[];$("output").innerHTML='<div class="empty">Generated output will appear here.</div>';
+ $("summary").textContent=contracts.length?"Bhavcopy loaded.":"No Bhavcopy loaded.";
+ msg(contracts.length?"✓ Ready to generate again.":"Get NSE EQ Bhavcopy to begin.","");
+});
+</script>
+</body>
+</html>

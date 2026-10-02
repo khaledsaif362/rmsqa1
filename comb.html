@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Bulk Orders</title>
+
+<script src="/rs-login-gate.js"></script>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  font-family:Segoe UI,Arial,sans-serif;
+  background:#f4f8f5;
+  color:#205f31;
+  font-size:11px;
+}
+
+body{
+  padding:5px;
+}
+
+.wrap{
+  width:100%;
+  max-width:1200px;
+  margin:auto;
+}
+
+/* ================= NAV ================= */
+
+.nav{
+  width:100%;
+  height:34px;
+  display:flex;
+  align-items:center;
+  gap:3px;
+  padding:3px;
+  background:#216b32;
+  border-radius:6px;
+  overflow-x:auto;
+  white-space:nowrap;
+}
+
+.nav a{
+  height:28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 12px;
+  border-radius:5px;
+  color:#fff;
+  text-decoration:none;
+  font-size:9px;
+  font-weight:900;
+  flex-shrink:0;
+}
+
+.nav a:hover{
+  background:#174d25;
+}
+
+.nav a.active{
+  background:#fff;
+  color:#216b32;
+}
+
+/* ================= MAIN ================= */
+
+.main{
+  margin-top:5px;
+  background:#fff;
+  border:1px solid #216b32;
+  border-radius:7px;
+  padding:6px;
+}
+
+/* ================= TITLE ================= */
+
+.title{
+  height:28px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 9px;
+  border:1px solid #b8d2bd;
+  border-radius:5px;
+  background:#f8fbf8;
+  margin-bottom:5px;
+}
+
+.title b{
+  font-size:10px;
+}
+
+.title span{
+  font-size:7px;
+  font-weight:700;
+}
+
+/* ================= EXCHANGE ROW ================= */
+
+.exchange-row{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:4px;
+}
+
+.exchange{
+  height:34px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 7px;
+  border:1px solid #b8d2bd;
+  border-radius:5px;
+  background:#f8fbf8;
+  cursor:pointer;
+}
+
+.exchange.selected{
+  background:#eaf5ed;
+  border-color:#216b32;
+}
+
+.exchange label{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  cursor:pointer;
+  font-size:8px;
+  font-weight:900;
+}
+
+.exchange input{
+  width:12px;
+  height:12px;
+  margin:0;
+  accent-color:#216b32;
+}
+
+.records{
+  font-size:8px;
+  font-weight:900;
+  min-width:25px;
+  text-align:right;
+}
+
+/* ================= CONTROLS ================= */
+
+.controls{
+  display:grid;
+  grid-template-columns:1.5fr .55fr .65fr 1.15fr 1.15fr;
+  gap:4px;
+  margin-top:5px;
+}
+
+.box{
+  border:1px solid #b8d2bd;
+  border-radius:5px;
+  padding:5px;
+  background:#f8fbf8;
+}
+
+.box-title{
+  font-size:7px;
+  font-weight:900;
+  margin-bottom:3px;
+}
+
+.clients{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:3px;
+}
+
+input[type=text],
+input[type=number],
+select{
+  width:100%;
+  height:25px;
+  border:1px solid #4c8b5b;
+  border-radius:4px;
+  background:#fff;
+  color:#205f31;
+  padding:2px 5px;
+  font-size:8px;
+  font-weight:700;
+}
+
+input[type=file]{
+  width:100%;
+  font-size:7px;
+}
+
+/* ================= CHECKBOXES ================= */
+
+.checks{
+  height:25px;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  flex-wrap:wrap;
+}
+
+.checks label{
+  display:flex;
+  align-items:center;
+  gap:2px;
+  font-size:7px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.checks input{
+  width:10px;
+  height:10px;
+  margin:0;
+  accent-color:#216b32;
+}
+
+/* ================= BHAVCOPY ================= */
+
+.bhav{
+  margin-top:5px;
+  padding:5px;
+  border:1px solid #b8d2bd;
+  border-radius:5px;
+  background:#f8fbf8;
+}
+
+.bhav-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.bhav-title{
+  font-size:8px;
+  font-weight:900;
+}
+
+.bhav-help{
+  font-size:7px;
+  font-weight:700;
+}
+
+.bhav input{
+  margin-top:3px;
+}
+
+/* ================= ACTIONS ================= */
+
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:4px;
+  margin-top:5px;
+}
+
+button{
+  height:28px;
+  border:0;
+  border-radius:5px;
+  font-size:8px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.generate{
+  background:#216b32;
+  color:#fff;
+}
+
+.open{
+  background:#377b46;
+  color:#fff;
+}
+
+.clear{
+  background:#c0392b;
+  color:#fff;
+}
+
+/* ================= STATUS ================= */
+
+.status{
+  min-height:23px;
+  display:flex;
+  align-items:center;
+  padding:4px 6px;
+  margin-top:5px;
+  border:1px solid #b8d2bd;
+  border-radius:5px;
+  background:#fff;
+  font-size:7px;
+  font-weight:800;
+}
+
+.status.error{
+  color:#c0392b;
+  border-color:#c0392b;
+}
+
+.status.ok{
+  color:#216b32;
+}
+
+/* ================= IFRAME ================= */
+
+.generator{
+  margin-top:5px;
+  display:none;
+}
+
+.generator.show{
+  display:block;
+}
+
+.generator iframe{
+  width:100%;
+  height:600px;
+  border:1px solid #216b32;
+  border-radius:6px;
+  background:#fff;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:700px){
+
+  .nav a{
+    padding:0 9px;
+    font-size:8px;
+  }
+
+  .exchange-row{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .controls{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .client-box{
+    grid-column:1 / -1;
+  }
+
+}
+
+@media(max-width:450px){
+
+  .controls{
+    grid-template-columns:1fr;
+  }
+
+  .exchange-row{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .clients{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .generator iframe{
+    height:650px;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+
+
+  <!-- ================= EXCHANGES ================= -->
+
+  <div class="exchange-row">
+
+    <div
+      class="exchange"
+      data-exchange="NSE_EQ"
+    >
+
+      <label>
+
+        <input
+          type="checkbox"
+          class="exchange-check"
+          value="NSE_EQ"
+        >
+
+        NSE EQ
+
+      </label>
+
+      <span
+        class="records"
+        id="NSE_EQ_count"
+      >
+        0
+      </span>
+
+    </div>
+
+
+    <div
+      class="exchange"
+      data-exchange="BSE_EQ"
+    >
+
+      <label>
+
+        <input
+          type="checkbox"
+          class="exchange-check"
+          value="BSE_EQ"
+        >
+
+        BSE EQ
+
+      </label>
+
+      <span
+        class="records"
+        id="BSE_EQ_count"
+      >
+        0
+      </span>
+
+    </div>
+
+
+    <div
+      class="exchange"
+      data-exchange="NSE_FO"
+    >
+
+      <label>
+
+        <input
+          type="checkbox"
+          class="exchange-check"
+          value="NSE_FO"
+        >
+
+        NSE FO
+
+      </label>
+
+      <span
+        class="records"
+        id="NSE_FO_count"
+      >
+        0
+      </span>
+
+    </div>
+
+
+    <div
+      class="exchange"
+      data-exchange="BSE_FO"
+    >
+
+      <label>
+
+        <input
+          type="checkbox"
+          class="exchange-check"
+          value="BSE_FO"
+        >
+
+        BSE FO
+
+      </label>
+
+      <span
+        class="records"
+        id="BSE_FO_count"
+      >
+        0
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================= CONTROLS ================= -->
+
+  <div class="controls">
+
+
+    <!-- CLIENT -->
+
+    <div class="box client-box">
+
+      <div class="box-title">
+        CLIENTS
+      </div>
+
+      <div class="clients">
+
+        <input
+          id="client1"
+          type="text"
+          placeholder="Client 1"
+        >
+
+        <input
+          id="client2"
+          type="text"
+          placeholder="Client 2"
+        >
+
+      </div>
+
+      <input
+        id="clientFile"
+        type="file"
+        accept=".csv,.txt"
+        style="margin-top:3px"
+      >
+
+    </div>
+
+
+    <!-- RECORDS -->
+
+    <div class="box">
+
+      <div class="box-title">
+        RECORDS
+      </div>
+
+      <input
+        id="records"
+        type="number"
+        min="1"
+        value="100"
+      >
+
+    </div>
+
+
+    <!-- SIDE -->
+
+    <div class="box">
+
+      <div class="box-title">
+        SIDE
+      </div>
+
+      <select id="side">
+
+        <option value="RANDOM">
+          BUY / SELL
+        </option>
+
+        <option value="BUY">
+          BUY
+        </option>
+
+        <option value="SELL">
+          SELL
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- PRODUCTS -->
+
+    <div class="box">
+
+      <div class="box-title">
+        PRODUCTS
+      </div>
+
+      <div class="checks">
+
+        <label>
+          <input
+            type="checkbox"
+            value="MARGIN"
+            checked
+          >
+          MARGIN
+        </label>
+
+        <label>
+          <input
+            type="checkbox"
+            value="INTRADAY"
+            checked
+          >
+          INTRADAY
+        </label>
+
+        <label>
+          <input
+            type="checkbox"
+            value="CNC"
+            checked
+          >
+          CNC
+        </label>
+
+        <label>
+          <input
+            type="checkbox"
+            value="MTF"
+            checked
+          >
+          MTF
+        </label>
+
+      </div>
+
+    </div>
+
+
+    <!-- ORDER TYPES -->
+
+    <div class="box">
+
+      <div class="box-title">
+        ORDER TYPES
+      </div>
+
+      <div class="checks">
+
+        <label>
+          <input
+            type="checkbox"
+            value="Limit"
+            checked
+          >
+          LIMIT
+        </label>
+
+        <label>
+          <input
+            type="checkbox"
+            value="Market"
+            checked
+          >
+          MARKET
+        </label>
+
+        <label>
+          <input
+            type="checkbox"
+            value="SL"
+            checked
+          >
+          SL
+        </label>
+
+        <label>
+          <input
+            type="checkbox"
+            value="SL-M"
+            checked
+          >
+          SL-M
+        </label>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================= BHAVCOPY ================= -->
+
+  <div class="bhav">
+
+    <div class="bhav-head">
+
+      <span class="bhav-title">
+        BHAVCOPY
+      </span>
+
+      <span class="bhav-help">
+        Select multiple files together
+      </span>
+
+    </div>
+
+    <input
+      id="bhavcopy"
+      type="file"
+      accept=".csv,.txt"
+      multiple
+    >
+
+  </div>
+
+
+  <!-- ================= ACTIONS ================= -->
+
+  <div class="actions">
+
+    <button
+      class="generate"
+      id="generate"
+    >
+      GENERATE
+    </button>
+
+    <button
+      class="open"
+      id="openSelected"
+    >
+      OPEN SELECTED
+    </button>
+
+    <button
+      class="clear"
+      id="clear"
+    >
+      CLEAR
+    </button>
+
+  </div>
+
+
+  <!-- ================= STATUS ================= -->
+
+  <div
+    class="status"
+    id="status"
+  >
+    Select exchanges and enter total records.
+
+  </div>
+
+
+  <!-- ================= EXISTING GENERATOR ================= -->
+
+  <div
+    class="generator"
+    id="generator"
+  >
+
+    <iframe
+      id="generatorFrame"
+      name="generatorFrame"
+    ></iframe>
+
+  </div>
+
+</div>
+
+</div>
+
+
+<script>
+
+"use strict";
+
+
+/* ============================================================
+   EXISTING PAGE LINKS
+   NO PARSER IS COPIED HERE
+============================================================ */
+
+const pages={
+
+  NSE_EQ:"NSEEQ.html",
+
+  BSE_EQ:"BSEEQ.html",
+
+  NSE_FO:"fobulk.html",
+
+  BSE_FO:"BSEFO.html"
+
+};
+
+
+/* ============================================================
+   ELEMENTS
+============================================================ */
+
+const checks=
+  document.querySelectorAll(
+    ".exchange-check"
+  );
+
+const records=
+  document.getElementById(
+    "records"
+  );
+
+const status=
+  document.getElementById(
+    "status"
+  );
+
+const frame=
+  document.getElementById(
+    "generatorFrame"
+  );
+
+const generator=
+  document.getElementById(
+    "generator"
+  );
+
+
+/* ============================================================
+   SELECTED EXCHANGES
+============================================================ */
+
+function selected(){
+
+  return [
+    ...checks
+  ]
+  .filter(
+    x=>x.checked
+  )
+  .map(
+    x=>x.value
+  );
+
+}
+
+
+/* ============================================================
+   EXACT RECORD DISTRIBUTION
+============================================================ */
+
+function allocation(){
+
+  const list=
+    selected();
+
+  const total=
+    Number(
+      records.value
+    )||0;
+
+  const result={};
+
+  list.forEach(
+    x=>{
+      result[x]=0;
+    }
+  );
+
+  if(!list.length)
+    return result;
+
+  const base=
+    Math.floor(
+      total/list.length
+    );
+
+  const remainder=
+    total%list.length;
+
+
+  list.forEach(
+    (exchange,index)=>{
+
+      result[exchange]=
+        base+
+        (
+          index<remainder
+            ?1
+            :0
+        );
+
+    }
+  );
+
+  return result;
+
+}
+
+
+/* ============================================================
+   UPDATE UI
+============================================================ */
+
+function update(){
+
+  const a=
+    allocation();
+
+  const list=
+    selected();
+
+
+  checks.forEach(
+    cb=>{
+
+      const card=
+        cb.closest(
+          ".exchange"
+        );
+
+      card.classList.toggle(
+        "selected",
+        cb.checked
+      );
+
+    }
+  );
+
+
+  Object.keys(pages)
+    .forEach(
+      key=>{
+
+        document.getElementById(
+          key+"_count"
+        ).textContent=
+          a[key]||0;
+
+      }
+    );
+
+
+  if(!list.length){
+
+    status.textContent=
+      "Select at least one exchange.";
+
+    status.className=
+      "status error";
+
+    return;
+
+  }
+
+
+  const text=
+    list.map(
+      x=>
+        x+
+        " = "+
+        a[x]
+    ).join(
+      "   •   "
+    );
+
+
+  status.textContent=
+    "Total "+records.value+
+    " records   •   "+
+    text;
+
+  status.className=
+    "status ok";
+
+}
+
+
+/* ============================================================
+   EXCHANGE CHANGE
+============================================================ */
+
+checks.forEach(
+  cb=>{
+
+    cb.addEventListener(
+      "change",
+      update
+    );
+
+  }
+);
+
+
+records.addEventListener(
+  "input",
+  update
+);
+
+
+/* ============================================================
+   OPEN ONE EXISTING GENERATOR
+============================================================ */
+
+function openGenerator(exchange){
+
+  if(!pages[exchange])
+    return;
+
+
+  frame.src=
+    pages[exchange];
+
+  generator.classList.add(
+    "show"
+  );
+
+
+  status.textContent=
+    "Opened "+exchange+
+    " generator. Existing parser is being used.";
+
+  status.className=
+    "status ok";
+
+}
+
+
+/* ============================================================
+   OPEN SELECTED
+============================================================ */
+
+document
+  .getElementById(
+    "openSelected"
+  )
+  .addEventListener(
+    "click",
+    ()=>{
+
+      const list=
+        selected();
+
+      if(!list.length){
+
+        status.textContent=
+          "Select an exchange first.";
+
+        status.className=
+          "status error";
+
+        return;
+
+      }
+
+
+      /*
+        Open first selected existing
+        generator.
+
+        No parser is duplicated.
+      */
+
+      openGenerator(
+        list[0]
+      );
+
+    }
+  );
+
+
+/* ============================================================
+   CLICK EXCHANGE CARD
+============================================================ */
+
+document
+  .querySelectorAll(
+    ".exchange"
+  )
+  .forEach(
+    card=>{
+
+      card.addEventListener(
+        "dblclick",
+        ()=>{
+
+          const exchange=
+            card.dataset.exchange;
+
+          openGenerator(
+            exchange
+          );
+
+        }
+      );
+
+    }
+  );
+
+
+/* ============================================================
+   GENERATE
+============================================================ */
+
+document
+  .getElementById(
+    "generate"
+  )
+  .addEventListener(
+    "click",
+    ()=>{
+
+      const list=
+        selected();
+
+
+      if(!list.length){
+
+        status.textContent=
+          "Select at least one exchange.";
+
+        status.className=
+          "status error";
+
+        return;
+
+      }
+
+
+      const total=
+        Number(
+          records.value
+        );
+
+
+      if(
+        !Number.isInteger(total)||
+        total<1
+      ){
+
+        status.textContent=
+          "Enter a valid record count.";
+
+        status.className=
+          "status error";
+
+        return;
+
+      }
+
+
+      const a=
+        allocation();
+
+
+      /*
+        The important point:
+
+        This page DOES NOT parse Bhavcopy.
+        This page DOES NOT recreate the
+        individual generators.
+
+        It only prepares the allocation
+        and opens the existing generator.
+      */
+
+      localStorage.setItem(
+        "BULK_COMBINED_STATE",
+        JSON.stringify({
+
+          exchanges:list,
+
+          allocation:a,
+
+          total:total,
+
+          side:
+            document.getElementById(
+              "side"
+            ).value,
+
+          products:[
+            ...document.querySelectorAll(
+              ".box:nth-child(4) input:checked"
+            )
+          ].map(
+            x=>x.value
+          ),
+
+          orderTypes:[
+            ...document.querySelectorAll(
+              ".box:nth-child(5) input:checked"
+            )
+          ].map(
+            x=>x.value
+          ),
+
+          client1:
+            document.getElementById(
+              "client1"
+            ).value,
+
+          client2:
+            document.getElementById(
+              "client2"
+            ).value
+
+        })
+      );
+
+
+      openGenerator(
+        list[0]
+      );
+
+
+      status.textContent=
+        "Allocation ready: "+
+        list.map(
+          x=>
+            x+
+            " = "+
+            a[x]
+        ).join(
+          " • "
+        )+
+        ". Existing generator opened.";
+
+      status.className=
+        "status ok";
+
+    }
+  );
+
+
+/* ============================================================
+   CLEAR
+============================================================ */
+
+document
+  .getElementById(
+    "clear"
+  )
+  .addEventListener(
+    "click",
+    ()=>{
+
+      checks.forEach(
+        x=>{
+          x.checked=false;
+        }
+      );
+
+      records.value=100;
+
+      document.getElementById(
+        "client1"
+      ).value="";
+
+      document.getElementById(
+        "client2"
+      ).value="";
+
+      document.getElementById(
+        "clientFile"
+      ).value="";
+
+      document.getElementById(
+        "bhavcopy"
+      ).value="";
+
+      generator.classList.remove(
+        "show"
+      );
+
+      frame.src=
+        "about:blank";
+
+      localStorage.removeItem(
+        "BULK_COMBINED_STATE"
+      );
+
+      update();
+
+    }
+  );
+
+
+/* ============================================================
+   INITIAL
+============================================================ */
+
+update();
+
+</script>
+
+</body>
+</html>

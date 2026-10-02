@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head><script src="/rs-login-gate.js"></script>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>RS</title>
+
+  <link rel="stylesheet" href="STYLE.css">
+
+</head>
+
+
+<body>
+
+
+  <div class="card">
+
+
+    <div class="window">
+
+      <div class="title-bar">
+        BO Files
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         FILE TYPE
+         ===================================================== -->
+
+    <label for="fileType">
+
+      File Type:
+      &nbsp;&nbsp;&nbsp;&nbsp;
+
+      <select
+        id="fileType"
+        style="width:315px;"
+      >
+
+        <option value="client">
+          Client
+        </option>
+
+        <option value="bank">
+          Bank Details
+        </option>
+
+        <option value="product">
+          Product Allowed
+        </option>
+
+        <option value="exchange">
+          Exchange Allowed
+        </option>
+
+        <option value="limit">
+          CAP/ALL Limit
+        </option>
+
+        <option value="incr_limit">
+          Incr CAP/ALL Limit
+        </option>
+
+        <option value="comlimit">
+          COM Limit
+        </option>
+
+        <option value="incr_comlimit">
+          Incr COM Limit
+        </option>
+
+
+        <!-- HOLDING FILES -->
+
+        <option value="DP">
+          DP Holding
+        </option>
+
+        <option value="ben">
+          MRG Holding
+        </option>
+
+        <option value="obb">
+          T1 Holding
+        </option>
+
+        <option value="mtf">
+          MTF Holding
+        </option>
+
+        <option value="mtf_T1">
+          MTFT Holding
+        </option>
+
+
+        <!-- INCREMENTAL HOLDING -->
+
+        <option value="indp">
+          Incr DP
+        </option>
+
+        <option value="inben">
+          Incr MRG
+        </option>
+
+        <option value="inobb">
+          Incr T1
+        </option>
+
+        <option value="inmtf">
+          Incr MTF
+        </option>
+
+        <option value="inmtf_T1">
+          Incr MTF_T1
+        </option>
+
+
+        <!-- POSITION -->
+
+        <option value="mtfps03">
+          NSE MTF Position
+        </option>
+
+        <option value="bsemtfps03">
+          BSE MTF Position
+        </option>
+
+
+        <!-- OTHER FILES -->
+
+        <option value="dealer">
+          Dealer Creation
+        </option>
+
+        <option value="client_dealer">
+          Dealer Mapping
+        </option>
+
+        <option value="profile">
+          Client Profile
+        </option>
+
+        <option value="restrict">
+          Client Restriction T5
+        </option>
+
+        <option value="physical">
+          Physical Expiry Block
+        </option>
+
+      </select>
+
+    
+
+
+    <br><br>
+
+
+    <!-- =====================================================
+         CLIENT CODE
+         ===================================================== -->
+
+    <label for="baseCode">
+
+      Client Code:
+
+      <input
+        type="text"
+        id="baseCode"
+        placeholder="e.g. AB1000"
+        style="width:306px;"
+      >
+
+    
+
+
+    <br><br>
+
+
+
+
+
+<!-- =====================================================
+     COUNT
+     ===================================================== -->
+
+<label for="recordCount">
+
+  Count:
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+  <input
+    type="number"
+    id="recordCount"
+    placeholder="e.g. 5"
+    style="width:308px;"
+    min="1"
+  >
+
+</label>
+
+
+
+
+
+
+
+
+<!-- =====================================================
+     CLIENT UPLOAD
+     ===================================================== -->
+
+<div
+  id="clientUploadSection"
+  style="display:none;"
+>
+
+  <label for="clientFile">
+
+ <br>   Client File:
+    &nbsp;
+
+    <input
+      type="file"
+      id="clientFile"
+      accept=".txt,.csv"
+      style="width:308px;"
+    >
+
+  </label>
+
+  <div
+    id="clientUploadStatus"
+    style="margin-top:1px;"
+  ></div>
+
+</div>
+
+
+
+
+
+
+
+<!-- =====================================================
+     ADHOC
+     ONLY FOR 4 LIMIT FILE TYPES
+     ===================================================== -->
+
+<div
+  id="adhocSection"
+  style="display:none;"
+>
+
+  <label for="adhoc">
+
+    ADHOC:
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+    <input
+      type="checkbox"
+      id="adhoc"
+      style="
+        width:auto;
+        margin:0;
+        vertical-align:middle;
+      "
+    >
+
+  </label>
+
+</div>
+
+
+<br>	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+    <!-- =====================================================
+         ISIN UPLOAD
+         HIDDEN BY DEFAULT
+         ===================================================== -->
+
+    <div
+      id="isinUploadSection"
+      style="display:none;"
+    >
+
+      <label for="isinFile">
+
+        ISIN File:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+       
+
+        <input
+          type="file"
+          id="isinFile"
+		  style="width:308px;"
+          accept=".txt,.csv"
+        >
+
+  
+
+
+
+    </div>
+
+
+    <!-- =====================================================
+         BUTTONS
+         ===================================================== -->
+
+    <div class="button-group">
+
+      <button onclick="previewFile()">
+        Preview
+      </button>
+
+      <button onclick="downloadFile()">
+        Download
+      </button>
+<button onclick="clearAll()">
+  Clear
+</button>
+
+      <button onclick="downloadAllFiles()">
+        Download All
+      </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         PREVIEW
+         ===================================================== -->
+
+    <pre id="preview"></pre>
+
+
+  </div>
+
+
+  <!-- =======================================================
+       JSZIP
+       ======================================================= -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+
+  <!-- =======================================================
+       BOT JS
+       ======================================================= -->
+
+  <script src="BOT.js"></script>
+
+
+  <div class="footer">
+    © Khaled
+  </div>
+
+
+</body>
+
+</html>

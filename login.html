@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>RMS QA Login</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  width:100%;
+  height:100%;
+  margin:0;
+}
+
+body{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  font-family:Arial,"Segoe UI",sans-serif;
+  color:#183c27;
+
+  background:
+    radial-gradient(circle at 15% 15%,rgba(76,190,111,.22),transparent 30%),
+    radial-gradient(circle at 85% 20%,rgba(106,210,137,.20),transparent 32%),
+    radial-gradient(circle at 20% 90%,rgba(72,177,103,.16),transparent 30%),
+    linear-gradient(135deg,#e7f7eb,#f8fcf9 50%,#e2f5e7);
+}
+
+/* Background glow */
+body::before,
+body::after{
+  content:"";
+  position:fixed;
+  width:380px;
+  height:380px;
+  border-radius:50%;
+  filter:blur(70px);
+  opacity:.35;
+  pointer-events:none;
+}
+
+body::before{
+  top:-160px;
+  left:-120px;
+  background:#55c878;
+}
+
+body::after{
+  right:-150px;
+  bottom:-160px;
+  background:#7cdb9a;
+}
+
+/* Grid */
+.grid{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.18;
+
+  background-image:
+    linear-gradient(rgba(35,120,62,.08) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(35,120,62,.08) 1px,transparent 1px);
+
+  background-size:48px 48px;
+
+  mask-image:radial-gradient(
+    ellipse at center,
+    black 0%,
+    transparent 75%
+  );
+}
+
+/* Floating dots */
+.dot{
+  position:fixed;
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:#2e9a51;
+  opacity:.22;
+  pointer-events:none;
+  animation:float 6s ease-in-out infinite;
+}
+
+.d1{left:14%;top:25%}
+.d2{right:16%;top:28%;animation-delay:1s}
+.d3{left:22%;bottom:18%;animation-delay:2s}
+.d4{right:24%;bottom:22%;animation-delay:3s}
+.d5{left:50%;top:12%;animation-delay:4s}
+
+@keyframes float{
+  0%,100%{
+    transform:translateY(0);
+  }
+  50%{
+    transform:translateY(-18px);
+  }
+}
+
+/* Login card */
+.box{
+  position:relative;
+  z-index:10;
+
+  width:390px;
+  max-width:calc(100vw - 32px);
+
+  padding:40px 38px 30px;
+
+  border:1px solid rgba(89,166,108,.25);
+  border-radius:26px;
+
+  background:rgba(255,255,255,.88);
+
+  box-shadow:
+    0 30px 70px rgba(35,103,55,.14),
+    0 10px 25px rgba(35,103,55,.08),
+    inset 0 1px 0 rgba(255,255,255,.95);
+
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+
+  animation:cardIn .55s ease;
+}
+
+@keyframes cardIn{
+  from{
+    opacity:0;
+    transform:translateY(22px) scale(.97);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+}
+
+/* Top green line */
+.box::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:18%;
+  right:18%;
+  height:2px;
+  border-radius:50%;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    #3bb968,
+    transparent
+  );
+}
+
+/* Logo */
+.logo-wrap{
+  display:flex;
+  justify-content:center;
+  margin-bottom:20px;
+}
+
+.logo{
+  position:relative;
+
+  width:76px;
+  height:76px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:22px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #3dbd69,
+      #14783f
+    );
+
+  color:#fff;
+
+  font-size:25px;
+  font-weight:900;
+  letter-spacing:-1px;
+
+  box-shadow:
+    0 15px 32px rgba(29,137,66,.27),
+    inset 0 2px 0 rgba(255,255,255,.30),
+    inset 0 -2px 0 rgba(0,70,30,.12);
+}
+
+.logo::after{
+  content:"";
+  position:absolute;
+  inset:-7px;
+  border:1px solid rgba(48,163,83,.18);
+  border-radius:28px;
+}
+
+/* Heading */
+h2{
+  margin:0;
+  text-align:center;
+
+  color:#126b37;
+
+  font-size:28px;
+  font-weight:900;
+  letter-spacing:-.7px;
+}
+
+.subtitle{
+  margin:9px 0 28px;
+
+  text-align:center;
+
+  color:#789083;
+
+  font-size:13px;
+  font-weight:600;
+}
+
+/* Labels */
+label{
+  display:block;
+  margin:18px 0 8px;
+
+  color:#315d40;
+
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.8px;
+}
+
+/* Input wrapper */
+.input-wrap{
+  position:relative;
+}
+
+/* Inputs */
+input{
+  width:100%;
+  height:53px;
+
+  padding:0 45px 0 16px;
+
+  border:1px solid #c5dccb;
+  border-radius:13px;
+
+  outline:none;
+
+  background:linear-gradient(
+    180deg,
+    #fff,
+    #f8fbf9
+  );
+
+  color:#183c28;
+
+  font-family:inherit;
+  font-size:14px;
+  font-weight:600;
+
+  transition:
+    border-color .2s ease,
+    box-shadow .2s ease,
+    transform .2s ease;
+}
+
+input:hover{
+  border-color:#91c7a1;
+  background:#fff;
+}
+
+input:focus{
+  border-color:#35a85b;
+  background:#fff;
+
+  transform:translateY(-1px);
+
+  box-shadow:
+    0 0 0 4px rgba(53,168,91,.10),
+    0 10px 25px rgba(45,137,70,.08);
+}
+
+input::placeholder{
+  color:#a1b2a7;
+}
+
+/* Input icon */
+.input-icon{
+  position:absolute;
+  right:15px;
+  top:50%;
+
+  transform:translateY(-50%);
+
+  color:#70a17e;
+  font-size:14px;
+
+  pointer-events:none;
+}
+
+/* Password eye */
+.password-toggle{
+  position:absolute;
+  right:8px;
+  top:50%;
+
+  transform:translateY(-50%);
+
+  width:35px;
+  height:35px;
+
+  border:0;
+  border-radius:9px;
+
+  background:transparent;
+  color:#70a17e;
+
+  cursor:pointer;
+  font-size:13px;
+
+  transition:.2s ease;
+}
+
+.password-toggle:hover{
+  background:#eaf7ed;
+  color:#218747;
+}
+
+/* Button */
+button[type="submit"]{
+  width:100%;
+  height:54px;
+
+  margin-top:27px;
+
+  border:0;
+  border-radius:13px;
+
+  background:
+    linear-gradient(
+      115deg,
+      #39b764,
+      #24934d,
+      #14783e
+    );
+
+  background-size:200% 100%;
+
+  color:#fff;
+
+  font-family:inherit;
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:1px;
+
+  cursor:pointer;
+
+  box-shadow:
+    0 13px 27px rgba(31,143,69,.23),
+    inset 0 1px 0 rgba(255,255,255,.25);
+
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease,
+    background-position .5s ease;
+}
+
+button[type="submit"]:hover{
+  transform:translateY(-2px);
+  background-position:100% 0;
+
+  box-shadow:
+    0 18px 34px rgba(31,143,69,.29),
+    inset 0 1px 0 rgba(255,255,255,.28);
+}
+
+button[type="submit"]:active{
+  transform:translateY(0);
+}
+
+button:disabled{
+  opacity:.75;
+  cursor:not-allowed;
+  transform:none;
+}
+
+/* Message */
+#msg{
+  min-height:20px;
+  margin-top:15px;
+
+  text-align:center;
+
+  font-size:13px;
+  font-weight:600;
+}
+
+.err{
+  color:#b3261e;
+}
+
+.ok{
+  color:#23723a;
+}
+
+/* Footer */
+.footer{
+  margin-top:22px;
+  padding-top:17px;
+
+  border-top:1px solid rgba(104,164,119,.15);
+
+  text-align:center;
+
+  color:#8a9d91;
+
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:.25px;
+}
+
+/* Mobile */
+@media(max-width:600px){
+
+  body{
+    padding:16px;
+  }
+
+  .box{
+    padding:34px 24px 27px;
+    border-radius:23px;
+  }
+
+  .logo{
+    width:68px;
+    height:68px;
+    border-radius:20px;
+    font-size:23px;
+  }
+
+  h2{
+    font-size:26px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="grid"></div>
+
+<div class="dot d1"></div>
+<div class="dot d2"></div>
+<div class="dot d3"></div>
+<div class="dot d4"></div>
+<div class="dot d5"></div>
+
+<div class="box">
+
+  <div class="logo-wrap">
+    <div class="logo">RS</div>
+  </div>
+
+  <h2>RMS QA</h2>
+
+  
+
+  <form id="loginForm">
+
+    <label>USERNAME</label>
+
+    <div class="input-wrap">
+      <input
+        id="username"
+        autocomplete="username"
+        placeholder="Enter username"
+        required
+      >
+
+      <span class="input-icon">●</span>
+    </div>
+
+    <label>PASSWORD</label>
+
+    <div class="input-wrap">
+
+      <input
+        id="password"
+        type="password"
+        autocomplete="current-password"
+        placeholder="Enter password"
+        required
+      >
+
+      <button
+        type="button"
+        class="password-toggle"
+        id="passwordToggle"
+        aria-label="Show password"
+      >◉</button>
+
+    </div>
+
+    <button id="loginBtn" type="submit">
+      LOGIN
+    </button>
+
+    <div id="msg"></div>
+
+  </form>
+
+  <div class="footer">
+    Risk Management System ·. Testing Utility..
+  
+  
+    © Khaled
+  
+
+</div>
+
+<script>
+const API="https://rs-d1-api.saif362.workers.dev";
+
+const next=
+  new URLSearchParams(location.search).get("next")
+  ||"index.html";
+
+const form=
+  document.getElementById("loginForm");
+
+const username=
+  document.getElementById("username");
+
+const password=
+  document.getElementById("password");
+
+const btn=
+  document.getElementById("loginBtn");
+
+const msg=
+  document.getElementById("msg");
+
+const toggle=
+  document.getElementById("passwordToggle");
+
+
+/* Password visibility */
+
+toggle.addEventListener("click",()=>{
+
+  if(password.type==="password"){
+
+    password.type="text";
+    toggle.textContent="◉";
+    toggle.setAttribute(
+      "aria-label",
+      "Hide password"
+    );
+
+  }else{
+
+    password.type="password";
+    toggle.textContent="◉";
+    toggle.setAttribute(
+      "aria-label",
+      "Show password"
+    );
+
+  }
+
+});
+
+
+/* Login */
+
+form.addEventListener("submit",async e=>{
+
+  e.preventDefault();
+
+  btn.disabled=true;
+  msg.className="";
+  msg.textContent="Checking...";
+
+  try{
+
+    const r=await fetch(
+      API+"/api/login",
+      {
+        method:"POST",
+
+        headers:{
+          "Content-Type":
+            "application/json"
+        },
+
+        body:JSON.stringify({
+
+          username:
+            username.value.trim(),
+
+          password:
+            password.value
+
+        })
+      }
+    );
+
+    const data=await r.json();
+
+    if(
+      !r.ok ||
+      !data.success
+    ){
+
+      throw new Error(
+        data.error ||
+        "Invalid username or password"
+      );
+
+    }
+
+    sessionStorage.setItem(
+      "rs_authenticated",
+      "1"
+    );
+
+    sessionStorage.setItem(
+      "rs_username",
+      data.username || ""
+    );
+
+    msg.className="ok";
+    msg.textContent="Login successful";
+
+    setTimeout(()=>{
+      location.replace(next);
+    },300);
+
+  }catch(err){
+
+    msg.className="err";
+    msg.textContent=err.message;
+
+  }finally{
+
+    btn.disabled=false;
+
+  }
+
+});
+</script>
+
+
+
+
+
+</body>
+</html>

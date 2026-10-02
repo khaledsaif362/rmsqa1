@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/rs-login-gate.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AVG Trade Price</title>
+<link rel="stylesheet" href="cost.css">
+</head>
+<body>
+
+<div class="page-card">
+    <div class="title-bar">AVG COST PRICE</div>
+
+    <div class="expiry-row">
+        <div class="field">
+            <label>NSE Expiry</label>
+            <input type="date" id="nseExpiry">
+        </div>
+        <div class="field">
+            <label>BSE Expiry</label>
+            <input type="date" id="bseExpiry">
+        </div>
+    </div>
+
+    <label class="same-price-option">
+        <input type="checkbox" id="sameAvg" onchange="toggleSamePrice()">
+        <span>Same Cost Price for Both Clients</span>
+    </label>
+
+    <div id="priceArea"></div>
+
+    <button class="generate-btn" onclick="generateAvgTradePrice()">
+        Generate AVG COST PRICE
+    </button>
+</div>
+
+<script src="cost.js"></script>
+</body>
+</html>

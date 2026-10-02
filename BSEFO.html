@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/rs-login-gate.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BSE FO Bulk Random Generator</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{
+  font-family:"Segoe UI",Arial,sans-serif;
+  background:#f4f7f5;
+  color:#216634;
+  padding:10px;
+}
+.app{width:100%;height:100%;display:flex;flex-direction:column;gap:8px}
+.header{
+  height:48px;min-height:48px;background:green;border-radius:10px;color:#fff;
+  display:flex;align-items:center;justify-content:center;padding:0 20px;
+  box-shadow:0 4px 12px rgba(24,77,43,.25);margin-top:12px;
+}
+.header h1{
+  margin:0;font-size:16px;font-weight:900;letter-spacing:.4px;
+  color:#fff;text-align:center;
+}
+.controls{
+  background:#fff;border:1.5px solid #216634;border-radius:10px;padding:14px;
+  display:grid;grid-template-columns:1fr 1.1fr 1.3fr 180px;gap:12px;
+  box-shadow:0 4px 14px rgba(33,102,52,.08);
+}
+.card-section{
+  background:#f5faf6;border:1.5px solid #216634;border-radius:8px;padding:12px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.field{display:flex;flex-direction:column;gap:3px;min-width:0}
+.field label{
+  font-size:9.5px;font-weight:900;letter-spacing:.25px;
+  color:#216634;white-space:nowrap;
+}
+input[type=file]{
+  width:100%;font-size:10px;font-weight:650;color:#216634;padding:2px 0;
+}
+input[type=number],input[type=text],select{
+  width:100%;height:32px;min-width:0;border:1.5px solid #216634;border-radius:6px;
+  background:#fff;padding:4px 9px;font-size:11px;font-weight:800;color:#216634;
+  outline:none;transition:all .2s ease;
+}
+input[type=number]:focus,input[type=text]:focus,select:focus{
+  border-color:#216634;box-shadow:0 0 0 3px rgba(33,102,52,.18);
+}
+.checks-wrapper{display:flex;flex-direction:column;gap:6px}
+.checks{
+  height:32px;display:flex;align-items:center;gap:15px;padding:0 8px;
+  border:1.5px solid #216634;border-radius:6px;background:#fff;
+  white-space:nowrap;overflow:hidden;
+}
+.checks label{
+  font-size:9.5px;font-weight:850;color:#184d2b;
+  display:flex;align-items:center;gap:6px;cursor:pointer;
+}
+.checks input{width:13px;height:13px;accent-color:#216634;margin:0}
+.actions-panel{display:flex;flex-direction:column;justify-content:space-between}
+.btn-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+button{
+  height:32px;border:0;border-radius:6px;padding:0 10px;font-size:10px;
+  font-weight:900;white-space:nowrap;cursor:pointer;
+  box-shadow:0 2px 4px rgba(33,102,52,.15);transition:all .15s ease;width:100%;
+}
+.primary{background:green;color:#fff}
+.primary:hover{background:#184c26}
+.clear-btn{background:#c0392b;color:#fff}
+.clear-btn:hover{background:#962d22}
+.status-bar{display:flex;gap:10px;align-items:center}
+.status{
+  flex:1;height:26px;min-height:26px;padding:5px 12px;border-radius:6px;
+  background:#edf5ee;color:#216634;font-size:10px;font-weight:850;
+  border:1.5px solid #216634;
+}
+.status.ok{background:#edf5ee;color:#216634;border-color:#216634}
+.status.err{background:#fde8e8;color:#c0392b;border-color:#c0392b}
+.info{
+  background:#fff;border:1.5px solid #216634;padding:0 12px;height:26px;border-radius:6px;
+  display:flex;align-items:center;min-width:0;font-size:10px;font-weight:900;
+  color:#216634;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.output{
+  flex:1;min-height:0;width:100%;background:#fff;border:1.5px solid #216634;
+  border-radius:10px;overflow:auto;box-shadow:0 2px 10px rgba(33,102,52,.06);
+}
+table{width:100%;border-collapse:collapse;font-size:10px}
+th,td{border:1.5px solid #c5dec9;padding:6px 8px;text-align:left;white-space:nowrap}
+th{position:sticky;top:0;z-index:2;background:#216634;color:#fff;font-weight:900}
+tr:nth-child(even){background:#f5faf6}
+.empty{text-align:center;padding:45px;color:#216634;font-size:11px;font-weight:650}
+@media(max-width:1200px){
+  html,body{overflow:auto}
+  .app{height:auto;min-height:100%}
+  .controls{grid-template-columns:repeat(2,1fr)}
+  .output{height:calc(100vh - 240px);flex:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+
+
+<div class="controls">
+
+  <div class="card-section">
+    <div class="field">
+      <label>BSE FO BHAVCOPY (.CSV / .TXT)</label>
+      <input id="bhavcopy" type="file" accept=".csv,.txt">
+    </div>
+    <div class="field">
+      <label>CLIENT LIST FILE (.CSV / .TXT)</label>
+      <input id="clientFile" type="file" accept=".csv,.txt">
+    </div>
+  </div>
+
+  <div class="card-section">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div class="field">
+        <label>RECORDS</label>
+        <input id="recordCount" type="number" min="1" value="100">
+      </div>
+      <div class="field">
+        <label>ORDER SIDE</label>
+        <select id="side">
+          <option value="RANDOM">BUY / SELL</option>
+          <option value="BUY">BUY ONLY</option>
+          <option value="SELL">SELL ONLY</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div class="field">
+        <label>CLIENT 1</label>
+        <input id="client1" type="text" value="TEST001" placeholder="ID">
+      </div>
+      <div class="field">
+        <label>CLIENT 2</label>
+        <input id="client2" type="text" placeholder="ID">
+      </div>
+    </div>
+  </div>
+
+  <div class="card-section">
+    <div class="checks-wrapper">
+      <div class="field"><label>PRODUCTS</label></div>
+      <div class="checks" id="products">
+        <label><input type="checkbox" value="MARGIN" checked> MARGIN</label>
+        <label><input type="checkbox" value="INTRADAY" checked> INTRADAY</label>
+      </div>
+
+      <div class="field"><label>ORDER TYPES</label></div>
+      <div class="checks" id="orders">
+        <label><input type="checkbox" value="Limit" checked> LIMIT</label>
+        <label><input type="checkbox" value="Market" checked> MKT</label>
+        <label><input type="checkbox" value="SL" checked> SL</label>
+        <label><input type="checkbox" value="SL-M" checked> SL-M</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-section actions-panel">
+    <div class="field" style="visibility:hidden"><label>&nbsp;</label></div>
+    <button id="generate" class="primary">GENERATE</button>
+    <div class="btn-grid">
+      <button id="download" class="primary">DOWNLOAD</button>
+      <button id="clear" class="clear-btn">CLEAR</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="status-bar">
+  <div id="status" class="status">Load BSE FO Bhavcopy to begin.</div>
+  <div id="summary" class="info">No Bhavcopy loaded.</div>
+</div>
+
+<div id="output" class="output">
+  <div class="empty">Generated output will appear here.</div>
+</div>
+
+</div>
+
+<script>
+"use strict";
+
+const HEAD=[
+  "","Exch","EXCH_SEG","SegmentCode","Symbol","ClientID","Buy/Sell",
+  "Token","Product","Qty","Price","OrdType","Trigger Price","DQty",
+  "Val","Pro/Cli","Participant ID","LTP"
+];
+
+let contracts=[];
+let rowsOut=[];
+let fileClients=[];
+
+const $=id=>document.getElementById(id);
+const status=$("status");
+const summary=$("summary");
+const output=$("output");
+
+function clean(v){
+  return String(v??"").replace(/^\\uFEFF/,"").trim();
+}
+
+function msg(t,c=""){
+  status.textContent=t;
+  status.className="status "+c;
+}
+
+function num(v){
+  let x=clean(v).replace(/,/g,"");
+  if(!x)return null;
+  let n=Number(x);
+  return Number.isFinite(n)?n:null;
+}
+
+/* Handles quoted CSV fields and normal BSE CSV data. */
+function detectDelimiter(text){
+  const lines=String(text||"")
+    .replace(/^\uFEFF/,"")
+    .replace(/\0/g,"")
+    .split(/\r?\n/)
+    .filter(x=>x.trim()!=="")
+    .slice(0,5);
+
+  if(!lines.length)return ",";
+
+  const candidates=[",",";","\t","|"];
+  let best=",";
+  let bestScore=-1;
+
+  for(const d of candidates){
+    let score=0;
+
+    for(const line of lines){
+      let q=false,count=0;
+
+      for(let i=0;i<line.length;i++){
+        const ch=line[i];
+
+        if(ch==='"'){
+          if(q && line[i+1]==='"'){
+            i++;
+          }else{
+            q=!q;
+          }
+        }else if(ch===d && !q){
+          count++;
+        }
+      }
+
+      score+=count;
+    }
+
+    if(score>bestScore){
+      bestScore=score;
+      best=d;
+    }
+  }
+
+  return best;
+}
+
+function csvParse(text){
+
+  text=String(text||"")
+    .replace(/^\uFEFF/,"")
+    .replace(/\0/g,"");
+
+  if(!text.trim())
+    return [];
+
+  const delimiter=detectDelimiter(text);
+
+  let out=[];
+  let row=[];
+  let cell="";
+  let q=false;
+
+  for(let i=0;i<text.length;i++){
+
+    const ch=text[i];
+
+    if(q){
+
+      if(ch==='"'){
+
+        if(text[i+1]==='"'){
+          cell+='"';
+          i++;
+        }else{
+          q=false;
+        }
+
+      }else{
+        cell+=ch;
+      }
+
+    }else if(ch==='"'){
+
+      q=true;
+
+    }else if(ch===delimiter){
+
+      row.push(cell);
+      cell="";
+
+    }else if(ch==="\n"){
+
+      row.push(cell);
+
+      if(row.some(v=>clean(v)!==""))
+        out.push(row);
+
+      row=[];
+      cell="";
+
+    }else if(ch!=="\r"){
+
+      cell+=ch;
+    }
+  }
+
+  if(cell!=="" || row.length){
+
+    row.push(cell);
+
+    if(row.some(v=>clean(v)!==""))
+      out.push(row);
+  }
+
+  if(!out.length)
+    return [];
+
+  const h=out[0].map(clean);
+
+  return out.slice(1).map(r=>{
+
+    const o={};
+
+    h.forEach((k,i)=>{
+      if(k)
+        o[k]=r[i]??"";
+    });
+
+    return o;
+  });
+}
+
+/*
+  ACTUAL BSE FO BHAVCOPY FORMAT USED HERE:
+
+  IDF = Index Future
+  STF = Stock Future
+  IDO = Index Option
+  STO = Stock Option
+
+  The actual uploaded BSE file uses FinInstrmTp for this classification.
+*/
+
+function contractType(r){
+  return clean(r.FinInstrmTp).toUpperCase();
+}
+
+function isFuture(r){
+  const t=contractType(r);
+
+  return t==="IDF" ||
+         t==="STF" ||
+         t==="FUT" ||
+         t==="IF"  ||
+         t==="SF"  ||
+         /FUTURE/.test(t);
+}
+
+function isOption(r){
+  const t=contractType(r);
+  const o=clean(r.OptnTp).toUpperCase();
+
+  return t==="IDO" ||
+         t==="STO" ||
+         t==="OPT" ||
+         t==="IO"  ||
+         t==="SO"  ||
+         o==="CE"  ||
+         o==="PE"  ||
+         /OPTION/.test(t);
+}
+
+function readContracts(data){
+
+  if(!data.length)
+    throw Error("Bhavcopy is empty.");
+
+  const need=[
+    "FinInstrmTp",
+    "TckrSymb",
+    "FinInstrmNm",
+    "XpryDt",
+    "StrkPric",
+    "OptnTp",
+    "FinInstrmId",
+    "ClsPric",
+    "NewBrdLotQty"
+  ];
+
+  const missing=need.filter(k=>!(k in data[0]));
+
+  if(missing.length){
+    throw Error(
+      "Invalid BSE Bhavcopy. Missing: "+missing.join(", ")
+    );
+  }
+
+  let seen=new Set();
+  let a=[];
+
+  for(const r of data){
+
+    if(!(isFuture(r)||isOption(r)))
+      continue;
+
+    const id=clean(r.FinInstrmId);
+    const name=clean(r.FinInstrmNm);
+    const symbol=clean(r.TckrSymb).toUpperCase();
+    const lot=num(r.NewBrdLotQty);
+    const ltp=num(r.ClsPric);
+
+    // BSE FO generator: only SENSEX and BANKEX.
+    if(symbol!=="SENSEX" && symbol!=="BANKEX")
+      continue;
+
+    if(!id || !name || !symbol || lot===null || ltp===null)
+      continue;
+
+    const type=contractType(r);
+
+    const opt=isFuture(r)
+      ? "FUT"
+      : clean(r.OptnTp).toUpperCase();
+
+    const strike=num(r.StrkPric);
+
+    const key=
+      id+"|"+
+      name+"|"+
+      clean(r.XpryDt)+"|"+
+      opt+"|"+
+      (strike===null?"":strike);
+
+    if(seen.has(key))
+      continue;
+
+    seen.add(key);
+
+    a.push({
+      TckrSymb:symbol,
+      FinInstrmNm:name,
+      FinInstrmId:id,
+      XpryDt:clean(r.XpryDt),
+      StrkPric:strike,
+      OptnTp:opt,
+      ClsPric:ltp,
+      NewBrdLotQty:lot,
+      FinInstrmTp:type
+    });
+  }
+
+  return a;
+}
+
+function clients(){
+
+  let a=[
+    clean($("client1").value),
+    clean($("client2").value),
+    ...fileClients
+  ].filter(Boolean);
+
+  return [...new Set(a)];
+}
+
+$("clientFile").addEventListener("change",async()=>{
+
+  let f=$("clientFile").files[0];
+
+  if(!f){
+    fileClients=[];
+    return;
+  }
+
+  try{
+
+    let text=await f.text();
+
+    fileClients=[
+      ...new Set(
+        text
+          .replace(/\r/g,"")
+          .split(/[\n,\t;]+/)
+          .map(clean)
+          .filter(Boolean)
+          .filter(v=>![
+            "CLIENT",
+            "CLIENTID",
+            "CLIENT ID",
+            "CLIENTCODE",
+            "CLIENT CODE"
+          ].includes(v.toUpperCase()))
+      )
+    ];
+
+    msg(
+      "✓ "+fileClients.length+" client IDs loaded.",
+      "ok"
+    );
+
+  }catch(e){
+
+    fileClients=[];
+    msg("✗ Could not read client file.","err");
+  }
+});
+
+function products(){
+  return [
+    ...document.querySelectorAll("#products input:checked")
+  ].map(x=>x.value);
+}
+
+function orderTypes(){
+  return [
+    ...document.querySelectorAll("#orders input:checked")
+  ].map(x=>x.value);
+}
+
+function bseSymbol(c){
+
+  /*
+     IMPORTANT:
+     BSE FinInstrmNm already contains the exact trading symbol used
+     by the BSE Admin terminal.
+
+     Examples from the BSE FO bhavcopy:
+       SENSEX26O0166700CE
+       SENSEX2691773300PE
+       SENSEX26O0174800PE
+       SENSEX26NOVFUT
+
+     Do NOT rebuild the symbol from XpryDt using JAN/FEB/MAR... names.
+     BSE uses its own month/expiry-code convention in FinInstrmNm.
+  */
+
+  const exact=clean(c.FinInstrmNm);
+
+  if(exact)
+    return exact;
+
+  // Fallback only if FinInstrmNm is unavailable.
+  const base=clean(c.TckrSymb);
+  const expiry=clean(c.XpryDt);
+  const d=expiry.match(/^(\d{4})-(\d{2})-(\d{2})/);
+
+  if(!base || !d)
+    return base;
+
+  const yy=d[1].slice(-2);
+  const mm=Number(d[2]);
+  const dd=d[3];
+
+  // BSE month codes used in trading symbols.
+  const monthCode={
+    1:"1", 2:"2", 3:"3", 4:"4", 5:"5", 6:"6",
+    7:"7", 8:"8", 9:"9", 10:"O", 11:"N", 12:"D"
+  }[mm];
+
+  if(!monthCode)
+    return base;
+
+  if(c.FinInstrmTp==="IDF" || c.FinInstrmTp==="STF" || c.OptnTp==="FUT")
+    return base + yy + monthCode + "FUT";
+
+  const strike=Number(c.StrkPric);
+  const opt=clean(c.OptnTp).toUpperCase();
+
+  if(!Number.isFinite(strike) || (opt!=="CE" && opt!=="PE"))
+    return base;
+
+  const strikeText=Number.isInteger(strike)
+    ? String(strike)
+    : String(strike).replace(/0+$/,'').replace(/\.$/,'');
+
+  return base + yy + monthCode + dd + strikeText + opt;
+}
+
+function order(c,cl,side,prod,type){
+
+  let p=0;
+  let t=0;
+  let close=Number(c.ClsPric);
+
+  if(type==="Limit")
+    p=close.toFixed(2);
+
+  if(type==="SL"){
+    p=close.toFixed(2);
+    t=(
+      side==="BUY"
+      ? close-2
+      : close+2
+    ).toFixed(2);
+  }
+
+  if(type==="SL-M"){
+    t=(
+      side==="BUY"
+      ? close-2
+      : close+2
+    ).toFixed(2);
+  }
+
+  return {
+    "":"",
+    "Exch":"BSE",
+    "EXCH_SEG":"BSED",
+    "SegmentCode":"D",
+    "Symbol":bseSymbol(c),
+    "ClientID":cl,
+    "Buy/Sell":side,
+    "Token":c.FinInstrmId,
+    "Product":prod,
+    "Qty":c.NewBrdLotQty,
+    "Price":p,
+    "OrdType":type,
+    "Trigger Price":t,
+    "DQty":"0",
+    "Val":"DAY",
+    "Pro/Cli":"C",
+    "Participant ID":"",
+    "LTP":Number(c.ClsPric).toFixed(2)
+  };
+}
+
+/*
+  BALANCED CONTRACT SELECTION
+
+  Requirements:
+  - Only SENSEX and BANKEX.
+  - Keep the existing 80% FUT / 20% OPT split.
+  - SENSEX and BANKEX must be equally represented within FUT and OPT.
+  - Options are also balanced across expiry dates, so an available
+    November option cannot disappear just because random() missed it.
+  - Selection is random inside each balanced bucket.
+*/
+
+function shuffleArray(a){
+  const x=[...a];
+
+  for(let i=x.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [x[i],x[j]]=[x[j],x[i]];
+  }
+
+  return x;
+}
+
+function pickBalanced(list,n,groupFn){
+
+  if(n<=0) return [];
+
+  const groups=new Map();
+
+  for(const c of list){
+    const key=groupFn(c);
+
+    if(!groups.has(key))
+      groups.set(key,[]);
+
+    groups.get(key).push(c);
+  }
+
+  const keys=[...groups.keys()];
+
+  if(!keys.length)
+    return [];
+
+  // Randomize group order, then cycle through groups equally.
+  const buckets=new Map();
+
+  for(const k of keys)
+    buckets.set(k,shuffleArray(groups.get(k)));
+
+  const result=[];
+
+  for(let i=0;i<n;i++){
+
+    const key=keys[i%keys.length];
+    const bucket=buckets.get(key);
+
+    // Refill after exhausting a bucket so large requests still work.
+    if(!bucket.length)
+      buckets.set(key,shuffleArray(groups.get(key)));
+
+    result.push(
+      buckets.get(key).pop()
+    );
+  }
+
+  return result;
+}
+
+function balancedContracts(list,n,isOpt){
+
+  if(n<=0) return [];
+
+  // First balance SENSEX / BANKEX.
+  const byUnderlying=pickBalanced(
+    list,
+    n,
+    c=>clean(c.TckrSymb).toUpperCase()
+  );
+
+  if(!isOpt)
+    return byUnderlying;
+
+  /*
+    For options, balance by UNDERLYING + EXPIRY.
+    This guarantees that if SENSEX/BANKEX have OCT/NOV/etc.
+    contracts in the bhavcopy, those expiries are selected evenly.
+  */
+  return pickBalanced(
+    list,
+    n,
+    c=>{
+      const sym=clean(c.TckrSymb).toUpperCase();
+      const exp=clean(c.XpryDt);
+      return sym+"|"+exp;
+    }
+  );
+}
+
+function makeBalancedOrders(list,n,isOpt){
+
+  if(n<=0) return [];
+
+  const selected=balancedContracts(
+    list,
+    n,
+    isOpt
+  );
+
+  const cls=clients();
+  const ps=products();
+  const ots=orderTypes();
+  const requestedSide=$("side").value;
+
+  if(!cls.length)
+    throw Error(
+      "Enter Client 1/2 or upload a Client CSV/TXT."
+    );
+
+  if(!ps.length)
+    throw Error("Select at least one Product.");
+
+  if(!ots.length)
+    throw Error("Select at least one Order Type.");
+
+  if(!selected.length)
+    throw Error("No valid SENSEX/BANKEX contracts available.");
+
+  const sideMap=new Map();
+  const result=[];
+
+  for(const c of selected){
+
+    const cl=
+      cls[Math.floor(Math.random()*cls.length)];
+
+    /*
+      Keep the same side for the same
+      client + symbol combination.
+    */
+    const key=cl+"|"+c.TckrSymb;
+
+    let sd;
+
+    if(requestedSide==="RANDOM"){
+
+      if(!sideMap.has(key)){
+        sideMap.set(
+          key,
+          Math.random()<.5 ? "BUY" : "SELL"
+        );
+      }
+
+      sd=sideMap.get(key);
+
+    }else{
+      sd=requestedSide;
+    }
+
+    const pr=
+      ps[Math.floor(Math.random()*ps.length)];
+
+    const ot=
+      ots[Math.floor(Math.random()*ots.length)];
+
+    result.push(
+      order(c,cl,sd,pr,ot)
+    );
+  }
+
+  return result;
+}
+
+function esc(v){
+  return String(v).replace(
+    /[&<>"']/g,
+    x=>({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#39;"
+    }[x])
+  );
+}
+
+function render(){
+
+  if(!rowsOut.length){
+
+    output.innerHTML=
+      '<div class="empty">Generated output will appear here.</div>';
+
+    return;
+  }
+
+  let h=
+    "<table><thead><tr>"+
+    HEAD.map(
+      x=>"<th>"+esc(x)+"</th>"
+    ).join("")+
+    "</tr></thead><tbody>";
+
+  for(const r of rowsOut){
+
+    h+=
+      "<tr>"+
+      HEAD.map(
+        x=>"<td>"+esc(r[x]??"")+"</td>"
+      ).join("")+
+      "</tr>";
+  }
+
+  output.innerHTML=
+    h+"</tbody></table>";
+}
+
+$("bhavcopy").addEventListener(
+  "change",
+  ()=>{
+    let f=$("bhavcopy").files[0];
+
+    if(!f)return;
+
+    let rd=new FileReader();
+
+    rd.onload=()=>{
+
+      try{
+
+        let data=csvParse(rd.result);
+
+        if(!data.length){
+          throw Error(
+            "Could not read BSE CSV rows. Please select the BSE FO Bhavcopy CSV file."
+          );
+        }
+
+        contracts=readContracts(data);
+
+        const fut=
+          contracts.filter(isFuture).length;
+
+        const opt=
+          contracts.filter(isOption).length;
+
+        if(!fut||!opt){
+
+          throw Error(
+            "BSE FO Bhavcopy must contain both Futures and Options."
+          );
+        }
+
+        summary.textContent=
+          data.length.toLocaleString()+
+          " rows • "+
+          contracts.length.toLocaleString()+
+          " contracts • "+
+          fut+
+          " FUT / "+
+          opt+
+          " OPT";
+
+        msg(
+          "✓ BSE FO Bhavcopy loaded successfully.",
+          "ok"
+        );
+
+      }catch(e){
+
+        contracts=[];
+        summary.textContent=
+          "Bhavcopy load failed.";
+
+        msg(
+          "✗ "+e.message,
+          "err"
+        );
+      }
+    };
+
+    rd.readAsText(
+      f,
+      "UTF-8"
+    );
+  }
+);
+
+$("generate").addEventListener(
+  "click",
+  ()=>{
+
+    try{
+
+      if(!contracts.length)
+        throw Error(
+          "Load BSE FO Bhavcopy first."
+        );
+
+      const n=
+        parseInt(
+          $("recordCount").value,
+          10
+        );
+
+      if(
+        !Number.isInteger(n)||
+        n<1
+      )
+        throw Error(
+          "Enter a valid record count."
+        );
+
+      const cls=clients();
+
+      if(!cls.length)
+        throw Error(
+          "Enter Client 1/2 or upload a Client CSV/TXT."
+        );
+
+      const fut=
+        contracts.filter(isFuture);
+
+      const opt=
+        contracts.filter(isOption);
+
+      if(!fut.length||!opt.length)
+        throw Error(
+          "BSE FO Bhavcopy must contain both Futures and Options."
+        );
+
+      /*
+        Always generate approximately:
+        80% Futures
+        20% Options
+
+        Example:
+        100 = 80 FUT + 20 OPT
+        101 = 81 FUT + 20 OPT
+        102 = 82 FUT + 20 OPT
+      */
+      const fn=Math.round(n*.80);
+      const on=n-fn;
+
+      /*
+        Balanced generation:
+        - 80% Futures / 20% Options
+        - SENSEX and BANKEX equally represented
+        - Option expiries equally represented
+          (including November whenever November exists)
+      */
+      const futureRows=
+        makeBalancedOrders(
+          fut,
+          fn,
+          false
+        );
+
+      const optionRows=
+        makeBalancedOrders(
+          opt,
+          on,
+          true
+        );
+
+      rowsOut=
+        futureRows.concat(
+          optionRows
+        );
+
+      /* Randomize final order */
+      for(
+        let i=rowsOut.length-1;
+        i>0;
+        i--
+      ){
+
+        const j=
+          Math.floor(
+            Math.random()*(i+1)
+          );
+
+        [
+          rowsOut[i],
+          rowsOut[j]
+        ]=[
+          rowsOut[j],
+          rowsOut[i]
+        ];
+      }
+
+      render();
+
+      summary.textContent=
+        "Generated "+
+        n.toLocaleString()+
+        " rows • "+
+        fn+
+        " FUT / "+
+        on+
+        " OPT • "+
+        cls.length+
+        " Clients";
+
+      msg(
+        "✓ Generated successfully",
+        "ok"
+      );
+
+    }catch(e){
+
+      msg(
+        "✗ "+e.message,
+        "err"
+      );
+    }
+  }
+);
+
+$("download").addEventListener(
+  "click",
+  ()=>{
+
+    if(!rowsOut.length){
+
+      msg(
+        "✗ No generated data to download.",
+        "err"
+      );
+
+      return;
+    }
+
+    function ce(v){
+
+      let x=String(v??"");
+
+      return /[",\r\n]/.test(x)
+        ? '"'+x.replace(/"/g,'""')+'"'
+        : x;
+    }
+
+    let csv=
+      HEAD.map(ce).join(",")+
+      "\r\n"+
+      rowsOut
+        .map(
+          r=>HEAD
+            .map(
+              h=>ce(r[h])
+            )
+            .join(",")
+        )
+        .join("\r\n");
+
+    let a=
+      document.createElement("a");
+
+    let u=
+      URL.createObjectURL(
+        new Blob(
+          ["\uFEFF"+csv],
+          {
+            type:
+              "text/csv;charset=utf-8"
+          }
+        )
+      );
+
+    a.href=u;
+    a.download=
+      "BSE_FO_BULK_generated.csv";
+
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    setTimeout(
+      ()=>URL.revokeObjectURL(u),
+      1000
+    );
+
+    msg(
+      "✓ BSE_FO_BULK_generated.csv downloaded.",
+      "ok"
+    );
+  }
+);
+
+$("clear").addEventListener(
+  "click",
+  ()=>{
+
+    rowsOut=[];
+
+    $("output").innerHTML=
+      '<div class="empty">Generated output will appear here.</div>';
+
+    $("summary").textContent=
+      contracts.length
+      ? "Bhavcopy loaded."
+      : "No Bhavcopy loaded.";
+
+    msg(
+      contracts.length
+      ? "✓ Ready to generate again."
+      : "Load BSE FO Bhavcopy to begin.",
+      ""
+    );
+  }
+);
+</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/rs-login-gate.js"></script>
+<meta charset="UTF-8">
+<title>Circuit Threshold</title><link rel="stylesheet" href="STYLE.css">
+
+
+
+</head>
+
+<body>
+
+
+
+<div class="card">
+  <div class="window"><div class="title-bar">Circuit Threshold</div></div>
+
+
+
+<label>Close Price: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <input type="number" id="close" step="0.01" style="width: 260px;">
+
+  </label>
+
+  <label>Lower Circuit: &nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="number" id="lowerCkt" step="0.01" style="width: 260px;">
+  </label>
+
+  <label>Upper Circuit: &nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="number" id="upperCkt" step="0.01" style="width: 260px;">
+  </label>
+
+  <label>Block %: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="number" id="blockPct" value="70" style="width: 260px;">
+  </label>
+
+  <label>Unblock %: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="number" id="unblockPct" value="40" style="width: 260px;">
+  </label>&nbsp;
+<div style="display: flex; gap: 10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <button onclick="calculate()" style="width: 120px;">
+    Calculate
+  </button>
+
+  <button onclick="clearForm()" style="width: 120px; background: #c0392b; color: white; border: none;">
+    Clear
+  </button>
+</div>
+
+  <div class="result" id="output">
+    Enter values and click Calculate
+  </div>
+</div>
+
+<script>
+function calculate() {
+  const close = parseFloat(document.getElementById('close').value);
+  const lower = parseFloat(document.getElementById('lowerCkt').value);
+  const upper = parseFloat(document.getElementById('upperCkt').value);
+  const blockPct = parseFloat(document.getElementById('blockPct').value);
+  const unblockPct = parseFloat(document.getElementById('unblockPct').value);
+
+  if (isNaN(close) || isNaN(lower) || isNaN(upper)) {
+    document.getElementById('output').innerHTML =
+      "<span class='sell'>Please enter all valid values.</span>";
+    return;
+  }
+
+  const buyBlock = close - ((close - lower) * blockPct / 100);
+  const sellBlock = close + ((upper - close) * blockPct / 100);
+  const buyUnblock = close - ((close - lower) * unblockPct / 100);
+  const sellUnblock = close + ((upper - close) * unblockPct / 100);
+
+  document.getElementById('output').innerHTML = `
+    <div class="buy">
+      🔵 BUY blocked when LTP less than ${buyBlock.toFixed(2)}
+    </div><br>
+
+    <div class="sell">
+      🔴 SELL blocked when LTP greater than ${sellBlock.toFixed(2)}
+    </div><br>
+
+    <div class="unblock">
+      🟢 UNBLOCK when LTP is between
+      ${buyUnblock.toFixed(2)} to ${sellUnblock.toFixed(2)}
+    </div>
+  `;
+}
+
+
+
+
+function clearForm() {
+  document.getElementById('close').value = '';
+  document.getElementById('lowerCkt').value = '';
+  document.getElementById('upperCkt').value = '';
+  document.getElementById('blockPct').value = '70';
+  document.getElementById('unblockPct').value = '40';
+
+  document.getElementById('output').innerHTML =
+    'Enter values and click Calculate';
+}
+
+
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>

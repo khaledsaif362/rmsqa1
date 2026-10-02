@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/rs-login-gate.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>RMS </title>
+
+
+
+
+
+
+
+
+<style>
+:root{--g:#087f5b;--gd:#086b4d;--gt:#08704f;--bg:#eef7f3;--panel:#f8fdfa;--soft:#effaf5;--soft2:#e5f6ed;--border:#9bcfb7;--border2:#b8dccb;--text:#17382d;--muted:#587068;--white:#fff;--red:#d9363e;--red2:#b92b32;--r:8px;--shadow:0 2px 7px rgba(8,127,91,.06)}
+*{box-sizing:border-box}html,body{margin:0;padding:0}body{font:13px "Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
+.header{background:var(--g);color:#fff;padding:11px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 7px rgba(0,0,0,.14)}
+.container{max-width:1500px;margin:auto;padding:12px 16px}.card{background:linear-gradient(180deg,#fff,#f7fcf9);border:1px solid #c8e4d7;border-radius:11px;padding:14px;margin-bottom:12px;box-shadow:0 3px 12px rgba(8,127,91,.07)}
+.card-title,.port-title{color:var(--gd);font-size:16px;font-weight:900;margin-bottom:10px;padding-bottom:7px;border:0}.panel-title{font-size:14px;font-weight:900;color:var(--gd);margin-bottom:7px}
+.top-workspace{display:grid;grid-template-columns:210px minmax(0,1fr) 300px;gap:0;background:linear-gradient(135deg,#effaf5,#dff4e9);border:2px solid #73bd99;border-radius:10px;overflow:visible;box-shadow:0 4px 14px rgba(8,127,91,.10);margin-bottom:10px;align-items:stretch}
+.common-panel{background:linear-gradient(145deg,var(--panel),var(--soft2))}.compact-upload-panel,.manual-top-panel{min-height:178px;padding:9px 10px;border-right:2px solid #73bd99}.manual-top-panel{position:relative}.margin-panel{min-height:150px;padding:6px 8px}
+.compact-upload-panel .panel-title{font-size:13px;margin-bottom:5px}.common-box{border:1px solid var(--border);border-radius:var(--r);background:#fff;box-shadow:var(--shadow)}.compact-upload-panel .upload-box{width:100%;height:64px;min-height:64px;margin:0 0 6px;padding:6px 8px;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto 24px auto;align-content:center;gap:1px}.compact-upload-panel .upload-box:last-child{margin-bottom:0}
+.upload-box-title{font-size:11px;font-weight:900;color:var(--gd);margin:0}.compact-upload-panel .upload-box input[type=file]{grid-column:1;grid-row:2;width:100%;height:24px;font-size:9px;padding:2px 4px;border:1px solid #b8dccc;border-radius:5px;background:#fff}.compact-upload-panel .upload-box-status,#uploadStatus,#positionStatus{display:none!important}.compact-upload-panel .uploaded-file-name{grid-column:1;grid-row:3;font-size:9px;line-height:12px;margin:0;color:var(--gt);font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.compact-upload-panel .span-progress{margin-top:1px;height:3px}.span-progress{width:100%;background:#dfece6;border-radius:5px;overflow:hidden}.span-progress-bar{height:100%;width:0;background:var(--g);border-radius:5px;transition:width .08s linear}.span-progress-text{margin-top:1px;font-size:7px;color:var(--gt);font-weight:700}
+.manual-top-panel .search-grid{display:grid;grid-template-columns:1.05fr .8fr 1fr 1fr .8fr;gap:5px}.field label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px}.manual-top-panel .field label{font-size:11px;margin-bottom:2px}.field input,.field select{width:100%;height:36px;border:1px solid var(--border);border-radius:6px;padding:5px 9px;background:#fff;color:var(--text);font-size:12px}.manual-top-panel .field input,.manual-top-panel .field select{height:29px;font-size:10px;padding:4px 6px}.field input:focus,.field select:focus{outline:0;border-color:var(--g);box-shadow:0 0 0 2px rgba(8,127,91,.08)}
+.buttons{display:flex;gap:8px;margin-top:10px}.manual-top-panel .buttons{margin-top:6px;gap:5px}.buttons button,.clear-btn,.primary,.add,.remove{border:0;border-radius:7px;padding:8px 15px;font-weight:800;cursor:pointer;transition:.15s}.buttons button:hover,.clear-btn:hover,.primary:hover,.add:hover,.remove:hover{transform:translateY(-1px);filter:brightness(.97)}.manual-top-panel .buttons button,.search-btn,.add,.clear-btn{width:76px;height:30px;min-height:30px;padding:0;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;border-radius:7px}.search-btn,.add{background:var(--g)!important;color:#fff!important;border:1px solid var(--g)!important}.search-btn:hover,.add:hover{background:var(--gd)!important}.clear-btn{background:var(--red)!important;color:#fff!important;border:1px solid var(--red)!important}.clear-btn:hover{background:var(--red2)!important}
+.manual-top-panel .results{position:absolute;z-index:20;left:8px;right:8px;top:143px;background:#fff;border:1px solid #8bc9aa;border-radius:8px;box-shadow:0 8px 20px rgba(8,127,91,.16);padding:7px;overflow:hidden}.results{margin-top:11px;border-top:1px solid #e2ebe7;padding-top:9px}.result-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.result-head b{color:var(--gt);font-size:12px}.result-head span{font-size:11px;color:#71847c}.result-list{max-height:290px;overflow:auto;display:flex;flex-direction:column;gap:5px}.manual-top-panel .result-list{max-height:240px;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-ms-overflow-style:none}.manual-top-panel .result-list::-webkit-scrollbar{width:0;height:0}.result{display:grid;grid-template-columns:55px 1.25fr 110px 90px 55px 85px 245px;gap:8px;align-items:center;border:1px solid #e0ebe6;border-radius:6px;padding:7px 8px;background:#fbfdfc;font-size:11px}.manual-top-panel .result{grid-template-columns:45px 1.2fr 90px 75px 45px 70px 210px;padding:5px 6px;gap:5px;border:1px solid #d0e6dc;border-radius:7px;background:#fff;min-width:0}.result-type{font-weight:800;color:var(--gt)}.result-name{font-weight:700}.result-expiry{font-weight:700;color:var(--gt)}.result-option{font-weight:800}.result-add-controls{display:flex;align-items:center;gap:5px;flex-wrap:nowrap;white-space:nowrap}.result-side,.result-qty,.qty,.merged-price{height:30px;border:1px solid var(--border);border-radius:5px;font-size:11px;background:#fff}.result-side{padding:2px 5px}.result-qty{width:78px;padding:2px 5px;text-align:right}.qty{width:82px;padding:2px 5px;text-align:right}.merged-price{min-width:82px;width:82px;padding:5px 6px;text-align:right}.result-qty,.qty{font-variant-numeric:tabular-nums}.qty::-webkit-inner-spin-button,.qty::-webkit-outer-spin-button,.result-qty::-webkit-inner-spin-button,.result-qty::-webkit-outer-spin-button{appearance:none;-webkit-appearance:none;margin:0}.qty,.result-qty{appearance:textfield;-webkit-appearance:textfield}
+.margin-panel .panel-title{font-size:16px;line-height:19px;margin:0 0 5px}.margin-panel .metric-stack{display:flex;flex-direction:column;gap:4px;padding:0;margin:0;background:transparent;border:0}.metric-box{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:32px;height:32px;padding:4px 9px;border-color:#8ed5b7;border-radius:7px;box-shadow:none}.metric-label{font-size:11px;font-weight:700;color:var(--muted)}.margin-panel .metric-label{font-size:11px;line-height:14px;font-weight:600}.metric-value{font-size:16px;font-weight:900;color:var(--g);text-align:right}.margin-panel .metric-value{font-size:14px;line-height:16px;font-weight:900}
+.port-head{display:flex;align-items:center;justify-content:space-between;margin:0 0 8px;padding:0 0 7px;border-bottom:1px solid #c8e4d7}.port-title{font-size:14px;margin:0;color:var(--gt)}.port-count{font-size:11px;color:#71847c;margin-top:2px}.output-card{background:linear-gradient(180deg,var(--soft),#fff);border:1px solid var(--border2);border-radius:10px;padding:10px;box-shadow:0 3px 10px rgba(8,127,91,.06)}.output-card .table-wrap{border:1px solid var(--border2);border-radius:8px;overflow:hidden;background:#fff}.output-card .table-wrap table{margin:0}.output-card .table-wrap th{border-right:1px solid rgba(255,255,255,.15)}.output-card .table-wrap td{border-color:#d4e8de}.output-card .table-wrap td:nth-child(4){text-align:center;vertical-align:middle}.output-card .table-wrap .lot-control{margin:0 auto;justify-content:center}.output-card .qty{text-align:center}
+.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:980px;font-size:11px}th{background:var(--g);color:#fff;padding:7px 6px;white-space:nowrap;text-align:center}th.left{text-align:left}td{padding:8px 7px;border:1px solid #dcebe4;white-space:nowrap;text-align:left;background:#fcfffd}tbody tr:nth-child(even) td{background:#f2faf6}.table-wrap table th,.table-wrap table td,.simple-margin-table th,.simple-margin-table td{text-align:center!important}.table-wrap table th.left,.table-wrap table td.left,.simple-margin-table th.left,.simple-margin-table td.left{text-align:left!important}.symbol-header{text-align:left!important;padding-left:12px!important}.margin-value{font-weight:900;text-align:right;color:#b83227}
+.total-row{font-weight:800;background:#dff5e5;border-top:2px solid #72b982}.total-row td{text-align:center}.total-row td:first-child{text-align:left;padding-left:12px}.simple-margin-card{margin-top:12px;background:linear-gradient(180deg,var(--soft),#fff);border:1px solid var(--border2);border-radius:10px;padding:10px;box-shadow:0 3px 10px rgba(8,127,91,.06)}.simple-margin-title{display:flex;justify-content:flex-start;align-items:center;color:var(--gt);font-weight:900;font-size:14px;margin:0 0 8px;padding:0 0 7px;border-bottom:1px solid #c8e4d7}.simple-margin-sub{display:none}.simple-margin-table-wrap{border:1px solid var(--border2);border-radius:8px;overflow:hidden;background:#fff}.simple-margin-table{min-width:650px;margin:0}.simple-margin-table td{border-color:#d4e8de}.grand-total-row td{background:#e0f5ea!important;font-weight:900;border-top:2px solid #9ed8bd}
+.empty{padding:30px;text-align:center;background:linear-gradient(135deg,#f4fcf8,#e9f8f0);border:1px dashed #b8dccc;border-radius:8px;color:#5e7b70}.hidden{display:none!important}.footer{margin-top:14px;font-size:12px;color:#4caf50;text-align:center}
+.lot-control{display:flex;align-items:stretch;justify-content:flex-start;flex-wrap:nowrap;width:106px;height:30px;vertical-align:middle;white-space:nowrap;overflow:visible}.lot-control input,.lot-control .qty,.lot-control .result-qty{flex:1 1 auto;width:auto;min-width:0;height:30px;margin:0;padding:2px 7px;text-align:center;border:1px solid #9bcab5;border-right:0;border-radius:5px 0 0 5px;background:#fff}.lot-stepper{display:flex;flex:0 0 25px;flex-direction:column;width:25px;height:30px;margin:0;padding:0;border:1px solid #9bcab5;border-radius:0 5px 5px 0;overflow:hidden;background:#e8f6ee}.lot-step-btn{display:block;flex:1 1 50%;width:23px;height:14px;min-height:0;margin:0;padding:0;border:0;border-radius:0;background:#e8f6ee;color:var(--gt);font-size:9px;font-weight:900;line-height:13px;cursor:pointer;box-sizing:border-box}.lot-step-btn:first-child{border-bottom:1px solid #b7d8c8}.lot-step-btn:hover{background:#d4eee0}.result-add-controls .lot-control{margin-right:1px}
+@media(max-width:1050px){.top-workspace{grid-template-columns:190px minmax(0,1fr) 280px}.manual-top-panel .search-grid{grid-template-columns:repeat(3,1fr)}.manual-top-panel .result{grid-template-columns:45px 1fr 80px 60px 45px 65px 190px}}
+@media(max-width:750px){.top-workspace{grid-template-columns:1fr}.compact-upload-panel,.manual-top-panel{border-right:0;border-bottom:2px solid #73bd99}.compact-upload-panel{display:grid;grid-template-columns:1fr 1fr;gap:6px}.compact-upload-panel .panel-title{grid-column:1/-1}.compact-upload-panel .upload-box{margin:0}.manual-top-panel .search-grid{grid-template-columns:1fr 1fr}.manual-top-panel .results{position:relative;top:auto;left:auto;right:auto;margin-top:7px}.margin-panel{min-height:auto}}
+@media(max-width:650px){body{font-size:12px}.search-grid{grid-template-columns:1fr}.result{grid-template-columns:50px 1fr 90px 55px}.mobile-hide{display:none}.simple-margin-title{display:block}.simple-margin-sub{display:block;margin-top:3px}}
+
+/* SMALL UI UPDATE ONLY */
+.side:focus,
+.qty:focus,
+.merged-price:focus,
+.lot-control .qty:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Keep the original quantity stepper and input boxes; remove focus highlight only. */
+.lot-stepper {
+  display:flex !important;
+  flex:0 0 25px;
+  flex-direction:column;
+  width:25px;
+  height:30px;
+  margin:0;
+  padding:0;
+  border:1px solid #9bcab5;
+  border-radius:0 5px 5px 0;
+  overflow:hidden;
+  background:#e8f6ee;
+}
+
+.result-head span { font-size: 12px !important; }
+.port-count { font-size: 12px !important; }
+.compact-upload-panel .uploaded-file-name { font-size: 10px !important; }
+.span-progress-text { font-size: 8px !important; }
+.simple-margin-sub { font-size: 13px !important; }
+.footer { font-size: 13px !important; }
+
+
+/* FINAL SMALL UI UPDATE: no boxes, quantity arrow only */
+.side,
+.qty,
+.merged-price {
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.side:focus,
+.qty:focus,
+.merged-price:focus {
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Qty keeps the browser's plain unhighlighted up/down control. */
+.qty {
+  appearance: auto !important;
+  -webkit-appearance: auto !important;
+  border: 0 !important;
+}
+
+.qty::-webkit-inner-spin-button,
+.qty::-webkit-outer-spin-button {
+  opacity: 1;
+}
+
+
+/* QTY ONLY: show the native up/down arrows, without a surrounding box. */
+.qty {
+  appearance: auto !important;
+  -webkit-appearance: auto !important;
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.qty::-webkit-inner-spin-button {
+  -webkit-appearance: auto !important;
+  appearance: auto !important;
+  opacity: 1 !important;
+  display: block !important;
+  margin: 0 !important;
+}
+
+.qty::-webkit-outer-spin-button {
+  -webkit-appearance: auto !important;
+  appearance: auto !important;
+  opacity: 1 !important;
+  display: block !important;
+  margin: 0 !important;
+}
+
+#calculationArea{overflow-anchor:none;}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="top-workspace">
+<div class="compact-upload-panel common-panel">
+
+<div class="upload-box common-box">
+<div class="upload-box-title">SPAN Upload</div>
+<input id="spanFile" type="file" accept=".spn,.xml">
+<div id="uploadStatus" class="upload-box-status"></div>
+<div id="spanProgress" class="span-progress" style="display:none"><div id="spanProgressBar" class="span-progress-bar"></div></div>
+<div id="spanProgressText" class="span-progress-text" style="display:none">0%</div>
+<div id="spanUploadedName" class="uploaded-file-name">—</div>
+</div><BR>
+<div class="upload-box common-box">
+<div class="upload-box-title">Positions Upload</div>
+<input id="positionFile" type="file" accept=".csv,text/csv">
+<div id="positionStatus" class="upload-box-status"></div>
+<div id="positionUploadedName" class="uploaded-file-name">—</div>
+</div>
+</div>
+
+<div class="manual-top-panel">
+<div class="panel-title">Add Positions</div>
+<div class="search-grid">
+<div class="field"><label>Underlying</label><input id="symbol" placeholder="NIFTY"></div>
+<div class="field"><label>Instrument</label><select id="contractType"><option value="ALL">All</option><option value="FUT">Futures</option><option value="OPT">Options</option></select></div>
+<div class="field"><label>Expiry</label><input id="expiry" type="date"></div>
+<div class="field"><label>Strike Price</label><input id="strike" type="number" placeholder="25000"></div>
+<div class="field"><label>Option Type</label><select id="optionType"><option value="">All</option><option value="C">CE</option><option value="P">PE</option></select></div>
+</div>
+<div class="buttons"><button class="primary search-btn" onclick="searchContracts()">Search</button><button class="clear-btn" onclick="clearSearch()">Clear</button></div>
+<div id="searchResults" class="results hidden"><div class="result-head"><b>Matching Contracts</b><span id="searchCount"></span></div><div id="resultList" class="result-list"></div></div>
+</div>
+
+<div class="margin-panel common-panel">
+<div class="panel-title">Margin Summary</div>
+<div class="metric-stack">
+<div class="metric-box common-box"><span class="metric-label">Contracts</span><span id="metricPositions" class="metric-value">0</span></div>
+<div class="metric-box common-box"><span class="metric-label">Total Margin</span><span id="metricGrossSpan" class="metric-value">0</span></div>
+<div class="metric-box common-box"><span class="metric-label">Hedge Benefit</span><span id="metricHedge" class="metric-value">0</span></div>
+<div class="metric-box common-box"><span class="metric-label">Net Margin</span><span id="metricNetSpan" class="metric-value">0</span></div>
+</div>
+</div>
+</div>
+
+
+
+<div class="card output-card">
+<div class="port-head"><div><div class="port-title">Positions</div></div><button class="clear-btn" onclick="clearPortfolio()">Clear</button></div>
+<div id="emptyPortfolio" class="empty">No Positions added yet.<br><br>Search for a contract above and click <b>Add</b>.</div>
+<div id="calculationArea" class="hidden"><div class="table-wrap"><table><thead id="calculationHead"></thead><tbody id="calculationBody"></tbody></table></div><div id="symbolBreakdown"></div><div id="summary" style="display:none"></div><div id="breakdown" style="display:none"></div></div>
+</div>
+</div>
+
+<script>
+"use strict";
+
+let spanXML=null,contracts=[],portfolio=[];
+let positionFileText="",positionRecords=[],positionMatched=[],positionUnmatched=[],positionClientIds=[];
+let calendarSpreadDefinitions=[];
+
+/* SPAN CACHE ONLY — keeps the last uploaded SPN/XML until a new SPAN upload. */
+const SPAN_CACHE_DB="RS_SPAN_CACHE";
+const SPAN_CACHE_STORE="span";
+const SPAN_CACHE_KEY="latest";
+
+function openSPANCache(){
+  return new Promise((resolve,reject)=>{
+    if(!window.indexedDB){resolve(null);return}
+    const r=indexedDB.open(SPAN_CACHE_DB,1);
+    r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(SPAN_CACHE_STORE))r.result.createObjectStore(SPAN_CACHE_STORE)};
+    r.onsuccess=()=>resolve(r.result);
+    r.onerror=()=>reject(r.error);
+  });
+}
+async function saveSPANCache(data){
+  try{
+    const db=await openSPANCache();if(!db)return;
+    await new Promise((resolve,reject)=>{
+      const tx=db.transaction(SPAN_CACHE_STORE,"readwrite");
+      tx.objectStore(SPAN_CACHE_STORE).put(data,SPAN_CACHE_KEY);
+      tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);
+    });
+    db.close();
+  }catch(e){console.warn("SPAN cache save failed:",e)}
+}
+async function loadSPANCache(){
+  try{
+    const db=await openSPANCache();if(!db)return null;
+    const data=await new Promise((resolve,reject)=>{
+      const tx=db.transaction(SPAN_CACHE_STORE,"readonly");
+      const r=tx.objectStore(SPAN_CACHE_STORE).get(SPAN_CACHE_KEY);
+      r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error);
+    });
+    db.close();return data;
+  }catch(e){console.warn("SPAN cache load failed:",e);return null}
+}
+async function restoreSPANCache(){
+  const data=await loadSPANCache();
+  if(!data||!Array.isArray(data.contracts)||!data.contracts.length)return;
+  contracts=data.contracts;
+  calendarSpreadDefinitions=Array.isArray(data.defs)?data.defs:[];
+  const name=String(data.fileName||"");
+  if(name)document.getElementById("spanUploadedName").textContent=name;
+  renderPortfolio();
+  if(positionRecords.length)loadPositionFile();
+}
+
+function escapeHtml(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}
+function formatNumber(v){if(v===null||v===undefined||v==="")return "-";const n=Number(v);return Number.isFinite(n)?n.toLocaleString("en-IN",{maximumFractionDigits:6}):String(v)}
+function normalizeExpiry(v){
+ if(!v)return "";v=String(v).trim().toUpperCase();
+ if(/^\d{8}$/.test(v))return v;if(/^\d{4}-\d{2}-\d{2}$/.test(v))return v.replace(/-/g,"");
+ const mths={JAN:"01",FEB:"02",MAR:"03",APR:"04",MAY:"05",JUN:"06",JUL:"07",AUG:"08",SEP:"09",OCT:"10",NOV:"11",DEC:"12"};
+ let m=v.match(/^(\d{1,2})[-\/]([A-Z]{3})[-\/](\d{4})$/);if(m&&mths[m[2]])return m[3]+mths[m[2]]+String(m[1]).padStart(2,"0");
+ m=v.match(/^(\d{1,2})([A-Z]{3})(\d{4})$/);if(m&&mths[m[2]])return m[3]+mths[m[2]]+String(m[1]).padStart(2,"0");
+ return v;
+}
+function formatExpiry(v){const d=normalizeExpiry(v);if(!/^\d{8}$/.test(d))return v||"-";const m=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];return d.slice(6,8)+"-"+m[Number(d.slice(4,6))-1]+"-"+d.slice(0,4)}
+function setStatus(t,type){const e=document.getElementById("uploadStatus");if(e)e.textContent=""; if(type==="err") console.warn(t)}
+function showSPANProgress(s=true){document.getElementById("spanProgress").style.display=s?"block":"none";document.getElementById("spanProgressText").style.display=s?"block":"none"}
+function updateSPANProgress(p){p=Math.max(0,Math.min(100,Number(p)||0));document.getElementById("spanProgressBar").style.width=p+"%";document.getElementById("spanProgressText").textContent=Math.round(p)+"%"}
+function hideSpanProgress(){showSPANProgress(false)}
+function directValue(parent,tag){const n=parent?.querySelector(":scope > "+tag);return n?n.textContent.trim():""}
+function directNumber(parent,tag){const v=directValue(parent,tag);if(v==="")return null;const n=Number(v);return Number.isFinite(n)?n:null}
+function riskArray(node){const ra=node.querySelector(":scope > ra");if(!ra)return [];return Array.from(ra.querySelectorAll(":scope > a")).map(x=>{const n=Number(x.textContent.trim());return Number.isFinite(n)?n:0})}
+
+/* Lot size: explicit SPN value first, then known NSE fallback. */
+function getContractLotSize(node,pf,series,symbol){
+ const tags=["lotSize","lotsize","lotSz","lot","lotQty","lotQtyVal","contractSize"];
+ const attrs=["lotSize","lotsize","lotSz","lot","lotQty","contractSize"];
+ function tag(p){if(!p)return null;for(const x of tags){const e=p.querySelector(":scope > "+x);if(e){const n=Number(e.textContent.trim());if(Number.isFinite(n)&&n>0)return n}}return null}
+ function attr(p){if(!p)return null;for(const x of attrs){const v=p.getAttribute(x);if(v!==null){const n=Number(v);if(Number.isFinite(n)&&n>0)return n}}return null}
+ const explicit=tag(node)??attr(node)??tag(series)??attr(series)??tag(pf)??attr(pf);
+ if(Number.isFinite(explicit)&&explicit>0)return explicit;
+ return 1;
+}
+
+function startFastSPANParse(file){
+ return new Promise(async (resolve,reject)=>{
+  try{
+   const parserSource=parseSPAN.toString();
+   const workerCode=`self.spanXML=null;\nlet contracts=[];\n${normalizeExpiry.toString()}\n${directValue.toString()}\n${directNumber.toString()}\n${getRateValue.toString()}\n${readSpreadLeg.toString()}\n${parserSource}\nself.onmessage=async function(e){try{if(typeof DOMParser==='undefined'){self.postMessage({type:'need-main'});return}const text=await e.data.text();self.spanXML=new DOMParser().parseFromString(text,'application/xml');if(self.spanXML.querySelector('parsererror'))throw new Error('Invalid SPN/XML file.');await parseSPAN(p=>self.postMessage({type:'progress',value:p}));const defs=[];self.spanXML.querySelectorAll('dSpread').forEach(ds=>{const legs=Array.from(ds.querySelectorAll(':scope > pLeg'));if(legs.length<2)return;const r=ds.querySelector(':scope > rate');const v=r?(r.querySelector(':scope > val')||r):null;const rate=Number((v?v.textContent:'').trim())||0;for(let i=0;i<legs.length-1;i++){let a=readSpreadLeg(legs[i]),b=readSpreadLeg(legs[i+1]);if(!a||!b||a.code!==b.code||a.expiry===b.expiry)continue;let near=a,far=b;if(Number(near.expiry)>Number(far.expiry))[near,far]=[far,near];defs.push({code:near.code,keyNear:near.code+'|'+near.expiry,keyFar:far.code+'|'+far.expiry,near,far,rate,ratioNear:near.ratio,ratioFar:far.ratio})}});self.postMessage({type:'done',contracts,defs})}catch(err){self.postMessage({type:'error',message:err&&err.message?err.message:String(err)})}};`;
+   const blob=new Blob([workerCode],{type:'application/javascript'}),url=URL.createObjectURL(blob),worker=new Worker(url);
+   worker.onmessage=e=>{const d=e.data||{};if(d.type==='progress'){updateSPANProgress(d.value);return}if(d.type==='need-main'){worker.terminate();URL.revokeObjectURL(url);resolve({fallbackMain:true});return}if(d.type==='error'){worker.terminate();URL.revokeObjectURL(url);reject(new Error(d.message));return}if(d.type==='done'){worker.terminate();URL.revokeObjectURL(url);resolve(d)}};
+   worker.onerror=()=>{worker.terminate();URL.revokeObjectURL(url);reject(new Error('Fast SPAN parser failed.'))};
+   worker.postMessage(file);
+  }catch(err){reject(err)}
+ });
+}
+
+async function startMainThreadSPANParse(file){
+ const text=await file.text();
+ updateSPANProgress(38);
+ spanXML=new DOMParser().parseFromString(text,"application/xml");
+ if(spanXML.querySelector("parsererror"))throw new Error("Invalid SPN/XML file.");
+ await parseSPAN(p=>updateSPANProgress(38+(Number(p)||0)*0.62));
+ const defs=getCalendarSpreadDefinitions();
+ return {contracts,defs};
+}
+
+document.getElementById("spanFile").addEventListener("change",async function(e){
+ const file=e.target.files[0];if(!file)return;
+ document.getElementById("spanUploadedName").textContent=file.name;showSPANProgress(true);updateSPANProgress(0);setStatus("Fast loading "+file.name+"...","normal");
+ try{
+  let result=await startFastSPANParse(file);
+  if(result&&result.fallbackMain){
+   setStatus("Fast parser unavailable in this browser • using compatible parser...","normal");
+   result=await startMainThreadSPANParse(file);
+  }
+  contracts=result.contracts||[];calendarSpreadDefinitions=result.defs||[];await saveSPANCache({contracts,defs:calendarSpreadDefinitions,fileName:file.name});spanXML=null;portfolio=[];renderPortfolio();document.getElementById("searchResults").classList.add("hidden");updateSPANProgress(100);
+  setStatus("");hideSpanProgress();if(positionRecords.length)loadPositionFile();
+ }catch(err){console.error(err);contracts=[];calendarSpreadDefinitions=[];portfolio=[];renderPortfolio();hideSpanProgress();setStatus(err.message||"Unable to read SPN file.","err")}
+});
+
+function getSPNInfo(){if(!spanXML)return{created:"",version:"",businessDate:""};const root=spanXML.documentElement;return{created:directValue(root,"created")||"",version:directValue(root,"version")||directValue(root,"ver")||"",businessDate:directValue(root,"businessDate")||""}}
+function formatSPNDate(v){v=String(v||"");if(/^\d{8}$/.test(v))return v.slice(6,8)+"-"+v.slice(4,6)+"-"+v.slice(0,4);if(/^\d{12,14}$/.test(v))return v.slice(6,8)+"-"+v.slice(4,6)+"-"+v.slice(0,4)+" "+v.slice(8,10)+":"+v.slice(10,12);return v}
+
+function parseSPAN(onProgress){
+    return new Promise((resolve,reject)=>{
+        if(!spanXML){reject(new Error("SPN XML is not loaded."));return;}
+
+        try{
+            const doc=spanXML;
+            const contractsOut=[];
+            const seen=new Set();
+
+            const direct=(parent,tag)=>{
+                if(!parent) return "";
+                for(const n of parent.children){
+                    if(String(n.tagName).toLowerCase()===String(tag).toLowerCase()){
+                        return (n.textContent||"").trim();
+                    }
+                }
+                return "";
+            };
+
+            const num=(parent,tag)=>{
+                const v=direct(parent,tag);
+                if(v==="") return null;
+                const n=Number(v);
+                return Number.isFinite(n)?n:null;
+            };
+
+            const risk=(node)=>{
+                for(const n of node.children){
+                    if(String(n.tagName).toLowerCase()==="ra"){
+                        const out=[];
+                        for(const x of n.children){
+                            if(String(x.tagName).toLowerCase()==="a"){
+                                const z=Number((x.textContent||"").trim());
+                                out.push(Number.isFinite(z)?z:0);
+                            }
+                        }
+                        return out;
+                    }
+                }
+                return [];
+            };
+
+            const firstD=(node)=>{
+                for(const n of node.children){
+                    if(String(n.tagName).toLowerCase()==="ra"){
+                        for(const x of n.children){
+                            if(String(x.tagName).toLowerCase()==="d"){
+                                const z=Number((x.textContent||"").trim());
+                                return Number.isFinite(z)?z:null;
+                            }
+                        }
+                    }
+                }
+                return null;
+            };
+
+            const attr=(parent,names)=>{
+                if(!parent)return null;
+                for(const name of names){
+                    const v=parent.getAttribute(name);
+                    if(v!==null && v!==""){
+                        const z=Number(v);
+                        if(Number.isFinite(z)&&z>0)return z;
+                    }
+                }
+                return null;
+            };
+
+            const tagNumber=(parent,names)=>{
+                if(!parent)return null;
+                for(const name of names){
+                    for(const child of parent.children){
+                        if(String(child.tagName).toLowerCase()===String(name).toLowerCase()){
+                            const z=Number((child.textContent||"").trim());
+                            if(Number.isFinite(z)&&z>0)return z;
+                        }
+                    }
+                }
+                return null;
+            };
+
+            const lot=(node,pf,series,symbol)=>{
+                const names=["lotSize","lotsize","lotSz","lot","lotQty","lotQtyVal","contractSize"];
+                const z=tagNumber(node,names)||attr(node,names)||tagNumber(series,names)||attr(series,names)||tagNumber(pf,names)||attr(pf,names);
+                if(z&&z>0)return z;
+                return 1;
+            };
+
+            const futPfs=Array.from(doc.querySelectorAll("futPf"));
+            const optPfs=Array.from(doc.querySelectorAll("oopPf"));
+            const totalGroups=futPfs.length+optPfs.length;
+            let doneGroups=0;
+
+            const progress=()=>{
+                const value=totalGroups ? 35+(doneGroups/totalGroups)*65 : 100;
+                if(onProgress)onProgress(Math.min(100,value));
+            };
+
+            // Parse in small batches so the browser remains responsive.
+            const processFutures=(index)=>{
+                const batchSize=(typeof document==="undefined")?100000:8;
+                const end=Math.min(index+batchSize,futPfs.length);
+                for(let i=index;i<end;i++){
+                    const pf=futPfs[i];
+                    const pfCode=direct(pf,"pfCode");
+                    const pfId=direct(pf,"pfId");
+                    const pfLot=lot(null,pf,null,pfCode);
+
+                    for(const fut of pf.children){
+                        if(String(fut.tagName).toLowerCase()!=="fut")continue;
+                        const cId=direct(fut,"cId");
+                        const expiry=direct(fut,"pe");
+                        const key="FUT|"+pfId+"|"+cId+"|"+expiry;
+                        if(seen.has(key))continue;
+                        seen.add(key);
+
+                        contractsOut.push({
+                            type:"FUT",
+                            pfCode,
+                            pfId,
+                            contractId:cId,
+                            expiry,
+                            strike:null,
+                            optionType:"",
+                            price:num(fut,"p"),
+                            delta:num(fut,"d"),
+                            spanDelta:firstD(fut),
+                            volatility:num(fut,"v"),
+                            cvf:num(fut,"cvf")??1,
+                            scaling:num(fut,"sc")??1,
+                            lotSize:lot(fut,pf,null,pfCode)||pfLot,
+                            risk:risk(fut)
+                        });
+                    }
+                    doneGroups++;
+                }
+                progress();
+                if(index+batchSize<futPfs.length){
+                    setTimeout(()=>processFutures(index+batchSize),0);
+                }else{
+                    setTimeout(()=>processOptions(0),0);
+                }
+            };
+
+            const processOptions=(index)=>{
+                const batchSize=(typeof document==="undefined")?100000:5;
+                const end=Math.min(index+batchSize,optPfs.length);
+                for(let i=index;i<end;i++){
+                    const pf=optPfs[i];
+                    const pfCode=direct(pf,"pfCode");
+                    const pfId=direct(pf,"pfId");
+                    const pfLot=lot(null,pf,null,pfCode);
+
+                    for(const series of pf.children){
+                        if(String(series.tagName).toLowerCase()!=="series")continue;
+                        const expiry=direct(series,"pe");
+                        const seriesLot=lot(null,pf,series,pfCode)||pfLot;
+
+                        for(const opt of series.children){
+                            if(String(opt.tagName).toLowerCase()!=="opt")continue;
+                            const cId=direct(opt,"cId");
+                            const ot=direct(opt,"o").toUpperCase();
+                            const strike=num(opt,"k");
+                            const key="OPT|"+pfId+"|"+cId+"|"+expiry+"|"+ot+"|"+strike;
+                            if(seen.has(key))continue;
+                            seen.add(key);
+
+                            contractsOut.push({
+                                type:"OPT",
+                                pfCode,
+                                pfId,
+                                contractId:cId,
+                                expiry,
+                                strike,
+                                optionType:ot,
+                                price:num(opt,"p"),
+                                delta:num(opt,"d"),
+                                spanDelta:firstD(opt),
+                                volatility:num(opt,"v"),
+                                cvf:num(series,"cvf")??num(pf,"cvf")??1,
+                                scaling:num(series,"sc")??num(pf,"sc")??1,
+                                lotSize:lot(opt,pf,series,pfCode)||seriesLot,
+                                risk:risk(opt)
+                            });
+                        }
+                    }
+                    doneGroups++;
+                }
+                progress();
+                if(index+batchSize<optPfs.length){
+                    setTimeout(()=>processOptions(index+batchSize),0);
+                }else{
+                    contracts=contractsOut;
+                    if(onProgress)onProgress(100);
+                    resolve();
+                }
+            };
+
+            if(totalGroups===0){
+                contracts=[];
+                if(onProgress)onProgress(100);
+                resolve();
+                return;
+            }
+
+            if(onProgress)onProgress(35);
+            processFutures(0);
+
+        }catch(err){
+            reject(err instanceof Error?err:new Error(String(err)));
+        }
+    });
+}
+
+function parseCSV(text){
+ text=String(text||"").replace(/^\uFEFF/,"");const rows=[];let row=[],cell="",quoted=false;
+ for(let i=0;i<text.length;i++){const ch=text[i];if(ch==='"'){if(quoted&&text[i+1]==='"'){cell+='"';i++}else quoted=!quoted}else if(ch===","&&!quoted){row.push(cell);cell=""}else if((ch==="\n"||ch==="\r")&&!quoted){if(ch==="\r"&&text[i+1]==="\n")i++;row.push(cell);cell="";if(row.some(v=>String(v).trim()!==""))rows.push(row);row=[]}else cell+=ch}
+ if(cell!==""||row.length){row.push(cell);if(row.some(v=>String(v).trim()!==""))rows.push(row)}
+ if(rows.length<2)return[];const h=rows[0].map(x=>String(x).trim());return rows.slice(1).map(c=>{const o={};h.forEach((x,i)=>o[x]=String(c[i]??"").trim());return o})
+}
+function numberFromPosition(row,key){const v=String(row[key]??"").trim();if(!v)return 0;const n=Number(v.replace(/,/g,""));return Number.isFinite(n)?n:0}
+function firstPositionValue(row,names){for(const n of names)if(row[n]!==undefined&&String(row[n]).trim()!=="")return String(row[n]).trim();const norm={};Object.keys(row).forEach(k=>norm[k.toLowerCase().replace(/[^a-z0-9]/g,"")]=row[k]);for(const n of names){const k=n.toLowerCase().replace(/[^a-z0-9]/g,"");if(norm[k]!==undefined&&String(norm[k]).trim()!=="")return String(norm[k]).trim()}return""}
+function positionType(row){const t=firstPositionValue(row,["Inst","FinInstrmTp","Instrument","Instrument Type"]).toUpperCase();if(t==="STF"||t==="IDF"||t.includes("FUT")||t==="FUT")return"FUT";if(t==="STO"||t==="IDO"||t.includes("OPT")||t==="OPT")return"OPT";return""}
+function normalizeOptionForSPN(v){v=String(v||"").trim().toUpperCase();return v==="CE"||v==="C"?"C":v==="PE"||v==="P"?"P":""}
+function getPositionNetQty(row){return numberFromPosition(row,"Net Qty")}
+function findSPANContractForPosition(row){
+ const type=positionType(row),symbol=firstPositionValue(row,["Symbol","TckrSymb","Scrip","Scrip Name"]).trim().toUpperCase(),expiry=normalizeExpiry(firstPositionValue(row,["Expiry Date","XpryDt","Expiry","ExpiryDate"])),st=firstPositionValue(row,["Strike Price","StrkPric","Strike","StrikePrice"]).trim(),strike=st===""?null:Number(st),ot=normalizeOptionForSPN(firstPositionValue(row,["Opt Type","OptnTp","Option Type","OptionType"]));
+ const c=contracts.find(x=>x.type===type&&String(x.pfCode).trim().toUpperCase()===symbol&&normalizeExpiry(x.expiry)===expiry&&(type!=="OPT"||(x.strike!==null&&strike!==null&&Math.abs(Number(x.strike)-strike)<=.000001&&String(x.optionType).toUpperCase()===ot)));
+ return c?{contract:c,reason:""}:{contract:null,reason:symbol+" | "+type+" | "+formatExpiry(expiry)}
+}
+document.getElementById("positionFile").addEventListener("change",function(e){
+ const f=e.target.files[0];if(!f)return;document.getElementById("positionUploadedName").textContent=f.name;positionRecords=[];positionMatched=[];positionUnmatched=[];positionClientIds=[];setPositionStatus("Reading "+f.name+"...");const r=new FileReader();
+ r.onload=ev=>{try{positionFileText=ev.target.result||"";positionRecords=parseCSV(positionFileText);if(!positionRecords.length)throw Error("Position CSV contains no data rows.");positionClientIds=[...new Set(positionRecords.map(x=>String(x.ClientId??x.ClntId??x["Client ID"]??x.Client??"").trim()).filter(Boolean))];setPositionStatus("");if(contracts.length)loadPositionFile();else setPositionStatus("") }catch(err){setPositionStatus(err.message,"err")}};r.onerror=()=>setPositionStatus("Unable to read selected position file.","err");r.readAsText(f)
+});
+function setPositionStatus(t,type){const e=document.getElementById("positionStatus");if(e)e.textContent=""; if(type==="err") console.warn(t)}
+function loadPositionFile(){
+ if(!contracts.length)return setPositionStatus("Upload the SPN file first.","err");if(!positionRecords.length)return setPositionStatus("Upload a position CSV first.","err");if(positionClientIds.length>1)return setPositionStatus("Multiple clients detected.","err");
+ const aggregate={},unmatched=[];positionRecords.forEach((row,i)=>{const q=getPositionNetQty(row);if(Math.abs(q)<1e-9)return;const r=findSPANContractForPosition(row);if(!r.contract){unmatched.push({row:i+2,reason:r.reason});return}const c=r.contract,key=c.type+"|"+c.pfId+"|"+c.contractId+"|"+normalizeExpiry(c.expiry)+"|"+(c.type==="OPT"?c.strike:"")+"|"+(c.type==="OPT"?c.optionType:"");if(!aggregate[key])aggregate[key]={contract:c,qty:0};aggregate[key].qty+=q});
+ const matched=[];Object.values(aggregate).forEach(x=>{if(Math.abs(x.qty)<1e-9)return;matched.push({contract:x.contract,side:x.qty>=0?"Buy":"Sell",qty:Math.abs(x.qty),price:x.qty<0&&x.contract.type==="OPT"?null:Number(x.contract.price)})});
+ positionMatched=matched;positionUnmatched=unmatched;if(unmatched.length)return setPositionStatus(matched.length+" matched • "+unmatched.length+" unmatched — calculation stopped.","err");if(!matched.length)return setPositionStatus("No non-zero positions found.","err");portfolio=matched;document.getElementById("searchResults").classList.add("hidden");renderPortfolio();setPositionStatus("")
+}
+
+const DISPLAY_LOT_SIZE={"ABCAPITAL":3100,"ADANIENSOL":675,"GODFRYPHLP":275,"INDHOTEL":1000,"INDIANB":1000,"INOXWIND":6400,"JINDALSTEL":625,"MPHASIS":275,"NESTLEIND":500,"NTPC":1500,"PRESTIGE":450,"RBLBANK":3175,"SHREECEM":25,"TATAELXSI":125,"TATASTEEL":2750,"TCS":225,"ADANIPOWER":3550,"AMBUJACEM":1200,"APLAPOLLO":350,"ATHERENERG":375,"AUROPHARMA":550,"BAJAJHLDNG":75,"BANKNIFTY":30,"BSE":200,"CDSL":475,"CONCOR":1250,"EICHERMOT":100,"INDIGO":150,"JIOFIN":2350,"KAYNES":150,"KEI":175,"MFSL":400,"NYKAA":3125,"PAGEIND":20,"PERSISTENT":125,"PNBHOUSING":650,"SBILIFE":375,"TIINDIA":200,"TITAN":175,"TRENT":225,"UNIONBANK":4425,"YESBANK":31100,"ABB":125,"BDL":425,"BEL":1425,"BHEL":2625,"CGPOWER":850,"GMRAIRPORT":6975,"HAL":150,"HCLTECH":400,"JUBLFOOD":1250,"OBEROIRLTY":350,"ONGC":2250,"PNB":8000,"POWERGRID":1900,"SAGILITY":12000,"SONACOMS":1225,"AXISBANK":625,"COCHINSHIP":400,"ETERNAL":2425,"GVT&D":125,"HINDPETRO":2025,"IDFCFIRSTB":9275,"LODHA":625,"TVSMOTOR":175,"BAJAJ-AUTO":75,"BOSCHLTD":25,"CIPLA":425,"DLF":950,"DRREDDY":625,"GODREJPROP":325,"KOTAKBANK":2000,"M&M":200,"NATIONALUM":1875,"NHPC":6950,"PAYTM":725,"PGEL":950,"TECHM":600,"ULTRACEMCO":50,"BANKINDIA":5200,"BIOCON":2500,"COALINDIA":1350,"COLPAL":275,"FEDERALBNK":2500,"FORCEMOT":25,"GODREJCP":500,"KPITTECH":775,"LT":175,"NMDC":6750,"OIL":1400,"PHOENIXLTD":350,"PIIND":175,"TATACONSUM":550,"WIPRO":3000,"BHARATFORG":500,"CROMPTON":2150,"INDUSTOWER":1700,"NAM-INDIA":625,"PATANJALI":1075,"POWERINDIA":25,"SOLARINDS":50,"TATAPOWER":1450,"VOLTAS":375,"APOLLOHOSP":125,"DELHIVERY":2075,"DIXON":50,"FORTIS":775,"GLENMARK":375,"HINDUNILVR":300,"ICICIPRULI":925,"IDEA":71475,"NBCC":6500,"POLYCAB":125,"ALKEM":125,"ASHOKLEY":5000,"ASTRAL":425,"BANKBARODA":2925,"BHARTIARTL":475,"BPCL":1975,"CHOLAFIN":625,"CUMMINSIND":200,"DIVISLAB":100,"IEX":4350,"INDUSINDBK":700,"JSWENERGY":1075,"KALYANKJIL":1350,"LAURUSLABS":850,"LTF":2250,"MANAPPURAM":3000,"MARICO":1200,"MOTHERSON":6150,"MOTILALOFS":775,"RELIANCE":500,"SRF":200,"SWIGGY":1825,"VMM":4850,"ZYDUSLIFE":900,"ADANIGREEN":600,"ADANIPORTS":475,"BAJAJFINSV":300,"BLUESTARCO":325,"DABUR":1250,"HDFCAMC":300,"IOC":4875,"ITC":1725,"MAXHEALTH":525,"NIFTYNXT50":25,"OFSS":100,"PIDILITIND":500,"SBIN":750,"360ONE":500,"ADANIENT":309,"JSWSTEEL":675,"LICI":1400,"MAHABANK":6500,"POLICYBZR":350,"PREMIERENE":650,"SAIL":4700,"SUZLON":12700,"UPL":1355,"VEDL":1150,"ASIANPAINT":250,"BRITANNIA":125,"GRASIM":250,"HDFCLIFE":1100,"ICICIBANK":700,"ICICIGI":325,"INFY":400,"KFINTECH":575,"MARUTI":50,"MUTHOOTFIN":275,"PFC":1300,"SUNPHARMA":350,"SUPREMEIND":175,"UNOMINDA":550,"COFORGE":475,"GAIL":3550,"HAVELLS":500,"HDFCBANK":650,"HEROMOTOCO":150,"MANKIND":250,"MAZDOCK":225,"MCX":225,"NIFTY":65,"PETRONET":1900,"SIEMENS":175,"UNITDSPR":400,"AMBER":100,"BAJFINANCE":750,"CANBK":6750,"DMART":150,"FINNIFTY":60,"HINDZINC":1225,"IREDA":4525,"LICHSGFIN":1000,"LTM":150,"LUPIN":425,"RADICO":150,"RVNL":1925,"SHRIRAMFIN":825,"TMPV":1600,"ANGELONE":2500,"AUBANK":1000,"BANDHANBNK":3600,"CAMS":825,"HINDALCO":700,"HYUNDAI":275,"IRFC":5425,"MIDCPNIFTY":120,"NAUKRI":550,"NIFTYFPI":1100,"RECLTD":1575,"SBICARD":800,"TORNTPHARM":125,"VBL":1275,"WAAREEENER":175};
+/* 216 unique scrip lot sizes from lotBook2.xlsx; used only for quantity stepping/normalization. */
+function getDisplayLotSize(c){const s=String(c?.pfCode||c?.symbol||"").trim().toUpperCase();return Math.max(1,Number(DISPLAY_LOT_SIZE[s]||c?.lotSize||1));}
+function normalizeQtyToLot(qty,lotSize){lotSize=Math.max(1,Number(lotSize)||1);qty=Number(qty);if(!Number.isFinite(qty)||qty<=0)return lotSize;return Math.max(1,Math.round(qty/lotSize))*lotSize}
+function renderPortfolio(){
+ const e=document.getElementById("emptyPortfolio"),a=document.getElementById("calculationArea");
+ if(!portfolio.length){e.classList.remove("hidden");a.classList.add("hidden");return}
+ e.classList.add("hidden");a.classList.remove("hidden");buildCalculation()
+}
+function searchContracts(){
+ if(!contracts.length){setStatus("Please upload an SPN file first.","err");return}
+ const symbol=document.getElementById("symbol").value.trim().toUpperCase(),type=document.getElementById("contractType").value,expiry=normalizeExpiry(document.getElementById("expiry").value),st=document.getElementById("strike").value.trim(),strike=st===""?null:Number(st),ot=document.getElementById("optionType").value.trim().toUpperCase();
+ const symbolMatch=c=>!symbol||String(c.pfCode||"").toUpperCase().startsWith(symbol);
+ displayResults(contracts.filter(c=>symbolMatch(c)&&(type==="ALL"||c.type===type)&&(!expiry||normalizeExpiry(c.expiry)===expiry)&&(c.type!=="OPT"||(strike===null||Number(c.strike)===strike)&&(!ot||c.optionType===ot))))
+}
+document.getElementById("symbol").addEventListener("input",function(){const v=this.value.trim();if(v.length>=3)searchContracts();else{document.getElementById("searchResults").classList.add("hidden");document.getElementById("resultList").innerHTML=""}});
+
+function displayResults(results){
+ const box=document.getElementById("searchResults"),list=document.getElementById("resultList");box.classList.remove("hidden");list.innerHTML="";document.getElementById("searchCount").textContent=results.length.toLocaleString("en-IN")+" found";
+ if(!results.length){list.innerHTML='<div class="empty">No matching contracts found.</div>';return}
+ results.slice(0,100).forEach(c=>{const i=contracts.indexOf(c),lot=getDisplayLotSize(c),row=document.createElement("div");row.className="result";row.innerHTML=`<div class="result-type">${c.type}</div><div class="result-name">${escapeHtml(c.pfCode)}</div><div class="result-expiry">${formatExpiry(c.expiry)}</div><div>${c.type==="OPT"?formatNumber(c.strike):"-"}</div><div class="result-option">${c.type==="OPT"?(c.optionType==="C"?"CE":"PE"):"FUT"}</div><div class="mobile-hide">${c.price==null?"-":formatNumber(c.price)}</div><div class="result-add-controls"><select class="result-side" id="searchSide_${i}"><option value="Buy">Buy</option><option value="Sell">Sell</option></select><div class="lot-control"><input class="result-qty" id="searchQty_${i}" type="number" min="${lot}" step="${lot}" value="${lot}" title="1 lot = ${lot}"><div class="lot-stepper"><button type="button" class="lot-step-btn" onclick="adjustSearchLot(${i},${lot})" aria-label="Increase by 1 lot">▲</button><button type="button" class="lot-step-btn" onclick="adjustSearchLot(${i},-${lot})" aria-label="Decrease by 1 lot">▼</button></div></div><button class="add" onclick="directAdd(${i})">Add</button></div>`;list.appendChild(row)})
+}
+function adjustSearchLot(i,delta){
+ const c=contracts[i];if(!c)return;
+ const lot=getDisplayLotSize(c),el=document.getElementById("searchQty_"+i);if(!el)return;
+ let q=Number(el.value)||lot;q=Math.max(lot,Math.round(q/lot)*lot+Number(delta));el.value=q;
+}
+function directAdd(i){
+ const c=contracts[i];if(!c)return;const side=document.getElementById("searchSide_"+i).value,lot=getDisplayLotSize(c),qty=normalizeQtyToLot(document.getElementById("searchQty_"+i).value,lot);
+ portfolio.push({contract:c,side,qty,price:side==="Sell"&&c.type==="OPT"?null:Number(c.price)});
+ document.getElementById("searchResults").classList.add("hidden");renderPortfolio()
+}
+function stableBuildCalculation(){
+ const area=document.getElementById("calculationArea");
+ const sx=window.scrollX,sy=window.scrollY;
+ const root=document.documentElement,body=document.body;
+ const oldRootAnchor=root.style.overflowAnchor,oldBodyAnchor=body.style.overflowAnchor;
+ const oldVisibility=area?area.style.visibility:"";
+ root.style.overflowAnchor="none";
+ body.style.overflowAnchor="none";
+ if(area)area.style.visibility="hidden";
+ buildCalculation();
+ window.scrollTo(sx,sy);
+ if(area)area.style.visibility=oldVisibility;
+ requestAnimationFrame(()=>{
+   window.scrollTo(sx,sy);
+   root.style.overflowAnchor=oldRootAnchor;
+   body.style.overflowAnchor=oldBodyAnchor;
+ });
+}
+
+function adjustOutputLot(i,delta){
+ const item=portfolio[i];if(!item)return;
+ const lot=getDisplayLotSize(item.contract),el=document.getElementById("qty_"+i);if(!el)return;
+ let q=Number(el.value)||lot;q=Math.max(lot,Math.round(q/lot)*lot+Number(delta));item.qty=q;el.value=q;
+ stableBuildCalculation();
+ const n=document.getElementById("qty_"+i);if(n)n.focus({preventScroll:true});
+}
+function removeContract(i){portfolio.splice(i,1);renderPortfolio()}
+function clearPortfolio(){portfolio=[];renderPortfolio();document.getElementById("metricPositions").textContent="0";document.getElementById("metricGrossSpan").textContent="0";document.getElementById("metricHedge").textContent="0";document.getElementById("metricNetSpan").textContent="0"}
+function clearSearch(){document.getElementById("expiry").value="";document.getElementById("strike").value="";document.getElementById("optionType").value="";document.getElementById("searchResults").classList.add("hidden")}
+function changeSide(i,v){if(!portfolio[i])return;portfolio[i].side=v;const c=portfolio[i].contract;if(c.type==="OPT"&&v==="Sell")portfolio[i].price=null;else if(c.type==="OPT"&&v==="Buy"&&!Number.isFinite(Number(portfolio[i].price)))portfolio[i].price=Number(c.price);buildCalculation()}
+function changeQty(i,v){if(!portfolio[i])return;portfolio[i].qty=normalizeQtyToLot(v,getDisplayLotSize(portfolio[i].contract));stableBuildCalculation()}
+function updateMergedPrice(i,v){if(!portfolio[i])return;const n=Number(v);portfolio[i].price=Number.isFinite(n)&&n>=0?n:null;buildCalculation()}
+
+/* Calendar spread */
+function getRateValue(parent){const r=parent.querySelector(":scope > rate");if(!r)return 0;const v=r.querySelector(":scope > val");const n=Number((v?v.textContent:r.textContent).trim());return Number.isFinite(n)?n:0}
+function readSpreadLeg(leg){if(!leg)return null;return{code:(directValue(leg,"cc")||directValue(leg,"pfCode")||directValue(leg,"pCode")||"").trim().toUpperCase(),expiry:normalizeExpiry(directValue(leg,"pe")||directValue(leg,"expiry")||""),ratio:Math.abs(Number(directNumber(leg,"i")??directNumber(leg,"qty")??directNumber(leg,"ratio")??1)||1)}}
+function buildCalendarDeltaBook(){const m={};portfolio.forEach(x=>{const c=x.contract,code=String(c.pfCode||"").trim().toUpperCase(),expiry=normalizeExpiry(c.expiry),q=Math.max(0,Number(x.qty)||0);if(!code||!expiry||!q)return;const sq=x.side==="Buy"?q:-q,d=c.type==="FUT"?(Number.isFinite(Number(c.spanDelta))?Number(c.spanDelta):1):(Number(c.spanDelta)||0),k=code+"|"+expiry;if(!m[k])m[k]={key:k,code,expiry,delta:0};m[k].delta+=sq*d});return m}
+function getCalendarSpreadDefinitions(){if(calendarSpreadDefinitions.length)return calendarSpreadDefinitions;if(!spanXML)return[];const out=[];spanXML.querySelectorAll("dSpread").forEach(ds=>{const legs=Array.from(ds.querySelectorAll(":scope > pLeg"));if(legs.length<2)return;const rate=getRateValue(ds);for(let i=0;i<legs.length-1;i++){let a=readSpreadLeg(legs[i]),b=readSpreadLeg(legs[i+1]);if(!a||!b||a.code!==b.code||a.expiry===b.expiry)continue;let near=a,far=b;if(Number(near.expiry)>Number(far.expiry))[near,far]=[far,near];out.push({code:near.code,keyNear:near.code+"|"+near.expiry,keyFar:far.code+"|"+far.expiry,near,far,rate,ratioNear:near.ratio,ratioFar:far.ratio})}});return out}
+function calculateCalendarSpreadCharge(){if(portfolio.length<2)return{charge:0,details:[]};const mm=buildCalendarDeltaBook(),defs=getCalendarSpreadDefinitions(),rem={};Object.keys(mm).forEach(k=>rem[k]=mm[k].delta);let charge=0,details=[];defs.forEach(sp=>{const a=mm[sp.keyNear],b=mm[sp.keyFar];if(!a||!b)return;const qa=rem[sp.keyNear]||0,qb=rem[sp.keyFar]||0;if(Math.abs(qa)<1e-12||Math.abs(qb)<1e-12||Math.sign(qa)===Math.sign(qb))return;const u=Math.min(Math.abs(qa)/sp.ratioNear,Math.abs(qb)/sp.ratioFar);if(!Number.isFinite(u)||u<=0)return;rem[sp.keyNear]-=u*sp.ratioNear*Math.sign(qa);rem[sp.keyFar]-=u*sp.ratioFar*Math.sign(qb);const amt=u*sp.rate;charge+=amt;details.push({code:sp.code,expiryA:formatExpiry(sp.near.expiry),expiryB:formatExpiry(sp.far.expiry),amount:amt})});return{charge,details}}
+
+function buildCalculation(){
+ const head=document.getElementById("calculationHead"),body=document.getElementById("calculationBody");head.innerHTML=`<tr><th>#</th><th class="symbol-header">Symbol</th><th>Side</th><th>Qty</th><th>Price</th><th>SPAN</th><th>Remove</th></tr>`;body.innerHTML="";
+ const csv=[],symbolGross={},symbolNOV={};let novAdj=0;
+ portfolio.forEach(item=>{const c=item.contract,dir=item.side==="Buy"?1:-1,q=Math.max(0,Number(item.qty)||0),mult=(Number(c.cvf)||1)*(Number(c.scaling)||1),vals=[];for(let s=0;s<16;s++)vals.push(Number(c.risk[s]||0)*q*dir*mult);csv.push(vals);const standalone=Math.max(...vals,0),sym=String(c.pfCode||"").trim().toUpperCase();symbolGross[sym]=(symbolGross[sym]||0)+standalone;if(c.type==="OPT"){const prem=(Number(c.price)||0)*q*mult,nov=item.side==="Sell"?prem:-prem;novAdj+=nov;symbolNOV[sym]=(symbolNOV[sym]||0)+nov}});
+ const groups={};portfolio.forEach((item,i)=>{const sym=String(item.contract.pfCode||"").trim().toUpperCase();if(!groups[sym])groups[sym]={key:sym,totals:new Array(16).fill(0),members:[]};groups[sym].members.push(i);for(let s=0;s<16;s++)groups[sym].totals[s]+=csv[i][s]});
+ let scanning=0,groupWorst={};Object.values(groups).forEach(g=>{const w=Math.max(...g.totals),sc=g.totals.indexOf(w);groupWorst[g.key]={risk:Math.max(0,w),scenario:sc};scanning+=Math.max(0,w)});
+ const spread=calculateCalendarSpreadCharge(),gross=csv.reduce((a,v)=>a+Math.max(...v,0),0),before=Math.max(0,scanning+spread.charge),hedge=Math.max(0,gross-before),finalSpan=Math.max(0,before+novAdj);
+ let totalSpan=0;
+ portfolio.forEach((item,i)=>{const c=item.contract,stand=Math.max(...csv[i],0),p=Number.isFinite(Number(item.price))?Number(item.price):"",lot=getDisplayLotSize(c);totalSpan+=stand;
+ body.insertAdjacentHTML("beforeend",`<tr><td>${i+1}</td><td class="left"><b>${escapeHtml(c.pfCode)}</b> <span style="font-size:11px;color:#587068">${c.type==="OPT"?`${c.type} • ${formatExpiry(c.expiry)} • ${formatNumber(c.strike)} • ${c.optionType==="C"?"CE":"PE"}`:`${c.type} • ${formatExpiry(c.expiry)}`}</span></td><td><select class="side" onchange="changeSide(${i},this.value)"><option value="Buy" ${item.side==="Buy"?"selected":""}>Buy</option><option value="Sell" ${item.side==="Sell"?"selected":""}>Sell</option></select></td><td><div class="lot-control"><input id="qty_${i}" class="qty" type="number" min="${lot}" step="${lot}" value="${item.qty}" onchange="changeQty(${i},this.value)" title="1 lot = ${lot}"></div></td><td><input class="merged-price" type="number" min="0" step="0.01" value="${p}" onchange="updateMergedPrice(${i},this.value)"></td><td class="margin-value">${formatNumber(stand)}</td><td><button class="remove" onclick="removeContract(${i})">×</button></td></tr>`)});
+ body.insertAdjacentHTML("beforeend",`<tr class="total-row"><td class="symbol-header"><b>Total</b></td><td></td><td></td><td></td><td></td><td class="margin-value"><b>${formatNumber(totalSpan)}</b></td><td></td></tr>`);
+ document.getElementById("metricPositions").textContent=portfolio.length.toLocaleString("en-IN");
+ document.getElementById("metricGrossSpan").textContent=""+formatNumber(gross);
+ document.getElementById("metricHedge").textContent=""+formatNumber(hedge);
+ document.getElementById("metricNetSpan").textContent=""+formatNumber(finalSpan);
+ const rows=[];Object.keys(groups).sort().forEach(s=>{const g=symbolGross[s]||0,r=groupWorst[s]?.risk||0,sp=(spread.details||[]).filter(d=>String(d.code).toUpperCase()===s).reduce((a,d)=>a+Number(d.amount||0),0),sb=Math.max(0,r+sp),h=Math.max(0,g-sb),fs=Math.max(0,sb+(symbolNOV[s]||0));rows.push({symbol:s,gross:g,hedge:h,finalSpan:fs})});renderSymbolBreakdown(rows);
+}
+function renderSymbolBreakdown(rows){
+ const box=document.getElementById("symbolBreakdown");
+ if(!rows.length){box.innerHTML="";return}
+ let tg=0,th=0,tf=0;
+ const br=rows.map(r=>{tg+=r.gross;th+=r.hedge;tf+=r.finalSpan;return `<tr><td class="left"><b>${escapeHtml(r.symbol)}</b></td><td class="margin-value">${formatNumber(r.gross)}</td><td style="color:#087f5b;font-weight:900">-${formatNumber(r.hedge)}</td><td class="margin-value">${formatNumber(r.finalSpan)}</td></tr>`}).join("");
+ box.innerHTML=`<div class="simple-margin-card"><div class="simple-margin-title"><span>Symbol-wise Hedge Benefit</span><span class="simple-margin-sub">Gross SPAN vs Hedge Benefit vs Net SPAN</span></div><div class="simple-margin-table-wrap"><table class="simple-margin-table"><thead><tr><th class="left">Symbol</th><th>Gross SPAN</th><th>Hedge Benefit</th><th>Net SPAN</th></tr></thead><tbody>${br}<tr class="grand-total-row"><td class="left"><b>All Symbols</b></td><td class="margin-value">${formatNumber(tg)}</td><td style="color:#087f5b;font-weight:900">-${formatNumber(th)}</td><td class="margin-value">${formatNumber(tf)}</td></tr></tbody></table></div></div>`;
+}
+document.getElementById("contractType").addEventListener("change",function(){const f=this.value==="FUT";document.getElementById("strike").disabled=f;document.getElementById("optionType").disabled=f;if(f){document.getElementById("strike").value="";document.getElementById("optionType").value=""}})
+function clearPositionFile(){positionFileText="";positionRecords=[];positionMatched=[];positionUnmatched=[];positionClientIds=[];document.getElementById("positionFile").value="";document.getElementById("positionUploadedName").textContent="—";setPositionStatus("");clearPortfolio()}
+function renderInitial(){renderPortfolio()}
+renderInitial();
+restoreSPANCache();
+</script>
+<div class="footer">© Khaled</div>
+
+
+</body>
+
+
+</html>
+
+
+
+
+
+

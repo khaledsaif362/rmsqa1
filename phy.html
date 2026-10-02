@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head><script src="/rs-login-gate.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Physical Margin</title>
+
+    <link rel="stylesheet" href="STYLE.css">
+</head>
+
+<body>
+
+<div class="card">
+
+    <div class="window">
+        <div class="title-bar">Physical Margin</div>
+    </div>
+
+
+    <!-- Upload VAR -->
+    <div class="form-group">
+        <label>Upload VAR:</label>
+
+        <input
+            type="file"
+            id="datFile"
+            accept=".dat,.txt"
+        >
+    </div>
+
+
+    <!-- Enter VAR -->
+    <div class="form-group">
+        <label>Enter VAR %:</label>
+
+        <input
+            type="number"
+            id="manualVar"
+            step="0.01"
+            placeholder="Either % or file upload"
+        >
+    </div>
+
+
+    <!-- Symbol -->
+    <div class="form-group">
+        <label>Symbol:</label>
+
+        <input
+            type="text"
+            id="symbol"
+            placeholder="e.g. INFY"
+        >
+    </div>
+
+
+    <!-- LTP -->
+    <div class="form-group">
+        <label>LTP:</label>
+
+        <input
+            type="number"
+            id="ltp"
+            step="0.01"
+        >
+    </div>
+
+
+    <!-- Quantity -->
+    <div class="form-group">
+        <label>Quantity:</label>
+
+        <input
+            type="number"
+            id="qty"
+            placeholder="e.g. 400"
+        >
+    </div>
+
+
+    <!-- Strike Price -->
+    <div class="form-group">
+        <label>Strike Price:</label>
+
+        <input
+            type="number"
+            id="strike"
+        >
+    </div>
+
+
+    <!-- OPTION TYPE -->
+    <div class="option-section">
+
+        <div class="section-label">
+            Option Type:
+        </div>
+
+        <label class="radio-option">
+
+            <input
+                type="radio"
+                name="type"
+                value="CE"
+                checked
+            >
+
+            <span>CE</span>
+
+        </label>
+
+
+        <label class="radio-option">
+
+            <input
+                type="radio"
+                name="type"
+                value="PE"
+            >
+
+            <span>PE</span>
+
+        </label>
+
+    </div>
+
+
+    <!-- EXPIRY DAY -->
+    <div class="expiry-section">
+
+        <div class="section-label">
+            Expiry Day:
+        </div>
+
+
+        <label class="expiry-option">
+
+            <input
+                type="radio"
+                name="slab"
+                value="10"
+                checked
+            >
+
+            <span>1st</span>
+
+        </label>
+
+
+        <label class="expiry-option">
+
+            <input
+                type="radio"
+                name="slab"
+                value="25"
+            >
+
+            <span>2nd</span>
+
+        </label>
+
+
+        <label class="expiry-option">
+
+            <input
+                type="radio"
+                name="slab"
+                value="45"
+            >
+
+            <span>3rd</span>
+
+        </label>
+
+
+        <label class="expiry-option">
+
+            <input
+                type="radio"
+                name="slab"
+                value="70"
+            >
+
+            <span>4th</span>
+
+        </label>
+
+
+        <label class="expiry-option">
+
+            <input
+                type="radio"
+                name="slab"
+                value="100"
+            >
+
+            <span>5th</span>
+
+        </label>
+
+    </div>
+
+
+    <!-- BUTTONS -->
+    <div class="button-row">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+        <button
+            type="button"
+            onclick="calculateMargin()"
+            class="button calculate-button"
+         style="width: 120px; background: #green; color: white; border: none;">
+            Calculate
+        </button>
+
+
+        <button
+            type="button"
+            onclick="clearAll()"
+            class="button clear-button"
+        style="width: 120px; background: #c0392b; color: white; border: none;">
+            Clear
+        </button>
+
+    </div>
+<br>
+
+    <!-- OUTPUT -->
+    <div
+        class="output"
+        id="output"
+    >
+        Physical Margin:
+    </div>
+
+</div>
+
+
+<script>
+
+let datRows = [];
+
+
+// =========================================
+// READ VAR FILE
+// =========================================
+
+document
+    .getElementById('datFile')
+    .addEventListener('change', function(event) {
+
+        const file = event.target.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+
+            const lines =
+                e.target.result.split('\n');
+
+            datRows =
+                lines.map(line =>
+                    line.split(',')
+                );
+
+        };
+
+        reader.readAsText(file);
+
+    });
+
+
+// =========================================
+// CALCULATE PHYSICAL MARGIN
+// =========================================
+
+function calculateMargin() {
+
+    const symbol =
+        document
+        .getElementById("symbol")
+        .value
+        .trim()
+        .toUpperCase();
+
+
+    const ltp =
+        parseFloat(
+            document
+            .getElementById("ltp")
+            .value
+        );
+
+
+    const qty =
+        parseFloat(
+            document
+            .getElementById("qty")
+            .value
+        );
+
+
+    const strike =
+        parseFloat(
+            document
+            .getElementById("strike")
+            .value
+        );
+
+
+    const type =
+        document
+        .querySelector(
+            'input[name="type"]:checked'
+        )
+        ?.value;
+
+
+    const slab =
+        parseFloat(
+            document
+            .querySelector(
+                'input[name="slab"]:checked'
+            )
+            ?.value
+        );
+
+
+    const manualVar =
+        parseFloat(
+            document
+            .getElementById("manualVar")
+            .value
+        );
+
+
+    const output =
+        document.getElementById("output");
+
+
+    // =====================================
+    // VALIDATION
+    // =====================================
+
+    if (
+        !symbol ||
+        isNaN(ltp) ||
+        isNaN(qty) ||
+        isNaN(strike) ||
+        !type ||
+        isNaN(slab)
+    ) {
+
+        output.innerText =
+            "⚠️ Please fill all fields.";
+
+        return;
+    }
+
+
+    // =====================================
+    // GET VAR VALUE
+    // =====================================
+
+    let varValue = null;
+
+
+    // Manual VAR entered
+    if (!isNaN(manualVar)) {
+
+        varValue = manualVar;
+
+    }
+
+
+    // VAR from uploaded file
+    else {
+
+        const row =
+            datRows.find(
+                cols =>
+                    cols[1]
+                    ?.trim()
+                    .toUpperCase() === symbol
+            );
+
+
+        if (!row) {
+
+            output.innerText =
+                `❌ Symbol '${symbol}' not found in VAR file.`;
+
+            return;
+        }
+
+
+        varValue =
+            parseFloat(row[9]);
+
+
+        if (isNaN(varValue)) {
+
+            output.innerText =
+                "❌ VAR in file is invalid.";
+
+            return;
+        }
+
+    }
+
+
+    // =====================================
+    // LTP CONDITIONS
+    // =====================================
+
+    if (
+        type === "CE" &&
+        !(ltp > strike)
+    ) {
+
+        output.innerText =
+            "❌ No Physical Margin";
+
+        return;
+    }
+
+
+    if (
+        type === "PE" &&
+        !(ltp < strike)
+    ) {
+
+        output.innerText =
+            "❌ No Physical Margin";
+
+        return;
+    }
+
+
+    // =====================================
+    // MARGIN CALCULATION
+    // =====================================
+
+    const margin =
+        (
+            (ltp * qty * varValue) / 100
+        ) *
+        (slab / 100);
+
+
+    // =====================================
+    // DISPLAY RESULT
+    // =====================================
+
+    output.innerText =
+        `✅ Physical Margin: ₹${margin.toFixed(2)}`;
+
+}
+
+
+// =========================================
+// CLEAR ALL
+// =========================================
+
+function clearAll() {
+
+    // Clear uploaded file
+    document.getElementById("datFile").value = "";
+
+
+    // Clear all input fields
+    document.getElementById("manualVar").value = "";
+
+    document.getElementById("symbol").value = "";
+
+    document.getElementById("ltp").value = "";
+
+    document.getElementById("qty").value = "";
+
+    document.getElementById("strike").value = "";
+
+
+    // Reset Option Type to CE
+    document.querySelector(
+        'input[name="type"][value="CE"]'
+    ).checked = true;
+
+
+    // Reset Expiry Day to 1st
+    document.querySelector(
+        'input[name="slab"][value="10"]'
+    ).checked = true;
+
+
+    // Clear loaded VAR data
+    datRows = [];
+
+
+    // Reset output
+    document.getElementById("output").innerText =
+        "Physical Margin:";
+
+}
+
+</script>
+
+</body>
+</html>
