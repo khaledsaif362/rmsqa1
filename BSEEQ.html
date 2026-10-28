@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/KSH/rs-login-gate.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BSE EQ Bulk Random Generator</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{
+  font-family:"Segoe UI",Arial,sans-serif;
+  background:#f4f7f5;
+  color:#184d2b;
+  padding:10px;
+}
+.app{width:100%;height:100%;display:flex;flex-direction:column;gap:8px}
+
+.header{
+  height:48px;min-height:48px;
+  background:green;
+  border-radius:10px;
+  color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 20px;
+  box-shadow:0 4px 12px rgba(24,77,43,0.25);
+  margin-top:12px;
+}
+.header h1{margin:0;font-size:16px;font-weight:900;letter-spacing:.4px;color:#ffffff;text-align:center;}
+
+.controls{
+  background:#ffffff;
+  border:1.5px solid #184d2b;
+  border-radius:10px;
+  
+  padding:14px;
+  display:grid;
+  grid-template-columns: 1fr 1.1fr 1.3fr 180px;
+  gap:12px;
+  box-shadow:0 4px 14px rgba(24,77,43,0.08);
+}
+
+.card-section{
+  background:#f5faf6;
+  border:1.5px solid #184d2b;
+  border-radius:8px;
+  padding:12px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  min-width:0;
+}
+.field label{
+  font-size:9.5px;font-weight:900;letter-spacing:.25px;
+  color:#184d2b;white-space:nowrap;
+}
+
+input[type=file]{
+  width:100%;font-size:10px;font-weight:650;color:#184d2b;
+  padding:2px 0;
+}
+input[type=number],input[type=text],select{
+  width:100%;height:32px;min-width:0;
+  border:1.5px solid #184d2b;border-radius:6px;
+  background:#fff;padding:4px 9px;
+  font-size:11px;font-weight:800;color:#184d2b;
+  outline:none;
+  transition:all .2s ease;
+}
+input[type=number]:focus,input[type=text]:focus,select:focus{
+  border-color:#184d2b;box-shadow:0 0 0 3px rgba(24,77,43,0.18);
+}
+
+.checks-wrapper{
+  display:flex;flex-direction:column;gap:6px;
+}
+.checks{
+  height:32px;
+  display:flex;align-items:center;gap:15px;
+  padding:0 8px;
+  border:1.5px solid #184d2b;border-radius:6px;
+  background:#ffffff;
+  white-space:nowrap;
+  overflow-x:auto;
+}
+.checks label{
+  font-size: 9.5px; /* Change this from 9px to 9.5px */
+  font-weight: 850;
+  color: #184d2b;
+  display: flex;
+  align-items: center;
+  gap: 6px; /* Update gap if you want matching spacing here too */
+  cursor: pointer;
+}
+.checks input{width:13px;height:13px;accent-color:#184d2b;margin:0}
+
+.actions-panel{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.btn-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+}
+
+button{
+  height:32px;border:0;border-radius:6px;
+  padding:0 10px;
+  font-size:10px;font-weight:900;
+  white-space:nowrap;cursor:pointer;
+  box-shadow:0 2px 4px rgba(24,77,43,0.15);
+  transition:all .15s ease;
+  width:100%;
+}
+.primary{background:green;color:#fff}
+.primary:hover{background:#12371f}
+.clear-btn{background:#c0392b;color:#fff}
+.clear-btn:hover{background:#962d22}
+
+.status-bar{
+  display:flex;gap:10px;align-items:center;
+}
+.status{
+  flex:1;height:26px;min-height:26px;
+  padding:5px 12px;border-radius:6px;
+  background:#edf5ee;color:#184d2b;
+  font-size:10px;font-weight:850;
+  border:1.5px solid #184d2b;
+}
+.status.ok{background:#edf5ee;color:#184d2b;border-color:#184d2b}
+.status.err{background:#fde8e8;color:#c0392b;border-color:#c0392b}
+
+.info{
+  background:#ffffff;border:1.5px solid #184d2b;
+  padding:0 12px;height:26px;border-radius:6px;
+  display:flex;align-items:center;
+  min-width:0;font-size:10px;font-weight:900;
+  color:#184d2b;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;
+}
+
+.output{
+  flex:1;min-height:0;width:100%;
+  background:#fff;border:1.5px solid #184d2b;
+  border-radius:10px;overflow:auto;
+  box-shadow:0 2px 10px rgba(24,77,43,0.06);
+}
+table{width:100%;border-collapse:collapse;font-size:10px}
+th,td{border:1.5px solid #c5dec9;padding:6px 8px;text-align:left;white-space:nowrap}
+th{
+  position:sticky;top:0;z-index:2;
+  background:#184d2b;color:#fff;font-weight:900;
+}
+tr:nth-child(even){background:#f5faf6}
+.empty{text-align:center;padding:45px;color:#184d2b;font-size:11px;font-weight:650}
+
+/* Compact upload controls */
+.controls > .card-section:first-child{
+  background:#f1fbf5;border:1px solid #39bd83;border-radius:7px;
+  padding:7px;gap:5px;
+}
+.controls > .card-section:first-child > .field{
+  background:#fff;border:1px solid #c6e8d3;border-radius:7px;
+  padding:6px;gap:4px;
+}
+.controls > .card-section:first-child > .field:first-child{border-color:#91c9ff;}
+.controls > .card-section:first-child > .field:nth-child(2){border-color:#d9a4ff;}
+.controls > .card-section:first-child > .field:nth-child(3){border-color:#91c9ff;}
+.controls > .card-section:first-child .field label{
+  font-size:10px;font-weight:900;letter-spacing:0;white-space:normal;
+}
+.upload-topline{display:flex;align-items:center;gap:6px;min-width:0;}
+#autoUpload{width:auto;flex:0 0 auto;height:29px;padding:0 10px;font-size:12px;font-weight:900;border-radius:6px;}
+.auto-status{display:inline-block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;line-height:14px;font-weight:800;color:#087b54;}
+.picked-file-name{display:block;flex:1;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:900;color:#087b54;line-height:20px;}
+.file-pick-row{display:flex;align-items:center;gap:8px;min-width:0;}
+.controls > .card-section:first-child input[type=file]{display:none;}
+.choose-file-button{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;min-height:27px;padding:3px 9px;border:1px solid #bde5d0;border-radius:6px;background:#effaf3;color:#087b54;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;}
+.choose-file-button:hover{background:#dff4e7;border-color:#8bcba8;}
+.controls > .card-section:first-child .field label{font-size:12px;font-weight:900;color:#087b54;}
+@media(max-width:1200px){
+  html,body{overflow:auto}
+  .app{height:auto;min-height:100%}
+  .controls{grid-template-columns:repeat(2,1fr)}
+  .output{height:calc(100vh - 240px);flex:none}
+}
+
+/* Unified sizing and typography across the entire generator */
+:root{
+  --green:#087b4f;
+  --green-dark:#145b3a;
+  --green-border:#80b99a;
+  --green-soft:#f3faf5;
+  --font-main:12px;
+  --control-height:34px;
+}
+body{font-size:var(--font-main);color:var(--green-dark)}
+.controls{
+  padding:10px;
+  gap:10px;
+  grid-template-columns:minmax(300px,1.05fr) minmax(300px,1fr) minmax(360px,1.2fr) minmax(150px,.45fr);
+  border:1px solid var(--green-border);
+  border-radius:9px;
+}
+.card-section{
+  min-width:0;
+  padding:10px;
+  gap:8px;
+  border:1px solid var(--green-border);
+  border-radius:8px;
+  background:var(--green-soft);
+}
+.field{gap:4px}
+.field label,
+.checks label,
+.checks-wrapper .field label{
+  font-size:12px;
+  line-height:16px;
+  font-weight:800;
+  letter-spacing:0;
+  color:var(--green-dark);
+}
+input[type=number],input[type=text],select{
+  height:34px;
+  padding:5px 9px;
+  border:1px solid var(--green-border);
+  border-radius:6px;
+  font-family:inherit;
+  font-size:12px;
+  line-height:18px;
+  font-weight:800;
+  color:var(--green-dark);
+}
+.checks{
+  height:36px;
+  min-height:36px;
+  gap:12px;
+  padding:0 9px;
+  border:1px solid var(--green-border);
+  border-radius:6px;
+}
+.checks label{gap:5px;white-space:nowrap}
+.checks input{width:14px;height:14px;accent-color:var(--green);flex:0 0 auto}
+button{
+  height:34px;
+  min-height:34px;
+  padding:0 10px;
+  border-radius:6px;
+  font-family:inherit;
+  font-size:12px;
+  line-height:16px;
+  font-weight:900;
+}
+.primary{background:var(--green)}
+.primary:hover{background:#066b45}
+.clear-btn{background:#c0392b}
+.status-bar{gap:8px;margin-top:0}
+.status,.info{
+  min-height:30px;
+  height:30px;
+  display:flex;
+  align-items:center;
+  padding:5px 10px;
+  border:1px solid var(--green-border);
+  border-radius:6px;
+  font-family:inherit;
+  font-size:12px;
+  line-height:16px;
+  font-weight:800;
+  color:var(--green-dark);
+}
+.status.ok{background:#edf8f0;border-color:var(--green-border);color:var(--green-dark)}
+.info{background:#fff}
+.output{border:1px solid var(--green-border);border-radius:8px}
+table{font-family:inherit;font-size:12px}
+th,td{padding:7px 9px;border-width:1px}
+.empty{font-size:12px;font-weight:800;color:var(--green-dark)}
+/* Upload cards use the same typography and control dimensions */
+.controls > .card-section:first-child{
+  padding:8px;
+  gap:6px;
+  border:1px solid #39bd83;
+  border-radius:8px;
+  background:#f3faf5;
+}
+.controls > .card-section:first-child > .field{
+  padding:6px;
+  gap:5px;
+  border-radius:7px;
+  background:#fff;
+}
+.controls > .card-section:first-child .field label{
+  font-size:12px;
+  line-height:16px;
+  font-weight:900;
+  color:var(--green);
+}
+#autoUpload{
+  height:34px;
+  min-height:34px;
+  padding:0 10px;
+  font-size:12px;
+  line-height:16px;
+}
+.picked-file-name{
+  font-size:12px;
+  line-height:16px;
+  font-weight:800;
+  color:var(--green);
+}
+.auto-status{font-size:10px;line-height:13px;font-weight:800;color:var(--green);}
+.file-pick-row{gap:8px}
+.choose-file-button{
+  min-height:30px;
+  height:30px;
+  padding:4px 9px;
+  border:1px solid #b5ddc4;
+  border-radius:6px;
+  font-family:inherit;
+  font-size:12px;
+  line-height:16px;
+  font-weight:800;
+  color:var(--green);
+}
+@media(max-width:1200px){
+  .controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px){
+  .controls{grid-template-columns:minmax(0,1fr)}
+  .status-bar{flex-direction:column;align-items:stretch}
+  .status,.info{width:100%}
+}
+
+
+
+/* Final compact layout: reduce empty space and balance every panel */
+body{padding:6px;background:#f4f8f5}
+.controls{
+  padding:7px;
+  gap:7px;
+  grid-template-columns:minmax(285px,1.02fr) minmax(285px,1fr) minmax(330px,1.18fr) minmax(165px,.48fr);
+  align-items:stretch;
+  margin:0;
+}
+.card-section{
+  padding:8px;
+  gap:6px;
+  justify-content:flex-start;
+}
+.controls > .card-section:first-child{
+  padding:6px;
+  gap:5px;
+}
+.controls > .card-section:first-child > .field{
+  padding:5px 6px;
+  gap:3px;
+}
+.controls > .card-section:first-child .field label{
+  font-size:12px;
+  line-height:15px;
+}
+.upload-topline,.file-pick-row{gap:7px}
+#autoUpload{height:31px;min-height:31px;padding:0 9px;font-size:12px}
+.picked-file-name{font-size:12px;line-height:15px}.auto-status{font-size:10px;line-height:12px}
+.choose-file-button{height:28px;min-height:28px;padding:3px 8px;font-size:12px}
+.field{gap:3px}
+input[type=number],input[type=text],select{height:31px;min-height:31px;padding:4px 8px}
+.checks-wrapper{gap:4px}
+.checks{height:32px;min-height:32px;gap:9px;padding:0 7px}
+.checks label{font-size:11px;line-height:14px;gap:4px}
+.checks input{width:13px;height:13px}
+.actions-panel{
+  justify-content:flex-start;
+  gap:8px;
+  padding:8px;
+}
+.actions-panel > .field[style*="visibility:hidden"]{display:none!important}
+.actions-panel #generate{width:100%;height:32px;min-height:32px}
+.btn-grid{grid-template-columns:1fr 1fr;gap:6px;margin-top:0}
+.btn-grid button{height:31px;min-height:31px;padding:0 6px;font-size:11px}
+.status-bar{gap:6px;margin-top:0}
+.status,.info{height:27px;min-height:27px;padding:4px 8px;font-size:11px;line-height:14px}
+.output{min-height:100px}
+.empty{padding:28px 12px}
+@media(max-width:1100px){
+  html,body{height:auto;min-height:100%;overflow:auto}
+  .controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .actions-panel{display:grid;grid-template-columns:1fr 1fr;align-content:start;gap:7px}
+  .actions-panel #generate{grid-column:1/-1}
+  .output{height:calc(100vh - 240px);min-height:180px;flex:none}
+}
+@media(max-width:650px){
+  .controls{grid-template-columns:minmax(0,1fr)}
+  .actions-panel{display:flex}
+  .status-bar{flex-direction:column;align-items:stretch}
+  .status,.info{width:100%}
+}
+
+
+/* FINAL upload layout: status only beside Auto Upload; filenames only beside manual selectors */
+.controls > .card-section:first-child{padding:6px;gap:5px;align-content:start}
+.controls > .card-section:first-child > .field{padding:5px 7px;gap:4px;min-width:0}
+.controls > .card-section:first-child > .field:first-child{padding:5px 7px}
+.upload-topline{display:flex;align-items:center;gap:8px;min-width:0;min-height:30px}
+#autoUpload{width:auto;flex:0 0 auto;height:30px;min-height:30px;padding:0 10px;font-size:12px;line-height:15px}
+.auto-status{display:inline-block;flex:0 1 auto;min-width:0;max-width:95px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;line-height:12px;font-weight:800;color:#087b54}
+.file-pick-row{display:flex;align-items:center;gap:8px;min-width:0}
+.controls > .card-section:first-child input[type=file]{display:none}
+.choose-file-button{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;height:28px;min-height:28px;padding:3px 9px;border:1px solid #bde5d0;border-radius:6px;background:#effaf3;color:#087b54;font-family:inherit;font-size:12px;line-height:15px;font-weight:800;cursor:pointer;white-space:nowrap}
+.picked-file-name{display:block;flex:1 1 auto;min-width:0;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;line-height:15px;font-weight:800;color:#087b54}
+.controls > .card-section:first-child .field label{font-size:12px;line-height:15px;font-weight:900;color:#087b54}
+
+
+/* Keep each upload row on one horizontal line: title, picker, filename */
+.controls > .card-section:first-child > .upload-inline-field{
+  display:flex!important; flex-direction:row!important; align-items:center!important;
+  gap:8px!important; min-width:0; flex-wrap:nowrap!important; padding:5px 7px!important;
+}
+.controls > .card-section:first-child > .upload-inline-field .inline-upload-title{
+  display:block!important; flex:0 0 auto; width:auto; margin:0!important;
+  white-space:nowrap; font-size:10px!important; line-height:13px!important;
+  font-weight:900!important; color:#087b54!important;
+}
+.controls > .card-section:first-child > .upload-inline-field .file-pick-row{
+  display:flex!important; flex:1 1 auto; flex-direction:row!important;
+  align-items:center!important; gap:7px!important; min-width:0; flex-wrap:nowrap!important;
+}
+.controls > .card-section:first-child > .upload-inline-field .picked-file-name{
+  flex:1 1 0; min-width:0; max-width:none; text-align:left;
+  font-size:9px!important; line-height:12px!important; letter-spacing:-.15px;
+}
+@media(max-width:520px){
+  .controls > .card-section:first-child > .upload-inline-field{gap:5px!important;padding:5px!important}
+  .controls > .card-section:first-child > .upload-inline-field .inline-upload-title{font-size:10px!important}
+  .controls > .card-section:first-child > .upload-inline-field .choose-file-button{font-size:10px;padding:3px 5px}
+  .controls > .card-section:first-child > .upload-inline-field .picked-file-name{font-size:9px!important;letter-spacing:-.15px}
+}
+
+/* Smaller, lighter "Choose File" button (overrides earlier rules) */
+.choose-file-button{
+  font-size:10px!important;
+  height:24px!important;
+  min-height:24px!important;
+  padding:2px 7px!important;
+  font-weight:700!important;
+  background:transparent!important;
+  border:1px solid #cfe6d8!important;
+  box-shadow:none!important;
+}
+.choose-file-button:hover{background:#f3faf5!important;border-color:#b5ddc4!important}
+
+</style>
+</head>
+<body>
+
+
+<div class="controls">
+  <!-- Card 1: Data Sources -->
+  <div class="card-section">
+    <div class="field">
+      <div class="upload-topline">
+        <button type="button" id="autoUpload" class="primary">Auto Upload</button>
+        <span id="autoStatus" class="auto-status" aria-live="polite"></span>
+      </div>
+    </div>
+    <div class="field upload-inline-field" id="manualBhavcopyField">
+      <label class="inline-upload-title" for="bhavcopy">BSE EQ Bhavcopy</label>
+      <div class="file-pick-row">
+        <input id="bhavcopy" type="file" accept=".csv,.txt">
+        <label class="choose-file-button" for="bhavcopy">Choose File</label>
+        <span id="manualBhavcopyName" class="picked-file-name"></span>
+      </div>
+    </div>
+    <div class="field upload-inline-field" id="clientListField">
+      <label class="inline-upload-title" for="clientFile">Client List File</label>&nbsp;&nbsp;&nbsp;
+      <div class="file-pick-row">
+        <input id="clientFile" type="file" accept=".csv,.txt">
+        <label class="choose-file-button" for="clientFile">Choose File</label>
+        <span id="clientFileName" class="picked-file-name"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 2: Configuration -->
+  <div class="card-section">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div class="field">
+        <label>RECORDS</label>
+        <input id="recordCount" type="number" min="1" value="100">
+      </div>
+      <div class="field">
+        <label>ORDER SIDE</label>
+        <select id="side">
+          <option value="RANDOM">BUY / SELL</option>
+          <option value="BUY">BUY ONLY</option>
+          <option value="SELL">SELL ONLY</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div class="field">
+        <label>CLIENT 1</label>
+        <input id="client1" type="text" value="TEST001" placeholder="ID">
+      </div>
+      <div class="field">
+        <label>CLIENT 2</label>
+        <input id="client2" type="text" placeholder="ID">
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 3: Filters -->
+  <div class="card-section">
+    <div class="checks-wrapper">
+      <div class="field"><label>PRODUCTS</label></div>
+      <div class="checks" id="products">
+        <label><input type="checkbox" value="INTRADAY" checked>MARGIN</label>
+        <label><input type="checkbox" value="MARGIN" checked>INTRADAY</label>
+        <label><input type="checkbox" value="CNC" checked> CNC</label>
+        <label><input type="checkbox" value="MTF" checked> MTF</label>
+      </div>
+      <div class="field"><label>ORDER TYPES</label></div>
+      <div class="checks" id="orders">
+        <label><input type="checkbox" value="Limit" checked> LIMIT</label>
+        <label><input type="checkbox" value="Market" checked> MKT</label>
+        <label><input type="checkbox" value="SL" checked> SL</label>
+        <label><input type="checkbox" value="SL-M" checked> SL-M</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 4: Actions -->
+  <div class="card-section actions-panel">
+   
+    <div class="field" style="visibility:hidden"><label>&nbsp;</label></div><br>
+    <button id="generate" class="primary">GENERATE</button>
+    <div class="btn-grid">
+      <button id="download" class="primary">DOWNLOAD</button>
+      <button id="clear" class="clear-btn">CLEAR</button>
+    </div>
+  </div>
+</div>
+
+<div class="status-bar">
+  <div id="status" class="status" hidden></div>
+  <div id="summary" class="info">No Bhavcopy loaded.</div>
+</div>
+
+<div id="output" class="output"><div class="empty">Generated output will appear here.</div></div>
+</div>
+
+<script>
+"use strict";
+
+const HEAD=["","Exch","EXCH_SEG","SegmentCode","Symbol","ClientID","Buy/Sell","Token","Product","Qty","Price","OrdType","Trigger Price","DQty","Val","Pro/Cli","Participant ID","LTP"];
+let contracts=[],rowsOut=[],fileClients=[];
+
+const $=id=>document.getElementById(id);
+const status=$("status"),summary=$("summary"),output=$("output");
+
+const BHAVCOPY_INFO_API="http://172.16.101.74:8090/api/bse-eq-bhavcopy-info";
+const BHAVCOPY_API="http://172.16.101.74:8090/api/bse-eq-bhavcopy";
+const BHAVCOPY_CACHE_KEY="bseeq_bulk_bhavcopy_cache_v1";
+const MANUAL_BHAVCOPY_CACHE_KEY="bseeq_bulk_manual_bhavcopy_v1";
+const CLIENT_FILE_CACHE_KEY="bseeq_bulk_client_file_v1";
+
+function readCache(key){
+  try{return JSON.parse(localStorage.getItem(key)||"null")}catch(e){return null}
+}
+function writeCache(key,value){
+  try{
+    const serialized=JSON.stringify(value);
+    localStorage.setItem(key,serialized);
+    const saved=localStorage.getItem(key);
+    if(saved!==serialized) throw new Error("Cache read-back verification failed.");
+    return true;
+  }catch(e){
+    console.error("Cache save failed for "+key,e);
+    msg("Cache save failed: "+(e && e.name==="QuotaExceededError" ? "browser storage is full" : (e.message||"storage unavailable")),"err");
+    return false;
+  }
+}
+
+function clean(v){return String(v??"").replace(/^\uFEFF/,"").trim()}
+
+// Shows the Bhavcopy name only up to the 8-digit date (no hardcoding).
+// Uniform filename rule: stop at the first 8-digit date; otherwise cap visible text. Full name remains in title.
+function shortName(n){
+  const s=String(n||"").trim();
+  const m=s.match(/^(.*?\d{8})/);
+  if(m) return m[1].replace(/[_.-]+$/g,"");
+  const base=s.replace(/\.[^.]+$/,"");
+  return base.length>32 ? base.slice(0,29)+"..." : base;
+}
+
+async function getBhavcopyInfo(){
+  const response=await fetch(BHAVCOPY_INFO_API,{cache:"no-store"});
+  if(!response.ok)throw new Error("BSE EQ Bhavcopy info server error: "+response.status);
+  return await response.json();
+}
+
+// Server is contacted only when the user clicks Auto Upload.
+async function loadServerBhavcopy(){
+  const button=$("autoUpload");
+  const statusEl=$("autoStatus");
+  button.disabled=true;
+  statusEl.textContent="Checking";
+  statusEl.style.color="#087b54";
+  try{
+    const info=await getBhavcopyInfo();
+    const cached=readCache(BHAVCOPY_CACHE_KEY);
+    const serverName=String(info.name||"BSE EQ Bhavcopy");
+    const same=!!(cached && Array.isArray(cached.contracts) && cached.contracts.length &&
+      String(cached.name||"")===serverName &&
+      Number(cached.modifiedUnix)===Number(info.modifiedUnix) &&
+      Number(cached.size)===Number(info.size));
+
+    if(same){
+      contracts=cached.contracts;
+      $("manualBhavcopyName").textContent=shortName(serverName);
+      $("manualBhavcopyName").title=serverName;
+      summary.textContent=(cached.rows||0).toLocaleString()+" total rows • "+contracts.length.toLocaleString()+" valid Series A stocks (Price 300-4000)";
+      statusEl.textContent="Success (Cached)";
+      msg("Server Bhavcopy unchanged — loaded from verified cache.","ok");
+      return;
+    }
+
+    statusEl.textContent="Loading";
+    msg("New/updated server Bhavcopy found. Fetching file...","");
+    const response=await fetch(BHAVCOPY_API,{cache:"no-store"});
+    if(!response.ok)throw new Error("BSE EQ Bhavcopy server error: "+response.status);
+    const csv=await response.text();
+    if(!csv.trim())throw new Error("BSE EQ Bhavcopy is empty.");
+    const data=csvParse(csv);
+    const parsed=readContracts(data);
+    if(!parsed.length)throw new Error("No valid Series A stocks found in BSE EQ Bhavcopy.");
+    contracts=parsed;
+    if(!writeCache(BHAVCOPY_CACHE_KEY,{name:serverName,modifiedUnix:info.modifiedUnix,size:info.size,rows:data.length,contracts:parsed})){
+      throw new Error("Bhavcopy loaded, but browser cache could not be saved. Check browser storage/quota.");
+    }
+    $("manualBhavcopyName").textContent=shortName(serverName);
+    $("manualBhavcopyName").title=serverName;
+    summary.textContent=data.length.toLocaleString()+" total rows • "+contracts.length.toLocaleString()+" valid Series A stocks (Price 300-4000)";
+    statusEl.textContent="Success (Cached)";
+    msg("Server Bhavcopy loaded and cache save verified: "+serverName,"ok");
+  } catch(e) {
+    statusEl.textContent="Failed";
+    statusEl.style.color="#c0392b";
+    throw e;
+  } finally {
+    button.disabled=false;
+  }
+}
+
+function restoreCachedFiles(){
+  const manual=readCache(MANUAL_BHAVCOPY_CACHE_KEY);
+  if(manual && Array.isArray(manual.contracts) && manual.contracts.length){
+    contracts=manual.contracts;
+    $("manualBhavcopyName").textContent=shortName(manual.name||"");
+    $("manualBhavcopyName").title=manual.name||"";
+    summary.textContent=(manual.rows||0).toLocaleString()+" total rows • "+contracts.length.toLocaleString()+" valid Series A stocks (Price 300-4000)";
+
+  } else {
+    const server=readCache(BHAVCOPY_CACHE_KEY);
+    if(server && Array.isArray(server.contracts) && server.contracts.length){
+      contracts=server.contracts;
+      $("manualBhavcopyName").textContent=shortName(server.name||"BSE EQ Bhavcopy");
+      $("manualBhavcopyName").title=server.name||"BSE EQ Bhavcopy";
+      summary.textContent=(server.rows||0).toLocaleString()+" total rows • "+contracts.length.toLocaleString()+" valid Series A stocks (Price 300-4000)";
+      $("autoStatus").textContent="";
+
+    }
+  }
+  const clientsCache=readCache(CLIENT_FILE_CACHE_KEY);
+  if(clientsCache && Array.isArray(clientsCache.clients)){
+    fileClients=clientsCache.clients;
+    $("client1").value="";
+    $("clientFile").title=clientsCache.name||"Cached client list";
+    $("clientFileName").textContent=shortName(clientsCache.name||"");
+
+  }
+}
+
+function msg(t,c=""){status.textContent=t||"";status.className="status "+(c||"");status.hidden=!t}
+function num(v){let x=clean(v).replace(/,/g,"");if(!x)return null;let n=Number(x);return Number.isFinite(n)?n:null}
+
+function csvParse(text){
+ text=String(text||"").replace(/^\uFEFF/,"");
+ let out=[],row=[],cell="",q=false;
+ for(let i=0;i<text.length;i++){
+  let ch=text[i];
+  if(q){
+   if(ch==='"'){if(text[i+1]==='"'){cell+='"';i++}else q=false}
+   else cell+=ch;
+  }else if(ch==='"')q=true;
+  else if(ch===','){row.push(cell);cell=""}
+  else if(ch==='\n'){row.push(cell);if(row.some(v=>clean(v)!==""))out.push(row);row=[];cell=""}
+  else if(ch!=='\r')cell+=ch;
+ }
+ if(cell!==""||row.length){row.push(cell);if(row.some(v=>clean(v)!==""))out.push(row)}
+ if(!out.length)return [];
+ const h=out[0].map(clean);
+ return out.slice(1).map(r=>{let o={};h.forEach((k,i)=>o[k]=r[i]??"");return o})
+}
+
+function readContracts(data){
+ const need=["TckrSymb","SctySrs","OpnPric","FinInstrmId"];
+ if(!data.length)throw Error("Bhavcopy is empty.");
+ let miss=need.filter(k=>!(k in data[0]));
+ if(miss.length)throw Error("Invalid Bhavcopy. Missing: "+miss.join(", "));
+ let seen=new Set(),a=[];
+ for(const r of data){
+  if(clean(r.SctySrs).toUpperCase()!=="A")continue;
+  let id=clean(r.FinInstrmId),sym=clean(r.TckrSymb);
+  let p=num(r.OpnPric);
+  if(!id||!sym||p===null||p<300||p>4000)continue;
+  let key=id+"|"+sym;if(seen.has(key))continue;seen.add(key);
+  a.push({TckrSymb:sym,FinInstrmId:id,ClsPric:p});
+ }
+ return a;
+}
+
+function clients(){
+ let a=[clean($("client1").value),clean($("client2").value),...fileClients].filter(Boolean);
+ return [...new Set(a)];
+}
+
+$("clientFile").addEventListener("change",async()=>{
+ const f=$("clientFile").files[0];
+ if(!f)return;
+ $("client1").value="";
+ $("clientFileName").textContent=shortName(f.name);
+ $("clientFileName").title=f.name;
+ try{
+  const text=await f.text();
+  const vals=text.replace(/\r/g,"").split(/[\n,\t;]+/).map(clean).filter(Boolean);
+  fileClients=[...new Set(vals.filter(v=>!["CLIENT","CLIENTID","CLIENT ID","CLIENTCODE","CLIENT CODE"].includes(v.toUpperCase())))];
+  $("client1").value="";
+  writeCache(CLIENT_FILE_CACHE_KEY,{name:f.name,content:text,clients:fileClients});
+  $("clientFileName").textContent=shortName(f.name);
+  $("clientFileName").title=f.name;
+  msg("✓ "+fileClients.length+" client IDs loaded and cached from file.","ok");
+ }catch(e){fileClients=[];msg("✗ Could not read client file.","err")}
+});
+
+function products(){return [...document.querySelectorAll("#products input:checked")].map(x=>x.value)}
+function orderTypes(){return [...document.querySelectorAll("#orders input:checked")].map(x=>x.value)}
+
+function order(c,cl,side,prod,type){
+ let p=0,t=0,close=Number(c.ClsPric);
+ if(type==="Limit")p=close.toFixed(2);
+ if(type==="SL"){p=close.toFixed(2);t=(side==="BUY"?close-2:close+2).toFixed(2);}
+ if(type==="SL-M")t=(side==="BUY"?close-2:close+2).toFixed(2);
+ 
+ // Random Quantity between 1 and 20
+ const randomQty = Math.floor(Math.random() * 20) + 1;
+
+ return {"":"","Exch":"BSE","EXCH_SEG":"BSEE","SegmentCode":"E",
+ "Symbol":c.TckrSymb,"ClientID":cl,"Buy/Sell":side,"Token":c.FinInstrmId,
+ "Product":prod,"Qty":String(randomQty),"Price":p,"OrdType":type,
+ "Trigger Price":t,"DQty":"0","Val":"DAY","Pro/Cli":"C",
+ "Participant ID":"","LTP":Number(c.ClsPric).toFixed(2)};
+}
+
+function esc(v){return String(v).replace(/[&<>"']/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[x]))}
+function render(){
+ if(!rowsOut.length){output.innerHTML='<div class="empty">Generated output will appear here.</div>';return}
+ let h="<table><thead><tr>"+HEAD.map(x=>"<th>"+esc(x)+"</th>").join("")+"</tr></thead><tbody>";
+ for(const r of rowsOut)h+="<tr>"+HEAD.map(x=>"<td>"+esc(r[x]??"")+"</td>").join("")+"</tr>";
+ output.innerHTML=h+"</tbody></table>";
+}
+
+$("autoUpload").addEventListener("click",()=>{
+ loadServerBhavcopy().catch(e=>{
+   console.warn("BSE EQ server Bhavcopy load failed:",e);
+   msg("Server Auto Upload failed: "+e.message,"err");
+ });
+});
+
+window.addEventListener("load",()=>{msg("","");restoreCachedFiles();});
+
+$("bhavcopy").addEventListener("change",async()=>{
+ const f=$("bhavcopy").files[0];if(!f)return;
+ try{
+  const text=await f.text();
+  const data=csvParse(text);
+  const parsed=readContracts(data);
+  if(!parsed.length)throw new Error("No valid Series A stocks found in Bhavcopy.");
+  contracts=parsed;
+  writeCache(MANUAL_BHAVCOPY_CACHE_KEY,{name:f.name,content:text,rows:data.length,contracts:parsed});
+  $("manualBhavcopyName").textContent=shortName(f.name);
+  $("manualBhavcopyName").title=f.name;
+  $("autoStatus").textContent="";
+  summary.textContent=data.length.toLocaleString()+" total rows • "+contracts.length.toLocaleString()+" valid Series A stocks (Price 300-4000)";
+  msg("","");
+ }catch(e){contracts=[];summary.textContent="Bhavcopy load failed.";msg("✗ "+e.message,"err")}
+});
+
+$("generate").addEventListener("click",()=>{
+ try{
+  if(!contracts.length)throw Error("Load Bhavcopy first.");
+  const n=parseInt($("recordCount").value,10);
+  if(!Number.isInteger(n)||n<1)throw Error("Enter a valid record count.");
+
+  const cls=clients();
+  if(!cls.length)throw Error("Enter Client 1 or Client 2, or upload a Client file.");
+
+  const ps=products(),ots=orderTypes(),requestedSide=$("side").value;
+  if(!ps.length)throw Error("Select at least one Product.");
+  if(!ots.length)throw Error("Select at least one Order Type.");
+
+  const sideMap=new Map();
+  rowsOut=[];
+
+  let activeIntradayMargin = ps.filter(p=>p==="INTRADAY"||p==="MARGIN");
+  let activeCncMtf = ps.filter(p=>p==="CNC"||p==="MTF");
+
+  for(let i=0;i<n;i++){
+   const c=contracts[Math.floor(Math.random()*contracts.length)];
+   const cl=cls[Math.floor(Math.random()*cls.length)];
+   const key=cl+"|"+c.TckrSymb;
+
+   let sd;
+   if(requestedSide==="RANDOM"){
+    if(!sideMap.has(key))sideMap.set(key,Math.random()<.5?"BUY":"SELL");
+    sd=sideMap.get(key);
+   }else{
+    sd=requestedSide;
+   }
+
+   // 80% weight for Intraday/Margin, 20% for CNC/MTF (if selected)
+   let chosenProd;
+   let randType = Math.random();
+   if(randType < 0.8 && activeIntradayMargin.length > 0){
+    chosenProd = activeIntradayMargin[Math.floor(Math.random()*activeIntradayMargin.length)];
+   } else if(activeCncMtf.length > 0){
+    chosenProd = activeCncMtf[Math.floor(Math.random()*activeCncMtf.length)];
+   } else {
+    chosenProd = ps[Math.floor(Math.random()*ps.length)];
+   }
+
+   const ot=ots[Math.floor(Math.random()*ots.length)];
+   rowsOut.push(order(c,cl,sd,chosenProd,ot));
+  }
+
+  render();
+  summary.textContent="Generated "+rowsOut.length.toLocaleString()+" total records • "+cls.length+" Client(s)";
+  msg("✓ Generated successfully.","ok");
+ }catch(e){msg("✗ "+e.message,"err")}
+});
+
+$("download").addEventListener("click",()=>{
+ if(!rowsOut.length){msg("✗ No generated data to download.","err");return;}
+ function ce(v){let x=String(v??"");return /[",\r\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x}
+ let csv=HEAD.map(ce).join(",")+"\r\n"+rowsOut.map(r=>HEAD.map(h=>ce(r[h])).join(",")).join("\r\n");
+ let a=document.createElement("a"),u=URL.createObjectURL(new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"}));
+ a.href=u;a.download="BSE_EQ_BULK_generated.csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);
+ msg("✓ BSE_EQ_BULK_generated.csv downloaded.","ok");
+});
+
+$("clear").addEventListener("click",()=>{
+ rowsOut=[];$("output").innerHTML='<div class="empty">Generated output will appear here.</div>';
+ $("summary").textContent=contracts.length?"Bhavcopy loaded.":"No Bhavcopy loaded.";
+ msg(contracts.length ? "Ready to generate again." : "", "");
+});
+</script>
+</body>
+</html>

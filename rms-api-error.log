@@ -1,0 +1,666 @@
+signal: terminated
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1137:2: undefined: registerProcessLogRoute
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+# command-line-arguments
+./rms_api.go:1303:43: undefined: apiDBQueryLibrary
+rms_api.go:1:1: expected 'package', found 'EOF'
+rms_api.go:12:2: no required module provides package github.com/chromedp/cdproto/target: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:13:2: no required module provides package github.com/chromedp/chromedp: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:14:2: no required module provides package github.com/chromedp/chromedp/kb: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:12:2: no required module provides package github.com/chromedp/cdproto/target: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:13:2: no required module provides package github.com/chromedp/chromedp: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:14:2: no required module provides package github.com/chromedp/chromedp/kb: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:12:2: no required module provides package github.com/chromedp/cdproto/target: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:13:2: no required module provides package github.com/chromedp/chromedp: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:14:2: no required module provides package github.com/chromedp/chromedp/kb: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:12:2: no required module provides package github.com/chromedp/cdproto/target: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:13:2: no required module provides package github.com/chromedp/chromedp: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:14:2: no required module provides package github.com/chromedp/chromedp/kb: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:12:2: no required module provides package github.com/chromedp/cdproto/target: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:13:2: no required module provides package github.com/chromedp/chromedp: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:14:2: no required module provides package github.com/chromedp/chromedp/kb: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:12:2: no required module provides package github.com/chromedp/cdproto/target: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:13:2: no required module provides package github.com/chromedp/chromedp: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:14:2: no required module provides package github.com/chromedp/chromedp/kb: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:12:2: no required module provides package github.com/chromedp/cdproto/target: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:13:2: no required module provides package github.com/chromedp/chromedp: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:14:2: no required module provides package github.com/chromedp/chromedp/kb: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:12:2: no required module provides package github.com/chromedp/cdproto/target: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:13:2: no required module provides package github.com/chromedp/chromedp: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:14:2: no required module provides package github.com/chromedp/chromedp/kb: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:12:2: no required module provides package github.com/chromedp/cdproto/target: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:13:2: no required module provides package github.com/chromedp/chromedp: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:14:2: no required module provides package github.com/chromedp/chromedp/kb: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:12:2: no required module provides package github.com/chromedp/cdproto/target: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:13:2: no required module provides package github.com/chromedp/chromedp: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:14:2: no required module provides package github.com/chromedp/chromedp/kb: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:12:2: no required module provides package github.com/chromedp/cdproto/target: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:13:2: no required module provides package github.com/chromedp/chromedp: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:14:2: no required module provides package github.com/chromedp/chromedp/kb: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:12:2: no required module provides package github.com/chromedp/cdproto/target: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:13:2: no required module provides package github.com/chromedp/chromedp: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:14:2: no required module provides package github.com/chromedp/chromedp/kb: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:12:2: no required module provides package github.com/chromedp/cdproto/target: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:13:2: no required module provides package github.com/chromedp/chromedp: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:14:2: no required module provides package github.com/chromedp/chromedp/kb: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:12:2: no required module provides package github.com/chromedp/cdproto/target: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:13:2: no required module provides package github.com/chromedp/chromedp: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:14:2: no required module provides package github.com/chromedp/chromedp/kb: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:12:2: no required module provides package github.com/chromedp/cdproto/target: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:13:2: no required module provides package github.com/chromedp/chromedp: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:14:2: no required module provides package github.com/chromedp/chromedp/kb: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:12:2: no required module provides package github.com/chromedp/cdproto/target: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:13:2: no required module provides package github.com/chromedp/chromedp: go.mod file not found in current directory or any parent directory; see 'go help modules'
+rms_api.go:14:2: no required module provides package github.com/chromedp/chromedp/kb: go.mod file not found in current directory or any parent directory; see 'go help modules'
+stat rms_api.go: no such file or directory
+stat rms_api.go: no such file or directory
+stat rms_api.go: no such file or directory
+stat rms_api.go: no such file or directory
+stat rms_api.go: no such file or directory
+stat rms_api.go: no such file or directory
+stat rms_api.go: no such file or directory
+stat rms_api.go: no such file or directory
+stat rms_api.go: no such file or directory
+stat rms_api.go: no such file or directory
+stat rms_api.go: no such file or directory
+stat rms_api.go: no such file or directory
+stat rms_api.go: no such file or directory
+stat rms_api.go: no such file or directory
+stat rms_api.go: no such file or directory
+stat rms_api.go: no such file or directory
+stat rms_api.go: no such file or directory
+stat rms_api.go: no such file or directory

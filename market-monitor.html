@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Exchange Connections</title>
+<style>
+:root{font-family:Inter,"Segoe UI",Arial,sans-serif;color:#203329;background:#f2f6f2;color-scheme:light;font-size:14px}
+*{box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{margin:0;padding:8px 12px;font-size:15px}
+.wrap{max-width:1420px;height:calc(100vh - 16px);margin:0 auto;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:7px;background:transparent;border-radius:0;padding:2px 0 6px;flex:0 0 auto}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:36px;height:36px;border-radius:10px;background:#dcefe1;color:#26734b;display:grid;place-items:center;font-size:19px;font-weight:800}
+h1{font-size:22px;line-height:1.2;margin:0;color:#26734b;letter-spacing:.1px;font-weight:800}
+.sub{display:none;color:#e3f1e7;margin:3px 0 0;font-size:13px}
+.btn{border:0;border-radius:8px;padding:9px 13px;background:#26734b;color:white;font-size:13px;font-weight:750;cursor:pointer;box-shadow:0 2px 6px #26734b20;white-space:nowrap}
+.btn:hover{background:#1f603e}.btn:disabled{opacity:.6;cursor:wait}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:start;flex:0 0 auto}
+.panel{min-width:0;background:#fff;border:1px solid #dce7de;border-radius:9px;padding:8px;box-shadow:0 2px 8px #173b1a08}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:7px;margin:-8px -8px 7px;padding:6px 9px;background:#26734b;border-radius:8px 8px 0 0;min-height:30px}
+.panel h2{font-size:16px;color:#fff;margin:0;font-weight:750;letter-spacing:.1px}
+.server-tag{font-size:10px;font-weight:700;color:#53725e;background:#edf5ee;border-radius:16px;padding:4px 7px;white-space:nowrap}
+.meta{display:none!important;display:flex;flex-wrap:wrap;gap:4px 12px;color:#637267;font-size:12px;margin-bottom:10px}
+.meta b{color:#34483a;font-weight:650}
+.state{font-weight:750!important}.ok{color:#187544!important}.bad{color:#b42318!important}
+.status-line{display:flex;justify-content:space-between;gap:8px;align-items:center;background:#f7faf7;border:1px solid #e5eee6;border-radius:7px;padding:5px 8px;margin-bottom:6px;font-size:15px;font-weight:700;font-family:Inter,"Segoe UI",Arial,sans-serif}.status-line>span{font-weight:700}.status-line .state{font-size:15px;font-weight:750}
+.output{white-space:normal;overflow:auto;background:#f7faf7;border:1px solid #e3ece3;border-radius:8px;padding:6px;min-height:0;max-height:220px;margin:0;color:#26372b}
+.exchange-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;margin:0}
+.exchange-item{display:flex;align-items:center;justify-content:space-between;gap:5px;padding:4px 6px;border:1px solid #e1e9e2;border-radius:7px;background:#fff;font:12px/1.25 "Segoe UI",Arial,sans-serif;min-width:0;min-height:31px}
+.exchange-name{font-weight:650;color:#34483a;overflow-wrap:anywhere;min-width:0}
+.exchange-badge{font-size:10px;font-weight:850;letter-spacing:.2px;border-radius:4px;padding:3px 5px;min-width:39px;text-align:center;flex-shrink:0}
+.exchange-up{background:#d9f6e4;color:#137342;border:1px solid #a8e4bd}
+.exchange-down{background:#fee4e2;color:#b42318;border:1px solid #f7b9b4}
+.exchange-unknown{background:#fff3d6;color:#8a5a00;border:1px solid #f0d28a}
+.group-label{font-size:11px;font-weight:800;letter-spacing:.35px;color:#6b7b6f;margin:0 0 6px}
+.note{display:none;font-size:12px;color:#7a887d;margin-top:10px}
+
+.process-panel{margin-top:8px;background:#fff;border:1px solid #dce7de;border-radius:9px;padding:8px;box-shadow:0 2px 10px #173b1a08;flex:0 0 auto}
+.process-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 6px;padding:0 0 4px;background:transparent;border-radius:0;border-bottom:1px solid #dce7de;min-height:0}
+.process-head h2{font-size:20px;color:#26734b;margin:0;font-weight:800;letter-spacing:.1px}
+.process-meta{display:none!important;font-size:12px;color:#637267;margin:4px 0 8px}
+.table-wrap{overflow:auto;border:1px solid #e1e9e2;border-radius:8px}
+.process-table{border-collapse:collapse;width:100%;font-size:15px;white-space:nowrap}
+.process-table th{background:#26734b;color:#fff;text-align:left;font-weight:750;letter-spacing:.25px}
+.process-table th,.process-table td{padding:6px 9px;border-bottom:1px solid #e7eee8}.process-table tbody td{font-weight:700;color:#203329}
+.process-table tbody tr:nth-child(even){background:#f8fbf8}
+.process-error{color:#b42318;background:#fff6f5;border:1px solid #f7b9b4;padding:10px;border-radius:7px;font-size:12px;margin-bottom:8px}
+.process-empty{color:#637267;padding:10px;text-align:center;font-size:13px}
+.pill-fail{border-radius:4px;padding:3px 6px;background:#fee4e2;color:#b42318;font-weight:800}
+.pill-warn{border-radius:4px;padding:3px 6px;background:#fff3d6;color:#8a5a00;font-weight:800}
+.fail-link{border:0;background:transparent;color:#c62828;border-radius:0;padding:2px 4px;font:inherit;font-weight:800;cursor:pointer;text-decoration:underline;text-underline-offset:2px}.fail-link:hover{color:#8f1717}.fail-link:disabled{opacity:.45;cursor:default;text-decoration:none}
+
+/* Failure details are the only page-level scrollable view. */
+#failurePanel:not([hidden]){position:fixed;z-index:1000;left:3vw;right:3vw;top:5vh;bottom:5vh;margin:0;overflow:auto;max-height:90vh;padding:12px;background:#fff;box-shadow:0 12px 50px #10281945;border:1px solid #cbdccf}
+#failurePanel:not([hidden]) .table-wrap{max-height:calc(90vh - 120px);overflow:auto}
+#failurePanel:not([hidden]) .process-table{min-width:900px}
+@media(max-width:980px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.exchange-item{font-size:11px}.panel h2{font-size:14px}}
+@media(max-width:640px){body{padding:6px}.wrap{height:calc(100vh - 12px)}.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}.panel{padding:5px}.panel-head{margin:-5px -5px 5px;padding:5px}.panel h2{font-size:12px}.status-line{font-size:12px;padding:4px;gap:3px}.status-line .state{font-size:11px}.output{max-height:180px;padding:4px}.exchange-grid{grid-template-columns:1fr}.exchange-item{font-size:10px;padding:3px}.exchange-badge{font-size:9px;min-width:30px;padding:2px}.head{padding:2px 0 5px}h1{font-size:18px}.process-panel{padding:6px;margin-top:6px}.process-head h2{font-size:16px}.process-table{font-size:12px}.process-table th,.process-table td{padding:5px 6px}#failurePanel:not([hidden]){left:2vw;right:2vw;top:3vh;bottom:3vh;padding:8px}}
+.meta,.process-meta{display:none!important}
+</style></head>
+<body><main class="wrap">
+<div class="head">
+ <div class="brand"><div><h1>&nbsp;&nbsp;Exchange Connections</h1><p class="sub"></p></div></div>
+ <button id="refresh" class="btn">↻ &nbsp; Refresh</button>
+</div>
+<div class="grid">
+ <section class="panel">
+  <div class="panel-head"><h2>Server 74</h2></div>
+  <div class="meta" hidden><span><b id="checked74">Not checked</b></span></div>
+  <div class="status-line"><span>Connection status</span><b id="state74" class="state">Waiting</b></div>
+  <pre id="output74" class="output">Loading Group 1…</pre>
+ </section>
+ <section class="panel">
+  <div class="panel-head"><h2>Server 170</h2></div>
+  <div class="meta" hidden><span><b id="checked170">Not checked</b></span></div>
+  <div class="status-line"><span>Connection status</span><b id="state170" class="state">Waiting</b></div>
+  <pre id="output170" class="output">Loading status…</pre>
+ </section>
+ <section class="panel">
+  <div class="panel-head"><h2>Server 168</h2></div>
+  <div class="meta" hidden><span><b id="checked168">Not checked</b></span></div>
+  <div class="status-line"><span>Connection status</span><b id="state168" class="state">Waiting</b></div>
+  <pre id="output168" class="output">Loading Group 1…</pre>
+ </section>
+</div>
+<section class="process-panel" aria-labelledby="processTitle">
+ <div class="process-head"><h2 id="processTitle">Exchange File Uploads</h2><span class="server-tag">TODAY · SERVERS 74 / 168 / 170</span></div>
+ <div class="process-meta" id="processMeta">Waiting for status check…</div><div id="processErrors"></div>
+ <div class="table-wrap"><table class="process-table"><thead><tr>
+ <th>SERVER</th><th>TOTAL</th><th>SUCCESS</th><th>FAIL</th>
+ </tr></thead><tbody id="processRows"><tr><td colspan="4" class="process-empty">Loading counts…</td></tr></tbody></table></div>
+</section>
+<section class="process-panel" id="failurePanel" hidden aria-labelledby="failureTitle">
+ <div class="process-head"><h2 id="failureTitle">Failed / Incomplete Files</h2><button type="button" class="btn" id="closeFailures">Close</button></div>
+ <div class="process-meta" id="failureMeta">Click a fail count to view its files.</div><div id="failureErrors"></div>
+ <div class="table-wrap"><table class="process-table"><thead><tr><th>SERVER</th><th>PROCESS DATE</th><th>EXCHANGE</th><th>SEGMENT</th><th>SUCCESS FLAG</th><th>PROCESS STATUS</th><th>UPLOAD FILE NAME</th></tr></thead><tbody id="failureRows"><tr><td colspan="7" class="process-empty">Select a fail count above.</td></tr></tbody></table></div>
+</section>
+
+</main>
+<script>
+const btn=document.getElementById('refresh');
+function extractGroupOne(text){
+ const clean=String(text).replace(/\x1b\[[0-9;]*m/g,'').replace(/\r/g,'');
+ const tokens=clean.split(/\s+/).filter(Boolean);
+ const norm=t=>String(t).replace(/[^a-z0-9]/gi,'').toUpperCase();
+ const aliases={
+  NSEEQU:'NSE Equity',NSEQU:'NSE Equity',NSEDRV:'NSE Derivatives',NSECUR:'NSE Currency',NSECOM:'NSE Commodity',
+  BSEEQU:'BSE Equity',BSEEQ:'BSE Equity',BSEDRV:'BSE Derivatives',BSECUR:'BSE Currency',
+  MSEEQU:'MSE Equity',MSEQU:'MSE Equity',MSEDRV:'MSE Derivatives',MSECUR:'MSE Currency',MSECOM:'MSE Commodity',
+  MCXCOM:'MCX Commodity',MXCOM:'MCX Commodity',NCDEXCOM:'NCDEX Commodity'
+ };
+ const statusSet=new Set(['UP','DOWN','OK','CONNECTED','DISCONNECTED','UNKNOWN']);
+ let header=-1;
+ for(let i=0;i<tokens.length-1;i++){
+  if(norm(tokens[i])==='GROUP'&&norm(tokens[i+1])==='ID'){header=i;break;}
+ }
+ if(header<0)return null;
+ // Read only exchange codes before the table's dashed separator. Terminal line wraps do not matter.
+ const exchanges=[]; let separator=-1;
+ for(let i=header+2;i<tokens.length;i++){
+  const raw=tokens[i], key=norm(raw);
+  if(/^[-_]{2,}$/.test(raw)){separator=i;break;}
+  if(aliases[key]&&!exchanges.some(x=>x.key===key))exchanges.push({key,name:aliases[key]});
+ }
+ if(!exchanges.length||separator<0)return null;
+ // Status values are after the separator and are whitespace-separated even when lines wrap.
+ const statuses=[];
+ for(let i=separator+1;i<tokens.length;i++){
+  const value=norm(tokens[i]);
+  if(statusSet.has(value))statuses.push(value);
+  if(statuses.length>=exchanges.length)break;
+ }
+ if(statuses.length<exchanges.length)return null;
+ return exchanges.map((x,i)=>({name:x.name,status:statuses[i]||'UNKNOWN'}));
+}
+function renderExchangeTable(out, exchanges){
+ if(!exchanges){out.textContent='Could not read Group 1 exchange statuses from the response.';return;}
+ const wrap=document.createElement('div');
+ const grid=document.createElement('div');grid.className='exchange-grid';
+ exchanges.forEach(x=>{
+  const item=document.createElement('div');item.className='exchange-item';
+  const name=document.createElement('span');name.className='exchange-name';name.textContent=x.name;
+  const badge=document.createElement('span');badge.className='exchange-badge '+(x.status==='UP'||x.status==='OK'||x.status==='CONNECTED'?'exchange-up':x.status==='DOWN'||x.status==='DISCONNECTED'?'exchange-down':'exchange-unknown');badge.textContent=x.status;
+  item.append(name,badge);grid.appendChild(item);
+ });
+ wrap.appendChild(grid);out.replaceChildren(wrap);
+}
+async function loadOne(url, ids, label){
+ const out=document.getElementById(ids.output), state=document.getElementById(ids.state), checked=document.getElementById(ids.checked);
+ state.textContent='Checking…';state.className='state';out.textContent='Requesting status…';
+ try{
+  const r=await fetch(url,{cache:'no-store'});const raw=await r.text();let d;try{d=JSON.parse(raw)}catch{d={output:raw}}
+  checked.textContent='';
+  const text=d.output||d.stdout||d.message||d.error||JSON.stringify(d,null,2);
+  if(!r.ok||d.error||/Could not connect to Redis|Name or service not known|connection refused/i.test(text)){
+   state.textContent='ERROR';state.className='state bad';out.textContent=text;return;
+  }
+  state.textContent='Response received';state.className='state ok';
+  if(ids.output==='output74'||ids.output==='output168'||ids.output==='output170')renderExchangeTable(out,extractGroupOne(text));
+  else out.textContent=text;
+ }catch(e){checked.textContent='';state.textContent='ERROR';state.className='state bad';out.textContent='Could not retrieve status. '+e.message}
+}
+
+function processCell(row,value){const td=document.createElement('td');td.textContent=value===null||value===undefined||value===''?'0':String(value);row.appendChild(td)}
+async function showFailures(server){
+ const panel=document.getElementById('failurePanel'),rows=document.getElementById('failureRows'),meta=document.getElementById('failureMeta'),errors=document.getElementById('failureErrors');
+ panel.hidden=false;document.body.classList.add('failures-open');meta.textContent='Loading failed files for Server '+server+'…';errors.replaceChildren();rows.innerHTML='<tr><td colspan="7" class="process-empty">Loading failed files…</td></tr>';
+ try{
+  const response=await fetch('/api/market-monitor/process-log/failures?server='+encodeURIComponent(server),{cache:'no-store'});const data=await response.json();
+  if(!response.ok)throw new Error(data.error||'Unable to load failed files');
+  const records=Array.isArray(data.records)?data.records:[];meta.textContent='';rows.replaceChildren();
+  if(!records.length){rows.innerHTML='<tr><td colspan="7" class="process-empty">No failed or incomplete files found for today.</td></tr>';return}
+  const keys=['server','process_date','exch_id','segment','success_flag','process_status','upload_file_name'];
+  records.forEach(x=>{const tr=document.createElement('tr');keys.forEach(k=>{let value=x[k];if(k==='process_date'&&value){value=String(value).replace('T',' ').split(' ')[0]}processCell(tr,value)});rows.appendChild(tr)});
+ }catch(e){rows.innerHTML='<tr><td colspan="7" class="process-empty">Unable to load failed files.</td></tr>';const d=document.createElement('div');d.className='process-error';d.textContent=e.message;errors.appendChild(d)}
+}
+document.getElementById('closeFailures').addEventListener('click',()=>{document.getElementById('failurePanel').hidden=true;document.body.classList.remove('failures-open')});
+async function loadProcessLogStatus(){
+ const rows=document.getElementById('processRows'),meta=document.getElementById('processMeta'),errors=document.getElementById('processErrors');
+ rows.innerHTML='<tr><td colspan="4" class="process-empty">Loading counts…</td></tr>';errors.replaceChildren();
+ try{
+  const response=await fetch('/api/market-monitor/process-log',{cache:'no-store'}),data=await response.json();
+  if(!response.ok)throw new Error(data.error||'Could not load counts');
+  const records=Array.isArray(data.records)?data.records:[];meta.textContent='';
+  (data.errors||[]).forEach(x=>{const d=document.createElement('div');d.className='process-error';d.textContent='Server '+x.server+': '+x.error;errors.appendChild(d)});
+  rows.replaceChildren();
+  if(!records.length){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=4;td.className='process-empty';td.textContent='No count data returned. Check the database connection errors above.';tr.appendChild(td);rows.appendChild(tr);return}
+  records.forEach(x=>{const tr=document.createElement('tr');processCell(tr,'Server '+x.server);processCell(tr,x.total_count);processCell(tr,x.success_count);const td=document.createElement('td');const b=document.createElement('button');b.type='button';b.className='fail-link';b.textContent=String(x.fail_count??0);b.title='Click to view failed files';b.disabled=Number(x.fail_count)===0;b.addEventListener('click',()=>showFailures(String(x.server)));td.appendChild(b);tr.appendChild(td);rows.appendChild(tr)});
+ }catch(e){meta.textContent='';rows.innerHTML='<tr><td colspan="4" class="process-empty">Unable to load counts.</td></tr>';const d=document.createElement('div');d.className='process-error';d.textContent=e.message;errors.appendChild(d)}
+}
+async function loadStatus(){btn.disabled=true;await Promise.all([
+ loadOne('/api/local-market-monitor/status',{output:'output74',state:'state74',checked:'checked74'},'Server 74'),
+ loadOne('/api/market-monitor/status',{output:'output170',state:'state170',checked:'checked170'},'Server 170'),
+ loadOne('/api/market-monitor/168/status',{output:'output168',state:'state168',checked:'checked168'},'Server 168'),
+ loadProcessLogStatus()
+]);btn.disabled=false}
+btn.addEventListener('click',loadStatus);loadStatus();
+</script></body></html>

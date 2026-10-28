@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DB Query | RMS</title>
+<style>
+:root{
+  --green:#287d32;--green-2:#2f9140;--deep:#24734d;--dark:#1c5c3d;--darker:#17492f;
+  --bg:#e9edf1;--soft:#f1f7f2;--soft-2:#e6f2e9;--line:#d8e5db;--line-2:#c4d8c9;
+  --ink:#14251b;--muted:#607066;--white:#fff;--danger:#b42318;--warn:#8a5a00;
+  --radius:14px;--radius-sm:8px;
+  --shadow:0 1px 2px rgba(20,60,35,.06),0 6px 20px rgba(25,70,40,.08);
+  --ring:0 0 0 3px rgba(40,125,50,.22);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:
+  radial-gradient(900px 300px at 0% -10%,rgba(36,115,77,.10),transparent 60%),
+  radial-gradient(700px 260px at 100% -10%,rgba(40,125,50,.08),transparent 60%),
+  var(--bg);
+  font:14px/1.5 "Segoe UI",Inter,Arial,sans-serif;color:var(--ink);font-weight:600;-webkit-font-smoothing:antialiased}
+main{width:100%;max-width:none;margin:0;padding:18px 22px}
+
+/* page title (kept for compatibility) */
+.page-title{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 0 16px}
+.page-title h1{font-size:25px;color:var(--deep);margin:0;font-weight:800}
+.subtitle{color:var(--muted);font-size:13px;font-weight:600;margin-top:3px}
+
+/* cards */
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:18px;overflow:hidden}
+.card-title{margin:-18px -18px 16px;padding:12px 18px;background:linear-gradient(135deg,var(--deep) 0%,var(--green) 100%);color:#fff;font-size:15px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.card-title::before{content:"";width:8px;height:8px;border-radius:50%;background:#bff0c8;box-shadow:0 0 0 3px rgba(191,240,200,.25)}
+
+/* connection bar */
+.connection,.toolbar,.param-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.connection{padding:14px;background:var(--soft);border:1px solid var(--line);border-radius:12px}
+.connection strong{color:#244a32;font-size:13px;text-transform:uppercase;letter-spacing:.5px}
+.choice{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line-2);border-radius:999px;padding:8px 16px;cursor:pointer;transition:all .15s ease;user-select:none}
+.choice:hover{border-color:#70b982;background:#f7fcf8}
+.choice:has(input:checked){background:linear-gradient(135deg,#e3f2e6,#d3ecd9);border-color:#58a96c;color:#1c5f31;box-shadow:inset 0 0 0 1px rgba(40,125,50,.15)}
+input[type=radio]{accent-color:var(--green);width:16px;height:16px;margin:0}
+
+/* inputs */
+input[type=password],input[type=text],select,textarea{height:42px;padding:0 12px;border:1px solid var(--line-2);border-radius:10px;background:#fff;color:var(--ink);font:inherit;min-width:0;transition:border-color .15s,box-shadow .15s}
+input[type=password]:focus,input[type=text]:focus,select:focus,textarea:focus{outline:none;border-color:var(--green);box-shadow:var(--ring)}
+::placeholder{color:#93a399;font-weight:600}
+select{cursor:pointer}
+#password{margin-left:auto;width:250px}
+#manualQuery{height:auto!important;padding:10px 12px!important;border:1px solid var(--line-2)!important;border-radius:10px!important;background:#fbfdfb}
+
+/* buttons */
+button{height:42px;padding:0 20px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--green-2),var(--green));color:#fff;font:inherit;font-weight:800;letter-spacing:.2px;cursor:pointer;box-shadow:0 2px 6px rgba(40,125,50,.28);transition:transform .08s ease,box-shadow .15s ease,filter .15s}
+button:hover{filter:brightness(.93);box-shadow:0 4px 12px rgba(40,125,50,.32)}
+button:active{transform:translateY(1px)}
+button:focus-visible{outline:none;box-shadow:var(--ring)}
+button:disabled{opacity:.55;cursor:not-allowed;box-shadow:none;filter:none;transform:none}
+#connect:disabled{cursor:wait}
+#run:disabled{cursor:wait}
+
+/* status pill */
+#status{font-size:12px;font-weight:800;border-radius:999px;padding:8px 14px;background:#e9f0ea;color:#52665a;overflow-wrap:anywhere;border:1px solid var(--line)}
+
+/* layout */
+.layout{display:grid;grid-template-columns:minmax(320px,25%) minmax(0,1fr);gap:18px;align-items:start}
+.filters{align-self:start;position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto}
+.filters::-webkit-scrollbar{width:8px}.filters::-webkit-scrollbar-thumb{background:#c4d8c9;border-radius:8px}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field label{font-size:11.5px;color:#355342;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+.field select,.field input{width:100%}
+.search-row{display:flex;gap:8px}
+.search-row input{flex:1;min-width:0}
+.search-row button{flex:0 0 auto;padding:0 16px}
+.helper{font-size:12px;color:var(--muted);font-weight:600}
+.query-preview{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f9f4;border:1px solid var(--line);border-left:4px solid var(--green);border-radius:10px;padding:12px;font:12px/1.55 Consolas,"Cascadia Mono",monospace;color:#1f4a31;min-height:68px}
+
+/* result header */
+.result-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.result-head h2{margin:0;color:var(--deep);font-size:18px;font-weight:800}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.secondary{background:#e5f1e7;color:#236d37;border:1px solid #bcd9c2;box-shadow:none}
+.secondary:hover{background:#d5eadb;filter:none;box-shadow:none}
+.count{font-size:12px;font-weight:800;color:#2a6a40;background:#e3f2e6;border:1px solid #c3dfca;padding:7px 14px;border-radius:999px}
+
+/* tables */
+.table-wrap{overflow:hidden;margin-top:14px;border:1px solid var(--line);border-radius:12px;box-shadow:0 1px 3px rgba(20,60,35,.05)}
+table{border-collapse:collapse;width:100%;table-layout:fixed;min-width:0;margin:0}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #e3ece5;border-right:1px solid #e9f0ea;white-space:normal;overflow-wrap:anywhere;word-break:break-word;font-size:12px}
+th:last-child,td:last-child{border-right:0}
+th{background:linear-gradient(135deg,var(--deep),var(--green));color:#fff;text-transform:uppercase;font-weight:800;letter-spacing:.4px;position:sticky;top:0;border-right-color:rgba(255,255,255,.14)}
+td{font-weight:700;color:#263b2d}
+tbody tr:nth-child(even){background:#f5f9f5}
+tbody tr:hover{background:#e6f3e9}
+tbody tr:last-child td{border-bottom:0}
+
+/* record cards (kept) */
+.result-records{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:14px}
+.record{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff;min-width:0}
+.record-title{font-size:12px;font-weight:800;color:var(--deep);margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+.record-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.record-field{min-width:0;background:#f5f9f5;border-radius:8px;padding:8px}
+.record-field strong{display:block;font-size:10px;color:var(--muted);overflow-wrap:anywhere;margin-bottom:3px}
+.record-field span{display:block;font-size:12px;color:var(--ink);overflow-wrap:anywhere;word-break:break-word;white-space:pre-wrap}
+
+/* empty / error */
+.empty{padding:28px 20px;background:repeating-linear-gradient(45deg,#f5f9f5,#f5f9f5 10px,#f1f7f2 10px,#f1f7f2 20px);border:1.5px dashed #bcd3c1;border-radius:12px;color:#43594a;font-weight:700;text-align:center}
+.danger{color:var(--danger)!important;background:#fff5f4;border-color:#f0b9b3;border-style:solid}
+.hidden{display:none!important}
+
+/* responsive */
+@media(max-width:1100px){.result-records{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:850px){
+  main{padding:10px}
+  .layout{grid-template-columns:1fr}
+  .filters{position:static;max-height:none}
+  .connection #password{margin-left:0;flex:1 1 180px;width:auto}
+  .connection button{flex:1}
+  .page-title h1{font-size:22px}
+  .card{padding:14px}
+  .card-title{margin:-14px -14px 14px;padding:11px 14px}
+}
+@media(max-width:760px){.result-records{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.result-records{grid-template-columns:1fr}}
+th{font-size:10px;letter-spacing:.3px;padding:8px 10px}
+.table-wrap{overflow-x:auto}
+th.idx,td.idx{width:44px;min-width:44px;text-align:center;color:#6b7d72;background:#eef5ef}th.idx{color:#fff;background:#1c5c3d}
+th{white-space:normal;word-break:normal;overflow-wrap:normal}
+td{overflow-wrap:anywhere}
+.kv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.kv{background:#f5f9f5;border:1px solid var(--line);border-radius:10px;padding:9px 12px;min-width:0}
+.kv-k{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:.3px;text-transform:uppercase;overflow-wrap:normal}
+.kv-v{font-size:13px;font-weight:700;color:var(--ink);overflow-wrap:anywhere;margin-top:3px;white-space:pre-wrap}
+.kv-empty{color:#a3b3a8}
+td,td.idx,.kv-v,.record-field span{font-weight:400!important}
+th,.kv-k{font-weight:800}
+th,th.idx{background:#dcefe0!important;color:#12402a!important;font-weight:800!important;font-size:11px!important;letter-spacing:.3px;border-bottom:2px solid #9fcaaa!important;border-right:1px solid #c4dccb!important;text-shadow:0 0 0 currentColor}
+th.idx{background:#cfe6d4!important}
+.kv-k{color:#1f5a3a;font-weight:800!important;background:none}
+.kv{background:#f3f9f4}
+</style></head>
+<body><main>
+<section class="card"><div class="connection">
+<strong>Database:</strong>
+<label class="choice"><input type="radio" name="db" value="74" checked> Server 74</label>
+<label class="choice"><input type="radio" name="db" value="168"> Server 168</label>
+<label class="choice"><input type="radio" name="db" value="166"> Server 166</label>
+<input id="password" type="password" placeholder="Enter database password" autocomplete="new-password">
+<button id="connect" type="button">Connect</button><span id="status">Not connected</span>
+</div></section>
+<div class="layout">
+<aside class="card filters"><div class="card-title">Query Library</div>
+
+<div class="field"><label for="querySearch">Search</label><div class="search-row"><input id="querySearch" type="text" placeholder="Search scrip code, security ID, table name…" autocomplete="off"><button id="searchQueries" type="button">Search</button></div><div id="searchHint" class="helper">Search across all available tables and filters.</div></div>
+
+
+<div class="field"><label for="category">Category</label><select id="category"></select></div>
+
+
+<div class="field"><label for="query">Query selector</label><select id="query"></select></div>
+<div class="field hidden" id="manualField"><label for="manualQuery">Manual read-only query</label><textarea id="manualQuery" rows="5" placeholder="Example: SELECT * FROM USER_MASTER WHERE USER_ID = 'ABC'" style="width:100%;padding:10px;border:1px solid #cbd9ce;border-radius:6px;font:12px/1.5 Consolas,monospace;resize:vertical"></textarea><div class="helper">SELECT statements only. Data-changing queries are blocked.</div></div>
+<div class="field" id="paramField"><label id="paramLabel" for="param">Parameter</label><input id="param" type="text" placeholder="Enter value"></div>
+
+<div style="height:12px"></div><div class="field"><label>Query summary</label><div id="summary" class="query-preview"></div></div>
+<div class="actions"><button id="run" type="button" style="flex:1">Run Query</button><button id="stop" class="secondary" type="button" disabled>Stop Query</button></div>
+
+</aside>
+<section class="card"><div class="result-head"><h2 id="resultTitle">Query Results</h2><div class="actions"><span class="count" id="rowCount">0 rows</span><button class="secondary" id="download" type="button" disabled>Download CSV</button></div></div>
+<div id="results" class="empty" style="margin-top:12px">Connect to a database, select a query or enter a manual SELECT, then click Run Query.</div>
+</section></div>
+</main>
+<script>
+const queries = [
+{c:"Positions & Limits",id:"preview_ban_net_position",n:"BAN_NET_POSITION — Preview (100 max)",s:"Preview up to 100 rows from BAN_NET_POSITION."},
+{c:"Market Data & Securities",id:"preview_bhav_copy",n:"BHAV_COPY — Preview (100 max)",s:"Preview up to 100 rows from BHAV_COPY."},
+{c:"Surveillance & Blocks",id:"preview_bse_gsm_temp",n:"BSE_GSM_TEMP — Preview (100 max)",s:"Preview up to 100 rows from BSE_GSM_TEMP."},
+{c:"Positions & Limits",id:"preview_clientwise_mtf_exposer_limit",n:"CLIENTWISE_MTF_EXPOSER_LIMIT — Preview (100 max)",s:"Preview up to 100 rows from CLIENTWISE_MTF_EXPOSER_LIMIT."},
+{c:"Orders",id:"preview_comm_orders",n:"COMM_ORDERS — Preview (100 max)",s:"Preview up to 100 rows from COMM_ORDERS."},
+{c:"Market Data & Securities",id:"preview_drv_bhav_copy",n:"DRV_BHAV_COPY — Preview (100 max)",s:"Preview up to 100 rows from DRV_BHAV_COPY."},
+{c:"Market Data & Securities",id:"preview_drv_l1_watch",n:"DRV_L1_WATCH — Preview (100 max)",s:"Preview up to 100 rows from DRV_L1_WATCH."},
+{c:"Orders",id:"preview_drv_orders",n:"DRV_ORDERS — Preview (100 max)",s:"Preview up to 100 rows from DRV_ORDERS."},
+{c:"Clients & Users",id:"preview_entity_master",n:"ENTITY_MASTER — Preview (100 max)",s:"Preview up to 100 rows from ENTITY_MASTER."},
+{c:"Market Data & Securities",id:"preview_eq_l1_watch",n:"EQ_L1_WATCH — Preview (100 max)",s:"Preview up to 100 rows from EQ_L1_WATCH."},
+{c:"Orders",id:"preview_eq_orders",n:"EQ_ORDERS — Preview (100 max)",s:"Preview up to 100 rows from EQ_ORDERS."},
+{c:"System & Exchange",id:"preview_exch_administration_master",n:"EXCH_ADMINISTRATION_MASTER — Preview (100 max)",s:"Preview up to 100 rows from EXCH_ADMINISTRATION_MASTER."},
+{c:"Files & Processing",id:"preview_file_error_log",n:"FILE_ERROR_LOG — Preview (100 max)",s:"Preview up to 100 rows from FILE_ERROR_LOG."},
+{c:"Clients & Users",id:"preview_go_client_allowed_immem",n:"GO_CLIENT_ALLOWED_IMMEM — Preview (100 max)",s:"Preview up to 100 rows from GO_CLIENT_ALLOWED_IMMEM."},
+{c:"Clients & Users",id:"preview_go_client_mail_info",n:"GO_CLIENT_MAIL_INFO — Preview (100 max)",s:"Preview up to 100 rows from GO_CLIENT_MAIL_INFO."},
+{c:"Files & Processing",id:"preview_go_fileupload_config",n:"GO_FILEUPLOAD_CONFIG — Preview (100 max)",s:"Preview up to 100 rows from GO_FILEUPLOAD_CONFIG."},
+{c:"Clients & Users",id:"preview_go_user_master",n:"GO_USER_MASTER — Preview (100 max)",s:"Preview up to 100 rows from GO_USER_MASTER."},
+{c:"Market Data & Securities",id:"preview_l1_watch_active",n:"L1_WATCH_ACTIVE — Preview (100 max)",s:"Preview up to 100 rows from L1_WATCH_ACTIVE."},
+{c:"Market Data & Securities",id:"preview_mcx_security_info",n:"MCX_SECURITY_INFO — Preview (100 max)",s:"Preview up to 100 rows from MCX_SECURITY_INFO."},
+{c:"Orders",id:"preview_mrv_orders",n:"MRV_ORDERS — Preview (100 max)",s:"Preview up to 100 rows from MRV_ORDERS."},
+{c:"Positions & Limits",id:"preview_net_position_table",n:"NET_POSITION_TABLE — Preview (100 max)",s:"Preview up to 100 rows from NET_POSITION_TABLE."},
+{c:"Surveillance & Blocks",id:"preview_nse_gsm_temp",n:"NSE_GSM_TEMP — Preview (100 max)",s:"Preview up to 100 rows from NSE_GSM_TEMP."},
+{c:"Surveillance & Blocks",id:"preview_rms_approve_pledg_script",n:"RMS_APPROVE_PLEDG_SCRIPT — Preview (100 max)",s:"Preview up to 100 rows from RMS_APPROVE_PLEDG_SCRIPT."},
+{c:"Positions & Limits",id:"preview_rms_clientwise_uploaded_limit",n:"RMS_CLIENTWISE_UPLOADED_LIMIT — Preview (100 max)",s:"Preview up to 100 rows from RMS_CLIENTWISE_UPLOADED_LIMIT."},
+{c:"Positions & Limits",id:"preview_rms_client_fno_pos_limit_detail",n:"RMS_CLIENT_FNO_POS_LIMIT_DETAIL — Preview (100 max)",s:"Preview up to 100 rows from RMS_CLIENT_FNO_POS_LIMIT_DETAIL."},
+{c:"Positions & Limits",id:"preview_rms_client_security_limit",n:"RMS_CLIENT_SECURITY_LIMIT — Preview (100 max)",s:"Preview up to 100 rows from RMS_CLIENT_SECURITY_LIMIT."},
+{c:"Files & Processing",id:"preview_rms_early_payin",n:"RMS_EARLY_PAYIN — Preview (100 max)",s:"Preview up to 100 rows from RMS_EARLY_PAYIN."},
+{c:"Margins & Risk",id:"preview_rms_eq_var_elm",n:"RMS_EQ_VAR_ELM — Preview (100 max)",s:"Preview up to 100 rows from RMS_EQ_VAR_ELM."},
+{c:"Margins & Risk",id:"preview_rms_fno_delta",n:"RMS_FNO_DELTA — Preview (100 max)",s:"Preview up to 100 rows from RMS_FNO_DELTA."},
+{c:"Margins & Risk",id:"preview_rms_fno_span_margin",n:"RMS_FNO_SPAN_MARGIN — Preview (100 max)",s:"Preview up to 100 rows from RMS_FNO_SPAN_MARGIN."},
+{c:"Positions & Limits",id:"preview_rms_fund_limit",n:"RMS_FUND_LIMIT — Preview (100 max)",s:"Preview up to 100 rows from RMS_FUND_LIMIT."},
+{c:"Files & Processing",id:"preview_rms_ipo_allotment_temp",n:"RMS_IPO_ALLOTMENT_TEMP — Preview (100 max)",s:"Preview up to 100 rows from RMS_IPO_ALLOTMENT_TEMP."},
+{c:"Positions & Limits",id:"preview_rms_limit_config",n:"RMS_LIMIT_CONFIG — Preview (100 max)",s:"Preview up to 100 rows from RMS_LIMIT_CONFIG."},
+{c:"Margins & Risk",id:"preview_rms_mcx_exp_margin",n:"RMS_MCX_EXP_MARGIN — Preview (100 max)",s:"Preview up to 100 rows from RMS_MCX_EXP_MARGIN."},
+{c:"Positions & Limits",id:"preview_rms_member_fno_pos_limit_detail",n:"RMS_MEMBER_FNO_POS_LIMIT_DETAIL — Preview (100 max)",s:"Preview up to 100 rows from RMS_MEMBER_FNO_POS_LIMIT_DETAIL."},
+{c:"Positions & Limits",id:"preview_rms_memwise_uploaded_limit",n:"RMS_MEMWISE_UPLOADED_LIMIT — Preview (100 max)",s:"Preview up to 100 rows from RMS_MEMWISE_UPLOADED_LIMIT."},
+{c:"Files & Processing",id:"preview_rms_process_log",n:"RMS_PROCESS_LOG — Preview (100 max)",s:"Preview up to 100 rows from RMS_PROCESS_LOG."},
+{c:"Margins & Risk",id:"preview_rms_risk_profile_det",n:"RMS_RISK_PROFILE_DET — Preview (100 max)",s:"Preview up to 100 rows from RMS_RISK_PROFILE_DET."},
+{c:"Margins & Risk",id:"preview_rms_risk_profile_mast",n:"RMS_RISK_PROFILE_MAST — Preview (100 max)",s:"Preview up to 100 rows from RMS_RISK_PROFILE_MAST."},
+{c:"System & Exchange",id:"preview_rms_screen_column_config",n:"RMS_SCREEN_COLUMN_CONFIG — Preview (100 max)",s:"Preview up to 100 rows from RMS_SCREEN_COLUMN_CONFIG."},
+{c:"Margins & Risk",id:"preview_rms_scrip_margin_basket",n:"RMS_SCRIP_MARGIN_BASKET — Preview (100 max)",s:"Preview up to 100 rows from RMS_SCRIP_MARGIN_BASKET."},
+{c:"Margins & Risk",id:"preview_rms_scrip_margin_basket_fno",n:"RMS_SCRIP_MARGIN_BASKET_FNO — Preview (100 max)",s:"Preview up to 100 rows from RMS_SCRIP_MARGIN_BASKET_FNO."},
+{c:"Market Data & Securities",id:"preview_security_master",n:"SECURITY_MASTER — Preview (100 max)",s:"Preview up to 100 rows from SECURITY_MASTER."},
+{c:"Surveillance & Blocks",id:"preview_security_rms_block_detail",n:"SECURITY_RMS_BLOCK_DETAIL — Preview (100 max)",s:"Preview up to 100 rows from SECURITY_RMS_BLOCK_DETAIL."},
+{c:"Market Data & Securities",id:"preview_sem_active",n:"SEM_ACTIVE — Preview (100 max)",s:"Preview up to 100 rows from SEM_ACTIVE."},
+{c:"Surveillance & Blocks",id:"preview_surveillance_msg_details",n:"SURVEILLANCE_MSG_DETAILS — Preview (100 max)",s:"Preview up to 100 rows from SURVEILLANCE_MSG_DETAILS."},
+{c:"System & Exchange",id:"preview_sys_parameters",n:"SYS_PARAMETERS — Preview (100 max)",s:"Preview up to 100 rows from SYS_PARAMETERS."},
+{c:"Clients & Users",id:"preview_user_master",n:"USER_MASTER — Preview (100 max)",s:"Preview up to 100 rows from USER_MASTER."},
+{c:"Positions & Limits",id:"preview_view_client_limit",n:"VIEW_CLIENT_LIMIT — Preview (100 max)",s:"Preview up to 100 rows from VIEW_CLIENT_LIMIT."},
+{c:"Positions & Limits",id:"filter_001_ban_net_position_bnp_client_id",n:"BAN_NET_POSITION — Filter by BNP_CLIENT_ID",p:"BNP_CLIENT_ID",s:"Exact-match filter on BAN_NET_POSITION.BNP_CLIENT_ID; maximum 100 rows.",ph:"Exact match for BNP_CLIENT_ID"},
+{c:"Market Data & Securities",id:"filter_002_bhav_copy_bc_scrip_code",n:"BHAV_COPY — Filter by BC_SCRIP_CODE",p:"BC_SCRIP_CODE",s:"Exact-match filter on BHAV_COPY.BC_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for BC_SCRIP_CODE"},
+{c:"Surveillance & Blocks",id:"filter_003_bse_gsm_temp_v_id_1",n:"BSE_GSM_TEMP — Filter by V_ID_1",p:"V_ID_1",s:"Exact-match filter on BSE_GSM_TEMP.V_ID_1; maximum 100 rows.",ph:"Exact match for V_ID_1"},
+{c:"Positions & Limits",id:"filter_004_clientwise_mtf_exposer_limit_cme_client_id",n:"CLIENTWISE_MTF_EXPOSER_LIMIT — Filter by CME_CLIENT_ID",p:"CME_CLIENT_ID",s:"Exact-match filter on CLIENTWISE_MTF_EXPOSER_LIMIT.CME_CLIENT_ID; maximum 100 rows.",ph:"Exact match for CME_CLIENT_ID"},
+{c:"Orders",id:"filter_005_comm_orders_comm_client_id",n:"COMM_ORDERS — Filter by COMM_CLIENT_ID",p:"COMM_CLIENT_ID",s:"Exact-match filter on COMM_ORDERS.COMM_CLIENT_ID; maximum 100 rows.",ph:"Exact match for COMM_CLIENT_ID"},
+{c:"Market Data & Securities",id:"filter_006_drv_bhav_copy_dbc_scrip_code",n:"DRV_BHAV_COPY — Filter by DBC_SCRIP_CODE",p:"DBC_SCRIP_CODE",s:"Exact-match filter on DRV_BHAV_COPY.DBC_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for DBC_SCRIP_CODE"},
+{c:"Market Data & Securities",id:"filter_007_drv_l1_watch_dl1_scrip_code",n:"DRV_L1_WATCH — Filter by DL1_SCRIP_CODE",p:"DL1_SCRIP_CODE",s:"Exact-match filter on DRV_L1_WATCH.DL1_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for DL1_SCRIP_CODE"},
+{c:"Orders",id:"filter_008_drv_orders_drv_client_id",n:"DRV_ORDERS — Filter by DRV_CLIENT_ID",p:"DRV_CLIENT_ID",s:"Exact-match filter on DRV_ORDERS.DRV_CLIENT_ID; maximum 100 rows.",ph:"Exact match for DRV_CLIENT_ID"},
+{c:"Clients & Users",id:"filter_009_entity_master_entity_code",n:"ENTITY_MASTER — Filter by ENTITY_CODE",p:"ENTITY_CODE",s:"Exact-match filter on ENTITY_MASTER.ENTITY_CODE; maximum 100 rows.",ph:"Exact match for ENTITY_CODE"},
+{c:"Market Data & Securities",id:"filter_010_eq_l1_watch_l1_scrip_code",n:"EQ_L1_WATCH — Filter by L1_SCRIP_CODE",p:"L1_SCRIP_CODE",s:"Exact-match filter on EQ_L1_WATCH.L1_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for L1_SCRIP_CODE"},
+{c:"Orders",id:"filter_011_eq_orders_eq_client_id",n:"EQ_ORDERS — Filter by EQ_CLIENT_ID",p:"EQ_CLIENT_ID",s:"Exact-match filter on EQ_ORDERS.EQ_CLIENT_ID; maximum 100 rows.",ph:"Exact match for EQ_CLIENT_ID"},
+{c:"System & Exchange",id:"filter_012_exch_administration_master_eam_broker_status",n:"EXCH_ADMINISTRATION_MASTER — Filter by EAM_BROKER_STATUS",p:"EAM_BROKER_STATUS",s:"Exact-match filter on EXCH_ADMINISTRATION_MASTER.EAM_BROKER_STATUS; maximum 100 rows.",ph:"Exact match for EAM_BROKER_STATUS"},
+{c:"Files & Processing",id:"filter_013_file_error_log_upload_time",n:"FILE_ERROR_LOG — Filter by UPLOAD_TIME",p:"UPLOAD_TIME",s:"Exact-match filter on FILE_ERROR_LOG.UPLOAD_TIME; maximum 100 rows.",ph:"Exact match for UPLOAD_TIME"},
+{c:"Clients & Users",id:"filter_014_go_client_allowed_immem_client_id",n:"GO_CLIENT_ALLOWED_IMMEM — Filter by CLIENT_ID",p:"CLIENT_ID",s:"Exact-match filter on GO_CLIENT_ALLOWED_IMMEM.CLIENT_ID; maximum 100 rows.",ph:"Exact match for CLIENT_ID"},
+{c:"Clients & Users",id:"filter_015_go_client_mail_info_g_client_id",n:"GO_CLIENT_MAIL_INFO — Filter by G_CLIENT_ID",p:"G_CLIENT_ID",s:"Exact-match filter on GO_CLIENT_MAIL_INFO.G_CLIENT_ID; maximum 100 rows.",ph:"Exact match for G_CLIENT_ID"},
+{c:"Files & Processing",id:"filter_016_go_fileupload_config_date_flag",n:"GO_FILEUPLOAD_CONFIG — Filter by DATE_FLAG",p:"DATE_FLAG",s:"Exact-match filter on GO_FILEUPLOAD_CONFIG.DATE_FLAG; maximum 100 rows.",ph:"Exact match for DATE_FLAG"},
+{c:"Clients & Users",id:"filter_017_go_user_master_user_id",n:"GO_USER_MASTER — Filter by USER_ID",p:"USER_ID",s:"Exact-match filter on GO_USER_MASTER.USER_ID; maximum 100 rows.",ph:"Exact match for USER_ID"},
+{c:"Market Data & Securities",id:"filter_018_l1_watch_active_l1_scrip_code",n:"L1_WATCH_ACTIVE — Filter by L1_SCRIP_CODE",p:"L1_SCRIP_CODE",s:"Exact-match filter on L1_WATCH_ACTIVE.L1_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for L1_SCRIP_CODE"},
+{c:"Market Data & Securities",id:"filter_019_mcx_security_info_mcx_symbol",n:"MCX_SECURITY_INFO — Filter by MCX_SYMBOL",p:"MCX_SYMBOL",s:"Exact-match filter on MCX_SECURITY_INFO.MCX_SYMBOL; maximum 100 rows.",ph:"Exact match for MCX_SYMBOL"},
+{c:"Orders",id:"filter_020_mrv_orders_mrv_client_id",n:"MRV_ORDERS — Filter by MRV_CLIENT_ID",p:"MRV_CLIENT_ID",s:"Exact-match filter on MRV_ORDERS.MRV_CLIENT_ID; maximum 100 rows.",ph:"Exact match for MRV_CLIENT_ID"},
+{c:"Positions & Limits",id:"filter_021_net_position_table_npt_client_id",n:"NET_POSITION_TABLE — Filter by NPT_CLIENT_ID",p:"NPT_CLIENT_ID",s:"Exact-match filter on NET_POSITION_TABLE.NPT_CLIENT_ID; maximum 100 rows.",ph:"Exact match for NPT_CLIENT_ID"},
+{c:"Surveillance & Blocks",id:"filter_022_nse_gsm_temp_v_id_1",n:"NSE_GSM_TEMP — Filter by V_ID_1",p:"V_ID_1",s:"Exact-match filter on NSE_GSM_TEMP.V_ID_1; maximum 100 rows.",ph:"Exact match for V_ID_1"},
+{c:"Surveillance & Blocks",id:"filter_023_rms_approve_pledg_script_raps_isin",n:"RMS_APPROVE_PLEDG_SCRIPT — Filter by RAPS_ISIN",p:"RAPS_ISIN",s:"Exact-match filter on RMS_APPROVE_PLEDG_SCRIPT.RAPS_ISIN; maximum 100 rows.",ph:"Exact match for RAPS_ISIN"},
+{c:"Positions & Limits",id:"filter_024_rms_clientwise_uploaded_limit_rcul_symbol",n:"RMS_CLIENTWISE_UPLOADED_LIMIT — Filter by RCUL_SYMBOL",p:"RCUL_SYMBOL",s:"Exact-match filter on RMS_CLIENTWISE_UPLOADED_LIMIT.RCUL_SYMBOL; maximum 100 rows.",ph:"Exact match for RCUL_SYMBOL"},
+{c:"Positions & Limits",id:"filter_025_rms_client_fno_pos_limit_detail_client_id",n:"RMS_CLIENT_FNO_POS_LIMIT_DETAIL — Filter by CLIENT_ID",p:"CLIENT_ID",s:"Exact-match filter on RMS_CLIENT_FNO_POS_LIMIT_DETAIL.CLIENT_ID; maximum 100 rows.",ph:"Exact match for CLIENT_ID"},
+{c:"Positions & Limits",id:"filter_026_rms_client_security_limit_client_id",n:"RMS_CLIENT_SECURITY_LIMIT — Filter by CLIENT_ID",p:"CLIENT_ID",s:"Exact-match filter on RMS_CLIENT_SECURITY_LIMIT.CLIENT_ID; maximum 100 rows.",ph:"Exact match for CLIENT_ID"},
+{c:"Files & Processing",id:"filter_027_rms_early_payin_rep_client_id",n:"RMS_EARLY_PAYIN — Filter by REP_CLIENT_ID",p:"REP_CLIENT_ID",s:"Exact-match filter on RMS_EARLY_PAYIN.REP_CLIENT_ID; maximum 100 rows.",ph:"Exact match for REP_CLIENT_ID"},
+{c:"Margins & Risk",id:"filter_028_rms_eq_var_elm_sec_symbol",n:"RMS_EQ_VAR_ELM — Filter by SEC_SYMBOL",p:"SEC_SYMBOL",s:"Exact-match filter on RMS_EQ_VAR_ELM.SEC_SYMBOL; maximum 100 rows.",ph:"Exact match for SEC_SYMBOL"},
+{c:"Margins & Risk",id:"filter_029_rms_fno_delta_rfd_scrip_code",n:"RMS_FNO_DELTA — Filter by RFD_SCRIP_CODE",p:"RFD_SCRIP_CODE",s:"Exact-match filter on RMS_FNO_DELTA.RFD_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for RFD_SCRIP_CODE"},
+{c:"Margins & Risk",id:"filter_030_rms_fno_span_margin_rsm_security_id",n:"RMS_FNO_SPAN_MARGIN — Filter by RSM_SECURITY_ID",p:"RSM_SECURITY_ID",s:"Exact-match filter on RMS_FNO_SPAN_MARGIN.RSM_SECURITY_ID; maximum 100 rows.",ph:"Exact match for RSM_SECURITY_ID"},
+{c:"Positions & Limits",id:"filter_031_rms_fund_limit_client_id",n:"RMS_FUND_LIMIT — Filter by CLIENT_ID",p:"CLIENT_ID",s:"Exact-match filter on RMS_FUND_LIMIT.CLIENT_ID; maximum 100 rows.",ph:"Exact match for CLIENT_ID"},
+{c:"Files & Processing",id:"filter_032_rms_ipo_allotment_temp_symbol",n:"RMS_IPO_ALLOTMENT_TEMP — Filter by SYMBOL",p:"SYMBOL",s:"Exact-match filter on RMS_IPO_ALLOTMENT_TEMP.SYMBOL; maximum 100 rows.",ph:"Exact match for SYMBOL"},
+{c:"Positions & Limits",id:"filter_033_rms_limit_config_rlc_segment",n:"RMS_LIMIT_CONFIG — Filter by RLC_SEGMENT",p:"RLC_SEGMENT",s:"Exact-match filter on RMS_LIMIT_CONFIG.RLC_SEGMENT; maximum 100 rows.",ph:"Exact match for RLC_SEGMENT"},
+{c:"Margins & Risk",id:"filter_034_rms_mcx_exp_margin_rmem_security_id",n:"RMS_MCX_EXP_MARGIN — Filter by RMEM_SECURITY_ID",p:"RMEM_SECURITY_ID",s:"Exact-match filter on RMS_MCX_EXP_MARGIN.RMEM_SECURITY_ID; maximum 100 rows.",ph:"Exact match for RMEM_SECURITY_ID"},
+{c:"Positions & Limits",id:"filter_035_rms_member_fno_pos_limit_detail_exch_symbol",n:"RMS_MEMBER_FNO_POS_LIMIT_DETAIL — Filter by EXCH_SYMBOL",p:"EXCH_SYMBOL",s:"Exact-match filter on RMS_MEMBER_FNO_POS_LIMIT_DETAIL.EXCH_SYMBOL; maximum 100 rows.",ph:"Exact match for EXCH_SYMBOL"},
+{c:"Positions & Limits",id:"filter_036_rms_memwise_uploaded_limit_rmul_symbol",n:"RMS_MEMWISE_UPLOADED_LIMIT — Filter by RMUL_SYMBOL",p:"RMUL_SYMBOL",s:"Exact-match filter on RMS_MEMWISE_UPLOADED_LIMIT.RMUL_SYMBOL; maximum 100 rows.",ph:"Exact match for RMUL_SYMBOL"},
+{c:"Files & Processing",id:"filter_037_rms_process_log_process_date",n:"RMS_PROCESS_LOG — Filter by PROCESS_DATE",p:"PROCESS_DATE",s:"Exact-match filter on RMS_PROCESS_LOG.PROCESS_DATE; maximum 100 rows.",ph:"Exact match for PROCESS_DATE"},
+{c:"Margins & Risk",id:"filter_038_rms_risk_profile_det_rpd_scrip_code",n:"RMS_RISK_PROFILE_DET — Filter by RPD_SCRIP_CODE",p:"RPD_SCRIP_CODE",s:"Exact-match filter on RMS_RISK_PROFILE_DET.RPD_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for RPD_SCRIP_CODE"},
+{c:"Margins & Risk",id:"filter_039_rms_risk_profile_mast_rpm_product_enabled",n:"RMS_RISK_PROFILE_MAST — Filter by RPM_PRODUCT_ENABLED",p:"RPM_PRODUCT_ENABLED",s:"Exact-match filter on RMS_RISK_PROFILE_MAST.RPM_PRODUCT_ENABLED; maximum 100 rows.",ph:"Exact match for RPM_PRODUCT_ENABLED"},
+{c:"System & Exchange",id:"filter_040_rms_screen_column_config_rscc_screen_name",n:"RMS_SCREEN_COLUMN_CONFIG — Filter by RSCC_SCREEN_NAME",p:"RSCC_SCREEN_NAME",s:"Exact-match filter on RMS_SCREEN_COLUMN_CONFIG.RSCC_SCREEN_NAME; maximum 100 rows.",ph:"Exact match for RSCC_SCREEN_NAME"},
+{c:"Margins & Risk",id:"filter_041_rms_scrip_margin_basket_rsmb_scrip_code",n:"RMS_SCRIP_MARGIN_BASKET — Filter by RSMB_SCRIP_CODE",p:"RSMB_SCRIP_CODE",s:"Exact-match filter on RMS_SCRIP_MARGIN_BASKET.RSMB_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for RSMB_SCRIP_CODE"},
+{c:"Margins & Risk",id:"filter_042_rms_scrip_margin_basket_fno_rsmbf_scrip_code",n:"RMS_SCRIP_MARGIN_BASKET_FNO — Filter by RSMBF_SCRIP_CODE",p:"RSMBF_SCRIP_CODE",s:"Exact-match filter on RMS_SCRIP_MARGIN_BASKET_FNO.RSMBF_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for RSMBF_SCRIP_CODE"},
+{c:"Market Data & Securities",id:"filter_043_security_master_sm_scrip_code",n:"SECURITY_MASTER — Filter by SM_SCRIP_CODE",p:"SM_SCRIP_CODE",s:"Exact-match filter on SECURITY_MASTER.SM_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for SM_SCRIP_CODE"},
+{c:"Surveillance & Blocks",id:"filter_044_security_rms_block_detail_client_id",n:"SECURITY_RMS_BLOCK_DETAIL — Filter by CLIENT_ID",p:"CLIENT_ID",s:"Exact-match filter on SECURITY_RMS_BLOCK_DETAIL.CLIENT_ID; maximum 100 rows.",ph:"Exact match for CLIENT_ID"},
+{c:"Market Data & Securities",id:"filter_045_sem_active_sm_scrip_code",n:"SEM_ACTIVE — Filter by SM_SCRIP_CODE",p:"SM_SCRIP_CODE",s:"Exact-match filter on SEM_ACTIVE.SM_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for SM_SCRIP_CODE"},
+{c:"Surveillance & Blocks",id:"filter_046_surveillance_msg_details_smd_client_id",n:"SURVEILLANCE_MSG_DETAILS — Filter by SMD_CLIENT_ID",p:"SMD_CLIENT_ID",s:"Exact-match filter on SURVEILLANCE_MSG_DETAILS.SMD_CLIENT_ID; maximum 100 rows.",ph:"Exact match for SMD_CLIENT_ID"},
+{c:"System & Exchange",id:"filter_047_sys_parameters_param_name",n:"SYS_PARAMETERS — Filter by PARAM_NAME",p:"PARAM_NAME",s:"Exact-match filter on SYS_PARAMETERS.PARAM_NAME; maximum 100 rows.",ph:"Exact match for PARAM_NAME"},
+{c:"Clients & Users",id:"filter_048_user_master_user_entity_code",n:"USER_MASTER — Filter by USER_ENTITY_CODE",p:"USER_ENTITY_CODE",s:"Exact-match filter on USER_MASTER.USER_ENTITY_CODE; maximum 100 rows.",ph:"Exact match for USER_ENTITY_CODE"},
+{c:"Positions & Limits",id:"filter_049_view_client_limit_client_id",n:"VIEW_CLIENT_LIMIT — Filter by CLIENT_ID",p:"CLIENT_ID",s:"Exact-match filter on VIEW_CLIENT_LIMIT.CLIENT_ID; maximum 100 rows.",ph:"Exact match for CLIENT_ID"},
+{c:"Positions & Limits",id:"filter_050_ban_net_position_bnp_underlying_scrip_code",n:"BAN_NET_POSITION — Filter by BNP_UNDERLYING_SCRIP_CODE",p:"BNP_UNDERLYING_SCRIP_CODE",s:"Exact-match filter on BAN_NET_POSITION.BNP_UNDERLYING_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for BNP_UNDERLYING_SCRIP_CODE"},
+{c:"Market Data & Securities",id:"filter_051_bhav_copy_bc_segment",n:"BHAV_COPY — Filter by BC_SEGMENT",p:"BC_SEGMENT",s:"Exact-match filter on BHAV_COPY.BC_SEGMENT; maximum 100 rows.",ph:"Exact match for BC_SEGMENT"},
+{c:"Surveillance & Blocks",id:"filter_052_bse_gsm_temp_v_id_2",n:"BSE_GSM_TEMP — Filter by V_ID_2",p:"V_ID_2",s:"Exact-match filter on BSE_GSM_TEMP.V_ID_2; maximum 100 rows.",ph:"Exact match for V_ID_2"},
+{c:"Positions & Limits",id:"filter_053_clientwise_mtf_exposer_limit_cme_symbol",n:"CLIENTWISE_MTF_EXPOSER_LIMIT — Filter by CME_SYMBOL",p:"CME_SYMBOL",s:"Exact-match filter on CLIENTWISE_MTF_EXPOSER_LIMIT.CME_SYMBOL; maximum 100 rows.",ph:"Exact match for CME_SYMBOL"},
+{c:"Orders",id:"filter_054_comm_orders_comm_scrip_code",n:"COMM_ORDERS — Filter by COMM_SCRIP_CODE",p:"COMM_SCRIP_CODE",s:"Exact-match filter on COMM_ORDERS.COMM_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for COMM_SCRIP_CODE"},
+{c:"Market Data & Securities",id:"filter_055_drv_bhav_copy_dbc_segment",n:"DRV_BHAV_COPY — Filter by DBC_SEGMENT",p:"DBC_SEGMENT",s:"Exact-match filter on DRV_BHAV_COPY.DBC_SEGMENT; maximum 100 rows.",ph:"Exact match for DBC_SEGMENT"},
+{c:"Market Data & Securities",id:"filter_056_drv_l1_watch_dl1_exch_scrip_code",n:"DRV_L1_WATCH — Filter by DL1_EXCH_SCRIP_CODE",p:"DL1_EXCH_SCRIP_CODE",s:"Exact-match filter on DRV_L1_WATCH.DL1_EXCH_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for DL1_EXCH_SCRIP_CODE"},
+{c:"Orders",id:"filter_057_drv_orders_drv_scrip_code",n:"DRV_ORDERS — Filter by DRV_SCRIP_CODE",p:"DRV_SCRIP_CODE",s:"Exact-match filter on DRV_ORDERS.DRV_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for DRV_SCRIP_CODE"},
+{c:"Clients & Users",id:"filter_058_entity_master_entity_risk_profile",n:"ENTITY_MASTER — Filter by ENTITY_RISK_PROFILE",p:"ENTITY_RISK_PROFILE",s:"Exact-match filter on ENTITY_MASTER.ENTITY_RISK_PROFILE; maximum 100 rows.",ph:"Exact match for ENTITY_RISK_PROFILE"},
+{c:"Market Data & Securities",id:"filter_059_eq_l1_watch_l1_exch_scrip_code",n:"EQ_L1_WATCH — Filter by L1_EXCH_SCRIP_CODE",p:"L1_EXCH_SCRIP_CODE",s:"Exact-match filter on EQ_L1_WATCH.L1_EXCH_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for L1_EXCH_SCRIP_CODE"},
+{c:"Orders",id:"filter_060_eq_orders_eq_scrip_code",n:"EQ_ORDERS — Filter by EQ_SCRIP_CODE",p:"EQ_SCRIP_CODE",s:"Exact-match filter on EQ_ORDERS.EQ_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for EQ_SCRIP_CODE"},
+{c:"System & Exchange",id:"filter_061_exch_administration_master_eam_logon_status",n:"EXCH_ADMINISTRATION_MASTER — Filter by EAM_LOGON_STATUS",p:"EAM_LOGON_STATUS",s:"Exact-match filter on EXCH_ADMINISTRATION_MASTER.EAM_LOGON_STATUS; maximum 100 rows.",ph:"Exact match for EAM_LOGON_STATUS"},
+{c:"Files & Processing",id:"filter_062_file_error_log_err_code",n:"FILE_ERROR_LOG — Filter by ERR_CODE",p:"ERR_CODE",s:"Exact-match filter on FILE_ERROR_LOG.ERR_CODE; maximum 100 rows.",ph:"Exact match for ERR_CODE"},
+{c:"Clients & Users",id:"filter_063_go_client_allowed_immem_segment",n:"GO_CLIENT_ALLOWED_IMMEM — Filter by SEGMENT",p:"SEGMENT",s:"Exact-match filter on GO_CLIENT_ALLOWED_IMMEM.SEGMENT; maximum 100 rows.",ph:"Exact match for SEGMENT"},
+{c:"Clients & Users",id:"filter_064_go_client_mail_info_g_email_id",n:"GO_CLIENT_MAIL_INFO — Filter by G_EMAIL_ID",p:"G_EMAIL_ID",s:"Exact-match filter on GO_CLIENT_MAIL_INFO.G_EMAIL_ID; maximum 100 rows.",ph:"Exact match for G_EMAIL_ID"},
+{c:"Files & Processing",id:"filter_065_go_fileupload_config_priority",n:"GO_FILEUPLOAD_CONFIG — Filter by PRIORITY",p:"PRIORITY",s:"Exact-match filter on GO_FILEUPLOAD_CONFIG.PRIORITY; maximum 100 rows.",ph:"Exact match for PRIORITY"},
+{c:"Clients & Users",id:"filter_066_go_user_master_last_update_time",n:"GO_USER_MASTER — Filter by LAST_UPDATE_TIME",p:"LAST_UPDATE_TIME",s:"Exact-match filter on GO_USER_MASTER.LAST_UPDATE_TIME; maximum 100 rows.",ph:"Exact match for LAST_UPDATE_TIME"},
+{c:"Market Data & Securities",id:"filter_067_l1_watch_active_l1_exch_scrip_code",n:"L1_WATCH_ACTIVE — Filter by L1_EXCH_SCRIP_CODE",p:"L1_EXCH_SCRIP_CODE",s:"Exact-match filter on L1_WATCH_ACTIVE.L1_EXCH_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for L1_EXCH_SCRIP_CODE"},
+{c:"Market Data & Securities",id:"filter_068_mcx_security_info_mcx_expiry_process_date",n:"MCX_SECURITY_INFO — Filter by MCX_EXPIRY_PROCESS_DATE",p:"MCX_EXPIRY_PROCESS_DATE",s:"Exact-match filter on MCX_SECURITY_INFO.MCX_EXPIRY_PROCESS_DATE; maximum 100 rows.",ph:"Exact match for MCX_EXPIRY_PROCESS_DATE"},
+{c:"Orders",id:"filter_069_mrv_orders_mrv_scrip_code",n:"MRV_ORDERS — Filter by MRV_SCRIP_CODE",p:"MRV_SCRIP_CODE",s:"Exact-match filter on MRV_ORDERS.MRV_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for MRV_SCRIP_CODE"},
+{c:"Positions & Limits",id:"filter_070_net_position_table_npt_security_id",n:"NET_POSITION_TABLE — Filter by NPT_SECURITY_ID",p:"NPT_SECURITY_ID",s:"Exact-match filter on NET_POSITION_TABLE.NPT_SECURITY_ID; maximum 100 rows.",ph:"Exact match for NPT_SECURITY_ID"},
+{c:"Surveillance & Blocks",id:"filter_071_nse_gsm_temp_v_id_2",n:"NSE_GSM_TEMP — Filter by V_ID_2",p:"V_ID_2",s:"Exact-match filter on NSE_GSM_TEMP.V_ID_2; maximum 100 rows.",ph:"Exact match for V_ID_2"},
+{c:"Positions & Limits",id:"filter_072_rms_clientwise_uploaded_limit_rcul_exch_id",n:"RMS_CLIENTWISE_UPLOADED_LIMIT — Filter by RCUL_EXCH_ID",p:"RCUL_EXCH_ID",s:"Exact-match filter on RMS_CLIENTWISE_UPLOADED_LIMIT.RCUL_EXCH_ID; maximum 100 rows.",ph:"Exact match for RCUL_EXCH_ID"},
+{c:"Positions & Limits",id:"filter_073_rms_client_fno_pos_limit_detail_exch_symbol",n:"RMS_CLIENT_FNO_POS_LIMIT_DETAIL — Filter by EXCH_SYMBOL",p:"EXCH_SYMBOL",s:"Exact-match filter on RMS_CLIENT_FNO_POS_LIMIT_DETAIL.EXCH_SYMBOL; maximum 100 rows.",ph:"Exact match for EXCH_SYMBOL"},
+{c:"Positions & Limits",id:"filter_074_rms_client_security_limit_nse_scrip_code",n:"RMS_CLIENT_SECURITY_LIMIT — Filter by NSE_SCRIP_CODE",p:"NSE_SCRIP_CODE",s:"Exact-match filter on RMS_CLIENT_SECURITY_LIMIT.NSE_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for NSE_SCRIP_CODE"},
+{c:"Files & Processing",id:"filter_075_rms_early_payin_rep_isin_reqid",n:"RMS_EARLY_PAYIN — Filter by REP_ISIN_REQID",p:"REP_ISIN_REQID",s:"Exact-match filter on RMS_EARLY_PAYIN.REP_ISIN_REQID; maximum 100 rows.",ph:"Exact match for REP_ISIN_REQID"},
+{c:"Margins & Risk",id:"filter_076_rms_eq_var_elm_isin",n:"RMS_EQ_VAR_ELM — Filter by ISIN",p:"ISIN",s:"Exact-match filter on RMS_EQ_VAR_ELM.ISIN; maximum 100 rows.",ph:"Exact match for ISIN"},
+{c:"Margins & Risk",id:"filter_077_rms_fno_delta_rfd_underlying_scrip_code",n:"RMS_FNO_DELTA — Filter by RFD_UNDERLYING_SCRIP_CODE",p:"RFD_UNDERLYING_SCRIP_CODE",s:"Exact-match filter on RMS_FNO_DELTA.RFD_UNDERLYING_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for RFD_UNDERLYING_SCRIP_CODE"},
+{c:"Margins & Risk",id:"filter_078_rms_fno_span_margin_rsm_symbol_name",n:"RMS_FNO_SPAN_MARGIN — Filter by RSM_SYMBOL_NAME",p:"RSM_SYMBOL_NAME",s:"Exact-match filter on RMS_FNO_SPAN_MARGIN.RSM_SYMBOL_NAME; maximum 100 rows.",ph:"Exact match for RSM_SYMBOL_NAME"},
+{c:"Positions & Limits",id:"filter_079_rms_fund_limit_segment",n:"RMS_FUND_LIMIT — Filter by SEGMENT",p:"SEGMENT",s:"Exact-match filter on RMS_FUND_LIMIT.SEGMENT; maximum 100 rows.",ph:"Exact match for SEGMENT"},
+{c:"Files & Processing",id:"filter_080_rms_ipo_allotment_temp_upi_last_status",n:"RMS_IPO_ALLOTMENT_TEMP — Filter by UPI_LAST_STATUS",p:"UPI_LAST_STATUS",s:"Exact-match filter on RMS_IPO_ALLOTMENT_TEMP.UPI_LAST_STATUS; maximum 100 rows.",ph:"Exact match for UPI_LAST_STATUS"},
+{c:"Positions & Limits",id:"filter_081_rms_limit_config_rcl_segment_include",n:"RMS_LIMIT_CONFIG — Filter by RCL_SEGMENT_INCLUDE",p:"RCL_SEGMENT_INCLUDE",s:"Exact-match filter on RMS_LIMIT_CONFIG.RCL_SEGMENT_INCLUDE; maximum 100 rows.",ph:"Exact match for RCL_SEGMENT_INCLUDE"},
+{c:"Margins & Risk",id:"filter_082_rms_mcx_exp_margin_rmem_symbol_name",n:"RMS_MCX_EXP_MARGIN — Filter by RMEM_SYMBOL_NAME",p:"RMEM_SYMBOL_NAME",s:"Exact-match filter on RMS_MCX_EXP_MARGIN.RMEM_SYMBOL_NAME; maximum 100 rows.",ph:"Exact match for RMEM_SYMBOL_NAME"},
+{c:"Positions & Limits",id:"filter_083_rms_member_fno_pos_limit_detail_tot_gross_qty",n:"RMS_MEMBER_FNO_POS_LIMIT_DETAIL — Filter by TOT_GROSS_QTY",p:"TOT_GROSS_QTY",s:"Exact-match filter on RMS_MEMBER_FNO_POS_LIMIT_DETAIL.TOT_GROSS_QTY; maximum 100 rows.",ph:"Exact match for TOT_GROSS_QTY"},
+{c:"Positions & Limits",id:"filter_084_rms_memwise_uploaded_limit_rmul_prop_allowed_qty",n:"RMS_MEMWISE_UPLOADED_LIMIT — Filter by RMUL_PROP_ALLOWED_QTY",p:"RMUL_PROP_ALLOWED_QTY",s:"Exact-match filter on RMS_MEMWISE_UPLOADED_LIMIT.RMUL_PROP_ALLOWED_QTY; maximum 100 rows.",ph:"Exact match for RMUL_PROP_ALLOWED_QTY"},
+{c:"Files & Processing",id:"filter_085_rms_process_log_upload_file_name",n:"RMS_PROCESS_LOG — Filter by UPLOAD_FILE_NAME",p:"UPLOAD_FILE_NAME",s:"Exact-match filter on RMS_PROCESS_LOG.UPLOAD_FILE_NAME; maximum 100 rows.",ph:"Exact match for UPLOAD_FILE_NAME"},
+{c:"Margins & Risk",id:"filter_086_rms_risk_profile_det_rpd_symbol",n:"RMS_RISK_PROFILE_DET — Filter by RPD_SYMBOL",p:"RPD_SYMBOL",s:"Exact-match filter on RMS_RISK_PROFILE_DET.RPD_SYMBOL; maximum 100 rows.",ph:"Exact match for RPD_SYMBOL"},
+{c:"Margins & Risk",id:"filter_087_rms_risk_profile_mast_product_ql_check",n:"RMS_RISK_PROFILE_MAST — Filter by PRODUCT_QL_CHECK",p:"PRODUCT_QL_CHECK",s:"Exact-match filter on RMS_RISK_PROFILE_MAST.PRODUCT_QL_CHECK; maximum 100 rows.",ph:"Exact match for PRODUCT_QL_CHECK"},
+{c:"System & Exchange",id:"filter_088_rms_screen_column_config_rscc_column_names",n:"RMS_SCREEN_COLUMN_CONFIG — Filter by RSCC_COLUMN_NAMES",p:"RSCC_COLUMN_NAMES",s:"Exact-match filter on RMS_SCREEN_COLUMN_CONFIG.RSCC_COLUMN_NAMES; maximum 100 rows.",ph:"Exact match for RSCC_COLUMN_NAMES"},
+{c:"Margins & Risk",id:"filter_089_rms_scrip_margin_basket_rsmb_segment",n:"RMS_SCRIP_MARGIN_BASKET — Filter by RSMB_SEGMENT",p:"RSMB_SEGMENT",s:"Exact-match filter on RMS_SCRIP_MARGIN_BASKET.RSMB_SEGMENT; maximum 100 rows.",ph:"Exact match for RSMB_SEGMENT"},
+{c:"Margins & Risk",id:"filter_090_rms_scrip_margin_basket_fno_rsmbf_segment",n:"RMS_SCRIP_MARGIN_BASKET_FNO — Filter by RSMBF_SEGMENT",p:"RSMBF_SEGMENT",s:"Exact-match filter on RMS_SCRIP_MARGIN_BASKET_FNO.RSMBF_SEGMENT; maximum 100 rows.",ph:"Exact match for RSMBF_SEGMENT"},
+{c:"Market Data & Securities",id:"filter_091_security_master_sm_exch_scrip_code",n:"SECURITY_MASTER — Filter by SM_EXCH_SCRIP_CODE",p:"SM_EXCH_SCRIP_CODE",s:"Exact-match filter on SECURITY_MASTER.SM_EXCH_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for SM_EXCH_SCRIP_CODE"},
+{c:"Surveillance & Blocks",id:"filter_092_security_rms_block_detail_scrip_code",n:"SECURITY_RMS_BLOCK_DETAIL — Filter by SCRIP_CODE",p:"SCRIP_CODE",s:"Exact-match filter on SECURITY_RMS_BLOCK_DETAIL.SCRIP_CODE; maximum 100 rows.",ph:"Exact match for SCRIP_CODE"},
+{c:"Market Data & Securities",id:"filter_093_sem_active_sm_exch_scrip_code",n:"SEM_ACTIVE — Filter by SM_EXCH_SCRIP_CODE",p:"SM_EXCH_SCRIP_CODE",s:"Exact-match filter on SEM_ACTIVE.SM_EXCH_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for SM_EXCH_SCRIP_CODE"},
+{c:"Surveillance & Blocks",id:"filter_094_surveillance_msg_details_smd_scrip_code",n:"SURVEILLANCE_MSG_DETAILS — Filter by SMD_SCRIP_CODE",p:"SMD_SCRIP_CODE",s:"Exact-match filter on SURVEILLANCE_MSG_DETAILS.SMD_SCRIP_CODE; maximum 100 rows.",ph:"Exact match for SMD_SCRIP_CODE"},
+{c:"System & Exchange",id:"filter_095_sys_parameters_param_value",n:"SYS_PARAMETERS — Filter by PARAM_VALUE",p:"PARAM_VALUE",s:"Exact-match filter on SYS_PARAMETERS.PARAM_VALUE; maximum 100 rows.",ph:"Exact match for PARAM_VALUE"},
+{c:"Clients & Users",id:"filter_096_user_master_user_status",n:"USER_MASTER — Filter by USER_STATUS",p:"USER_STATUS",s:"Exact-match filter on USER_MASTER.USER_STATUS; maximum 100 rows.",ph:"Exact match for USER_STATUS"},
+{c:"Positions & Limits",id:"filter_097_view_client_limit_segment",n:"VIEW_CLIENT_LIMIT — Filter by SEGMENT",p:"SEGMENT",s:"Exact-match filter on VIEW_CLIENT_LIMIT.SEGMENT; maximum 100 rows.",ph:"Exact match for SEGMENT"},
+{c:"Positions & Limits",id:"filter_098_ban_net_position_bnp_security_id",n:"BAN_NET_POSITION — Filter by BNP_SECURITY_ID",p:"BNP_SECURITY_ID",s:"Exact-match filter on BAN_NET_POSITION.BNP_SECURITY_ID; maximum 100 rows.",ph:"Exact match for BNP_SECURITY_ID"},
+{c:"Market Data & Securities",id:"filter_099_bhav_copy_bc_date",n:"BHAV_COPY — Filter by BC_DATE",p:"BC_DATE",s:"Exact-match filter on BHAV_COPY.BC_DATE; maximum 100 rows.",ph:"Exact match for BC_DATE"},
+{c:"Surveillance & Blocks",id:"filter_100_bse_gsm_temp_v_id_3",n:"BSE_GSM_TEMP — Filter by V_ID_3",p:"V_ID_3",s:"Exact-match filter on BSE_GSM_TEMP.V_ID_3; maximum 100 rows.",ph:"Exact match for V_ID_3"},
+{c:"Positions & Limits",id:"filter_101_clientwise_mtf_exposer_limit_cme_tot_qty",n:"CLIENTWISE_MTF_EXPOSER_LIMIT — Filter by CME_TOT_QTY",p:"CME_TOT_QTY",s:"Exact-match filter on CLIENTWISE_MTF_EXPOSER_LIMIT.CME_TOT_QTY; maximum 100 rows.",ph:"Exact match for CME_TOT_QTY"}
+];
+let connectedDB="", lastRows=[], lastColumns=[], activeController=null, lastSQL="";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function db(){return document.querySelector('input[name="db"]:checked').value}
+function isClientFilter(q){return q.id.startsWith("filter_") && /CLIENT|USER|ENTITY/i.test((q.p||"")+" "+q.n)}
+function fillCategories(){const cats=[...new Set(queries.map(q=>q.c))];$("category").innerHTML='<option value="__manual__">Manual Query</option>'+cats.map(c=>`<option>${esc(c)}</option>`).join("");$("category").value=cats.includes("Clients & Users")?"Clients & Users":cats[0];fillQueries()}
+function fillQueries(){
+ const term=( $("querySearch").value || "").trim().toLowerCase();
+ let qs=queries.filter(q=>q.c===$("category").value);
+ if(term.length>=3) qs=queries.filter(q=>(q.n+" "+q.id+" "+(q.p||"")).toLowerCase().includes(term));
+ qs.sort((a,b)=>Number(isClientFilter(b))-Number(isClientFilter(a)) || Number(a.id.startsWith("preview_"))-Number(b.id.startsWith("preview_")) || a.n.localeCompare(b.n));
+ const manualCat=$("category").value==="__manual__"&&term.length<3;
+ const opts=qs.map(q=>`<option value="${q.id}">${esc(q.n.replace(/ — Preview \(100 max\)/g,""))}</option>`).join("");
+ $("query").innerHTML=manualCat?'<option value="__manual__">Manual Query</option>':opts;$("query").parentElement.classList.toggle("hidden",manualCat);
+ if(term.length>=3){$("searchHint").textContent=qs.length?`${qs.length} matching query/table option(s) found.`:"No matching queries. Try a different table name, scrip code, or security ID.";}else{$("searchHint").textContent="Type at least 3 characters to search across all tables and filters.";}
+ if(term.length>=3 && qs.length){$("category").value=qs[0].c;$("query").value=qs[0].id;}
+ updateQueryInfo()
+}
+function currentQuery(){return queries.find(q=>q.id===$("query").value)||queries[0]}
+function isManual(){return $("query").value==="__manual__"}
+function quoteSQL(v){return "'"+String(v).replace(/\\/g,"\\\\").replace(/'/g,"''").replace(/\0/g,"\\0").replace(/\n/g,"\\n").replace(/\r/g,"\\r").replace(/\x1a/g,"\\Z")+"'"}
+const cleanName=n=>String(n).replace(/ — Preview \(100 max\)/g,"");
+function validateManual(sql){
+ let t=sql.replace(/\/\*[\s\S]*?\*\//g," ").replace(/(--|#)[^\n]*/g," ").replace(/'(?:[^'\\]|\\.|'')*'/g,"''").replace(/"(?:[^"\\]|\\.|"")*"/g,'""').trim();
+ if(!/^(SELECT|WITH)\b/i.test(t))return "Only SELECT queries are allowed.";
+ if(/;\s*\S/.test(t))return "Only one statement is allowed. Remove extra statements after ';'.";
+ const bad=t.match(/\b(INSERT|UPDATE|DELETE|DROP|ALTER|TRUNCATE|CREATE|REPLACE\s+INTO|RENAME|GRANT|REVOKE|MERGE|CALL|EXEC|EXECUTE|LOAD|HANDLER|SET|LOCK|UNLOCK|INTO|OUTFILE|DUMPFILE|LOAD_FILE|SLEEP|BENCHMARK|FOR\s+UPDATE|LOCK\s+IN\s+SHARE\s+MODE)\b/i);
+ if(bad)return "Blocked: risky keyword '"+bad[1].toUpperCase()+"' is not allowed in manual queries.";
+ return "";
+}
+const stripLimit=q=>{const t=String(q).trim().replace(/\s+LIMIT\s+100\s*;?\s*$/i,"");return /;\s*$/.test(t)?t:t+";"};
+function updateQueryInfo(){const manual=isManual();$("manualField").classList.toggle("hidden",!manual);$("paramField").classList.toggle("hidden",manual);$("param").value="";if(manual){$("manualQuery").value="";$("summary").textContent="Enter a single read-only SELECT statement in the manual query box. It will be shown here before execution.";$("resultTitle").textContent="Manual Query Results";}else{const q=currentQuery();$("manualQuery").value="";$("resultTitle").textContent=cleanName(q.n);refreshSQLSummary();}}
+function refreshSQLSummary(){if(isManual()){const manual=$("manualQuery").value.trim();$("summary").textContent=manual||"Enter a single read-only SELECT statement in the manual query box. It will be shown here before execution.";return;}const q=currentQuery();$("paramField").classList.toggle("hidden",!q.p);if(q.id.startsWith("preview_")){const t=q.id.slice(8).toUpperCase();$("summary").textContent=t==="SYS_PARAMETERS"?"SELECT * FROM SYS_PARAMETERS;":`SELECT * FROM \`${t}\`;`;return;}const match=q.id.match(/^filter_\d+_(.+)$/);if(match){const tail=match[1],col=(q.p||"").toLowerCase();let table=tail;if(col&&tail.endsWith("_"+col))table=tail.slice(0,-col.length-1);$("summary").textContent=`SELECT * FROM \`${table.toUpperCase()}\` WHERE \`${(q.p||"").toUpperCase()}\` = ${$("param").value.trim()?quoteSQL($("param").value.trim()):"<enter filter value>"};`;}else $("summary").textContent=q.s;}
+$("category").addEventListener("change",()=>{if(($("querySearch").value||"").trim().length<3)fillQueries()});
+$("querySearch").addEventListener("input",()=>{if(($("querySearch").value||"").trim().length>=3)fillQueries();else fillQueries()});
+$("searchQueries").addEventListener("click",()=>{const t=$("querySearch").value.trim();if(t.length<3){$("searchHint").textContent="Enter at least 3 characters to search.";return}fillQueries();const q=currentQuery();if(q&&q.c)$("category").value=q.c});
+$("query").addEventListener("change",()=>{const q=currentQuery();if(q&&q.c&&$("querySearch").value.trim().length>=3)$("category").value=q.c;updateQueryInfo()});
+// Keep the password for each selected server during this browser tab session.
+// Separate password cache per database server; the password is never shown in the field.
+const pwKey=d=>"rms_db_query_pw_"+d;
+function getCachedPw(d){try{return localStorage.getItem(pwKey(d))||sessionStorage.getItem(pwKey(d))||""}catch(_){return ""}}
+function setCachedPw(d,p){try{localStorage.setItem(pwKey(d),p)}catch(_){try{sessionStorage.setItem(pwKey(d),p)}catch(__){}}}
+function clearCachedPw(d){try{localStorage.removeItem(pwKey(d))}catch(_){}try{sessionStorage.removeItem(pwKey(d))}catch(_){}}
+function autoConnect(){if(getCachedPw(db()))$("connect").click()}
+function refreshPwHint(){$("password").value="";$("password").placeholder=getCachedPw(db())?"Password saved (Server "+db()+")":"Enter database password"}
+refreshPwHint();
+document.querySelectorAll('input[name="db"]').forEach(r=>r.addEventListener("change",()=>{connectedDB="";refreshPwHint();$("status").textContent="Selected Server "+db()+(getCachedPw(db())?" — connecting…":" — enter password and connect");$("status").style.color="#8a5a00";autoConnect()}));
+$("connect").addEventListener("click",async()=>{const button=$("connect");const server=db(),usedCached=!$("password").value;let authFail=false;button.disabled=true;$("status").textContent="Connecting to Server "+db()+"…";$("status").style.color="#8a5a00";try{const password=$("password").value||getCachedPw(server);if(!password)throw Error("Enter the database password");const res=await fetch("/api/db-query/connect",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({db:server,password})});const data=await res.json();if(!res.ok||!data.ok){authFail=true;throw Error(data.error||"Connection failed")}connectedDB=server;setCachedPw(server,password);$("password").value="";refreshPwHint();$("status").textContent="Server "+connectedDB+" connected";$("status").style.color="#16733a"}catch(e){connectedDB="";if(usedCached&&authFail){clearCachedPw(server);refreshPwHint()}$("status").textContent=e.message;$("status").style.color="#b42318"}finally{button.disabled=false}});
+$("param").addEventListener("input",refreshSQLSummary);$("manualQuery").addEventListener("input",refreshSQLSummary);
+$("run").addEventListener("click",async()=>{if(!connectedDB||connectedDB!==db()){showError("Connect to the selected database first.");return}const manual=isManual()?$("manualQuery").value.trim():"";const q=currentQuery();if(!isManual()&&q.p&&!$("param").value.trim()){showError("Enter "+q.p+".");return}if(isManual()&&!manual){showError("Enter a manual SELECT query.");return}if(manual&&!/^SELECT\b/i.test(manual)){showError("Manual queries must start with SELECT. Data-changing commands are blocked.");return}if(manual){const bad=validateManual(manual);if(bad){showError(bad);return}}if(manual&&!confirm("WARNING: You are about to execute this manual read-only query against Server "+connectedDB+":\n\n"+manual+"\n\nOnly SELECT queries are allowed. Continue?"))return;const btn=$("run");btn.disabled=true;$("stop").disabled=false;activeController=new AbortController();$("results").className="empty";$("results").textContent="Running query… Click Stop Query to cancel.";$("rowCount").textContent="Loading…";lastSQL=manual||$("summary").textContent;try{const endpoint=isManual()?"/api/db-query/manual":"/api/db-query/library";const body=isManual()?{db:connectedDB,query:manual}:{db:connectedDB,id:q.id,value:$("param").value.trim()};const res=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),signal:activeController.signal});const data=await res.json();if(!res.ok)throw Error(data.error||"Query failed");lastSQL=stripLimit(data.query||lastSQL);$("summary").textContent=lastSQL;render(data)}catch(e){if(e.name==="AbortError"){showError("Query stopped by user.");$("rowCount").textContent="Stopped"}else showError(e.message)}finally{btn.disabled=false;$("stop").disabled=true;activeController=null}});
+$("stop").addEventListener("click",()=>{if(activeController){$("stop").disabled=true;$("results").textContent="Stopping query…";activeController.abort()}});
+function showError(msg){$("results").className="empty danger";$("results").textContent=msg;$("rowCount").textContent="Error";$("download").disabled=true;lastRows=[];lastColumns=[]}
+let lastData=null;
+function render(data){
+ lastData=data;
+ lastRows=data.rows||[];lastColumns=data.columns||[];
+ const n=data.count??lastRows.length;
+ $("rowCount").textContent=n+(n===1?" row":" rows");
+ $("download").disabled=!lastRows.length;
+ if(!lastColumns.length||!lastRows.length){$("results").className="empty";$("results").textContent="No data found for this query.";return}
+ const cols=lastColumns, hdr=c=>esc(c).replace(/_/g,"_<wbr>");
+ // Single record: show every field as a readable name/value grid.
+ if(lastRows.length===1){
+  const r=lastRows[0];
+  $("results").className="";
+  $("results").innerHTML="<div class='kv-grid'>"+cols.map(c=>{const v=esc(r[c]);return `<div class='kv'><div class='kv-k'>${hdr(c)}</div><div class='kv-v'>${v===""?"<span class='kv-empty'>—</span>":v}</div></div>`}).join("")+"</div>";
+  return}
+ // Many records: split columns into stacked tables sized to the page width so values stay readable.
+ const w=$("results").clientWidth||1200, per=Math.max(5,Math.floor((w-60)/130));
+ const chunk=a=>{const o=[];for(let i=0;i<a.length;i+=per)o.push(a.slice(i,i+per));return o};
+ const splitAt=cols.findIndex(c=>String(c).toUpperCase()==="NC_COLLATERALS");
+ const groups=splitAt>=0?[cols.slice(0,splitAt+1),...chunk(cols.slice(splitAt+1))]:chunk(cols);
+ let html="";
+ for(const group of groups){
+  html+=`<div class='table-wrap'><table style='min-width:${(group.length+1)*105}px'><thead><tr><th class='idx'>#</th>`+group.map(c=>`<th>${hdr(c)}</th>`).join("")+"</tr></thead><tbody>";
+  lastRows.forEach((row,i)=>{html+=`<tr><td class='idx'>${i+1}</td>`+group.map(c=>`<td>${esc(row[c])}</td>`).join("")+"</tr>"});
+  html+="</tbody></table></div>";
+ }
+ $("results").className="";$("results").innerHTML=html;
+}
+let resizeT;window.addEventListener("resize",()=>{clearTimeout(resizeT);resizeT=setTimeout(()=>{if(lastData&&lastRows.length>1)render(lastData)},200)});
+$("download").addEventListener("click",()=>{if(!lastRows.length)return;const cell=v=>{let s=String(v??"");return '"'+s.replace(/"/g,'""')+'"'};const csv=[lastColumns.map(cell).join(","),...lastRows.map(r=>lastColumns.map(c=>cell(r[c])).join(","))].join("\r\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}));a.download=(isManual()?"manual-query":currentQuery().id||"query")+".csv";a.click();URL.revokeObjectURL(a.href)});
+$("param").addEventListener("keydown",e=>{if(e.key==="Enter")$("run").click()});fillCategories();autoConnect();
+</script></body></html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/KSH/rs-login-gate.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BO Files</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#eef7f1;font-family:"Segoe UI",Roboto,Arial,sans-serif;color:#1b4332;padding:10px;font-size:13px}
+.wrap{max-width:720px;margin:0 auto}
+.card{background:linear-gradient(135deg,#f4fbf6,#e8f5ec);border:1px solid #9ccfae;border-radius:12px;padding:12px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+h3.big{font-size:16px;color:#0b6b46;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px 10px;margin-top:8px}
+.f label{display:block;font-size:11px;font-weight:700;color:#355e48;margin-bottom:2px}
+input,select{width:100%;height:34px;padding:4px 8px;font-size:13px;border:1px solid #9ccfae;border-radius:8px;background:#fff;font-family:inherit}
+input[type=checkbox]{width:16px;height:16px;accent-color:#0b6b46;vertical-align:middle}
+input[type=file]{display:none}
+button{border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;color:#fff;background:#0b7a53;cursor:pointer;font-family:inherit}
+button.red{background:#d9363e}
+button.alt{background:#fff;color:#0b6b46;border:1px solid #9ccfae}
+.chk{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#355e48;margin-top:8px}
+.uprow{display:flex;gap:6px;margin-top:8px}
+.uprow button{flex:1;padding:10px 4px;font-size:12px}
+.uprow input[type=number]{flex:0 0 64px;text-align:center}
+.stat{font-size:11px;color:#2e7d32;font-weight:600;margin-top:4px}
+.stat:empty{display:none}
+.btns{display:flex;gap:8px;margin-top:10px}
+.btns .main{flex:1;height:42px;padding:0 4px}
+.btns .clr{height:42px;padding:0 14px;font-size:12px}
+pre#preview{margin-top:10px;background:#fff;border:1px solid #cfe3d5;border-radius:8px;padding:8px;font-size:11px;line-height:1.4;white-space:pre;overflow-x:auto;max-height:260px;overflow-y:auto}
+pre#preview:empty{display:none}
+.foot{text-align:center;font-size:12px;color:#4caf50;margin:12px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="card">
+  <h3 class="big">BO Files</h3>
+
+  <div class="f">
+    <label for="fileType">File type</label>
+    <select id="fileType">
+      <option value="client">Client</option>
+      <option value="bank">Bank Details</option>
+      <option value="product">Product Allowed</option>
+      <option value="exchange">Exchange Allowed</option>
+      <option value="limit">CAP/ALL Limit</option>
+      <option value="incr_limit">Incr CAP/ALL Limit</option>
+      <option value="comlimit">COM Limit</option>
+      <option value="incr_comlimit">Incr COM Limit</option>
+
+      <option value="DP">DP Holding</option>
+      <option value="ben">MRG Holding</option>
+      <option value="obb">T1 Holding</option>
+      <option value="mtf">MTF Holding</option>
+      <option value="mtf_T1">MTFT Holding</option>
+
+      <option value="indp">Incr DP</option>
+      <option value="inben">Incr MRG</option>
+      <option value="inobb">Incr T1</option>
+      <option value="inmtf">Incr MTF</option>
+      <option value="inmtf_T1">Incr MTF_T1</option>
+
+      <option value="mtfps03">NSE MTF Position</option>
+      <option value="bsemtfps03">BSE MTF Position</option>
+
+      <option value="dealer">Dealer Creation</option>
+      <option value="client_dealer">Dealer Mapping</option>
+      <option value="profile">Client Profile</option>
+      <option value="restrict">Client Restriction T5</option>
+      <option value="physical">Physical Expiry Block</option>
+    </select>
+  </div>
+
+  <div class="grid">
+    <div class="f"><label for="baseCode">Client code</label><input type="text" id="baseCode" placeholder="e.g. AB1000"></div>
+    <div class="f"><label for="recordCount">Count</label><input type="number" id="recordCount" placeholder="e.g. 5" min="1"></div>
+    <div class="f" id="dealerMappingSection" style="display:none"><label for="dealerId">Dealer ID</label><input type="text" id="dealerId" placeholder="Dealer ID"></div>
+    <div class="f" id="profileCodeSection" style="display:none"><label for="profileCode">Profile code</label><input type="text" id="profileCode" placeholder="Profile code"></div>
+    <div class="f" id="sodSection" style="display:none"><label for="sodValue">SOD</label><input type="number" id="sodValue" placeholder="SOD value" min="0" step="any"></div>
+  </div>
+
+  <div id="adhocSection" style="display:none">
+    <label class="chk" for="adhoc"><input type="checkbox" id="adhoc"> ADHOC</label>
+  </div>
+
+  <!-- uploads: shown only for the file types that use them -->
+  <div class="uprow">
+    <button type="button" class="alt" id="clientUploadSection" style="display:none" onclick="document.getElementById('clientFile').click()">Client List</button>
+    <button type="button" class="alt" id="isinUploadSection" style="display:none" onclick="autoISIN()">Auto ISIN</button>
+    <input type="number" id="isinLimit" value="10" min="1" title="Auto ISIN count" placeholder="ISINs" style="display:none">
+    <input type="file" id="clientFile" accept=".txt,.csv">
+  </div>
+  <div class="stat" id="clientUploadStatus"></div>
+  <div class="stat" id="isinStatus"></div>
+
+  <div class="btns">
+    <button type="button" class="main" onclick="previewFile()">Preview</button>
+    <button type="button" class="main" onclick="downloadFile()">Download</button>
+    <button type="button" class="main" onclick="downloadAllFiles()">Download All</button>
+    <button type="button" class="red clr" onclick="clearAll()">Clear</button>
+  </div>
+
+  <pre id="preview"></pre>
+</div>
+
+<div class="foot">© Khaled</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="BOT.js"></script>
+</body>
+</html>

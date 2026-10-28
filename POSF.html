@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/rs-login-gate.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Position Builder</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#eef7f1;font-family:"Segoe UI",Roboto,Arial,sans-serif;color:#1b4332;padding:10px;font-size:13px}
+.wrap{max-width:720px;margin:0 auto}
+.card{background:linear-gradient(135deg,#f4fbf6,#e8f5ec);border:1px solid #9ccfae;border-radius:12px;padding:12px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.card.white{background:#fff}
+h3.big{font-size:16px;color:#0b6b46;margin-bottom:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px 10px}
+.f label{display:block;font-size:11px;font-weight:700;color:#355e48;margin-bottom:2px}
+input,select{width:100%;height:34px;padding:4px 8px;font-size:13px;border:1px solid #9ccfae;border-radius:8px;background:#fff;font-family:inherit}
+input[type=checkbox]{width:16px;height:16px;accent-color:#0b6b46}
+button{border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;color:#fff;background:#0b7a53;cursor:pointer;font-family:inherit}
+button.red{background:#d9363e}
+.btns{display:flex;gap:8px;margin-top:10px}
+.btns .gen{flex:1;height:42px}
+.btns .clr{height:42px;padding:0 14px;font-size:12px}
+
+/* upload row: three buttons side by side */
+.uprow{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.uprow button{padding:10px 4px;font-size:12px}
+.uprow button.alt{background:#fff;color:#0b6b46;border:1px solid #9ccfae}
+.stat{font-size:11px;color:#2e7d32;font-weight:600;margin-top:5px}
+.stat:empty{display:none}
+.stat button{padding:1px 8px;font-size:11px;margin-left:6px}
+.clients{margin-top:8px}
+
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.modes button{background:#e6efe9;color:#0b6b46;border:1px solid #bcd9c6;padding:9px 6px}
+.modes button.active{background:#0b7a53;color:#fff;border-color:#0b7a53}
+.mrow{display:flex;gap:8px;flex-wrap:wrap}
+.panel{border:1px solid #cfe3d5;border-radius:8px;background:#f4fbf6;padding:10px;margin-bottom:10px}
+
+/* positions preview: one line per scrip */
+.pr{display:flex;align-items:center;gap:6px;border:1px solid #cfe3d5;border-radius:8px;background:#fff;padding:5px 6px;margin-bottom:5px}
+.pr .pill{flex:0 0 auto;min-width:40px;text-align:center;cursor:pointer;font-size:10px;font-weight:800;border-radius:10px;padding:3px 7px;color:#fff}
+.pr .pill.B{background:#0b7a53}.pr .pill.S{background:#d9363e}
+.pr .txt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;font-weight:600}
+.pr input{flex:0 0 auto;width:54px;height:28px;padding:2px 4px;font-size:12px}
+.pr .x{flex:0 0 auto;padding:4px 9px;font-size:12px}
+.empty{border:1px dashed #9ccfae;border-radius:8px;padding:16px;text-align:center;color:#666;background:#f4fbf6}
+.cnt{font-size:11px;color:#2e7d32;font-weight:600;margin-bottom:6px}
+.cnt:empty{display:none}
+
+.files{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:8px}
+.files label{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:#2f6d2d}
+.foot{text-align:center;font-size:12px;color:#4caf50;margin:12px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ================= UPLOADS ================= -->
+<div class="card">
+  <div class="uprow">
+    <button type="button" onclick="autoUpload()">Auto Upload</button>
+    <button type="button" class="alt" onclick="document.getElementById('bhavFile').click()">Bhavcopy</button>
+    <button type="button" class="alt" onclick="document.getElementById('clientFile').click()">Client List</button>
+  </div>
+  <input type="file" id="bhavFile" accept=".csv,.txt" multiple style="display:none" onchange="onBhavFile(this)">
+  <input type="file" id="clientFile" accept=".txt,.csv" style="display:none" onchange="onClientFile(this)">
+
+  <div class="stat" id="autoStatus"></div>
+  <div class="stat" id="bhavStatus"></div>
+  <div class="stat"><span id="clientStatus"></span><button type="button" class="red" id="clientClear" style="display:none" onclick="clearClients()">Clear</button></div>
+
+  <div class="grid clients">
+    <div class="f"><label>Client 1</label><input id="client1" placeholder="e.g. A101"></div>
+    <div class="f"><label>Client 2</label><input id="client2" placeholder="optional"></div>
+  </div>
+</div>
+
+<!-- ================= POSITIONS ================= -->
+<div class="card white">
+ 
+
+  <div class="modes">
+    <button type="button" id="mb_sample" onclick="setMode('sample')">Sample</button>
+    <button type="button" id="mb_manual" class="active" onclick="setMode('manual')">Manual</button>
+    <button type="button" id="mb_bulk" onclick="setMode('bulk')">Bulk</button>
+  </div>
+
+  <!-- Sample -->
+  <div class="panel" id="sampleBox" style="display:none">
+    <div class="stat" id="sampleStatus"></div>
+  </div>
+
+  <!-- Manual -->
+  <div class="panel" id="manualBox">
+    <div class="mrow">
+      <div class="f" style="flex:2 1 120px"><label>Symbol</label><input id="mSym" list="underList" placeholder="e.g. NIFTY" oninput="this.value=this.value.toUpperCase(); refreshManualOptions()" onchange="refreshManualOptions()"><datalist id="underList"></datalist></div>
+      <div class="f" style="flex:1 1 60px"><label>Lots</label><input type="number" id="mLots" min="1" step="1" value="1"></div>
+      <div class="f" style="flex:1 1 70px"><label>Side</label><select id="mSide"><option value="B">Buy</option><option value="S">Sell</option></select></div>
+    </div>
+    <div class="mrow" style="margin-top:8px">
+      <div class="f" style="flex:1 1 80px"><label>Type</label><select id="mType" onchange="refreshManualOptions()"></select></div>
+      <div class="f" style="flex:1.4 1 110px"><label>Expiry</label><select id="mExp" onchange="refreshManualOptions()"></select></div>
+      <div class="f" id="mOptWrap" style="flex:0.8 1 60px;display:none"><label>CE / PE</label><select id="mOpt" onchange="refreshManualOptions()"></select></div>
+      <div class="f" id="mStrikeWrap" style="flex:1.2 1 90px;display:none"><label>Strike</label><select id="mStrike"></select></div>
+    </div>
+    <div class="btns"><button type="button" onclick="addManual()">+ Add</button></div>
+  </div>
+
+  <!-- Bulk -->
+  <div class="panel" id="bulkBox" style="display:none">
+    <div class="f"><label>Records</label><input type="number" id="bulkRecords" min="1" step="1" placeholder="e.g. 500"></div>
+  </div>
+
+  <div id="posWrap">
+    <div class="cnt" id="posCount"></div>
+    <div id="posList"></div>
+  </div>
+
+  <div class="files" id="fileBoxes"></div>
+  <div class="btns">
+    <button type="button" class="gen" onclick="generateFiles()">Generate files</button>
+    <button type="button" class="red clr" onclick="clearAll()">Clear</button>
+  </div>
+</div>
+
+<div class="foot">© Khaled</div>
+</div>
+
+<script src="POS.js" onerror="document.getElementById('autoStatus').textContent='POS.js not found - keep it in the same folder as this page'"></script>
+</body>
+</html>
